@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\TTE;
+use App\Models\Users;
+use App\Models\FileTte;
+use App\Models\Instansi;
+use App\Models\MasterASN;
 use App\Models\JenisSurat;
 use App\Models\SifatSurat;
 use App\Models\SuratMasuk;
 use App\Models\SuratKeluar;
-use App\Models\Instansi;
-use App\Models\MasterASN;
-use App\Models\FileTte;
-use App\Models\TTE;
-use App\Models\TandaTanganElektronik;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
+
+use App\Models\TandaTanganElektronik;
 use DataTables,Validator,DB,Hash,Auth,File,Storage, PDF;
 
 class TteController extends Controller
@@ -32,8 +35,8 @@ class TteController extends Controller
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
 			// return $request->all();
-			$data = FileTte::with(['users'])->orderBy('id_file_surat','desc');
-			
+			$data = FileTte::with(['users', 'penanda_tangan'])->orderBy('id_file_surat','desc');
+
 			if ($request->range_by == 'tanggal') {
 				$data = $data->whereDate('tanggal_surat', $request->date);
 			}elseif ($request->range_by == 'bulan') {
@@ -42,10 +45,11 @@ class TteController extends Controller
 				$month = $dateArray[1];
 				$data = $data->whereYear('tanggal_surat', $year)->whereMonth('tanggal_surat', $month);
 			}elseif ($request->range_by == 'tahun') {
-				
+
 				$data = $data->whereYear('tanggal_surat', $request->date);
 			}
 			$data = $data->get();
+			// dd($data);
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){
@@ -85,6 +89,59 @@ class TteController extends Controller
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
 
+	public function savePDF(Request $request){
+		return $request->all();
+		// return 'test';
+		try {
+				DB::beginTransaction();
+				// $data = MasterASN::get()->pluck('id_mst_asn');
+				$data = MasterASN::get();
+
+				$nama_surat = $request->namaSurat;
+				$penanda_tangan_id = $request->penandaTangan;
+				$file_surat = str_replace(' ', '_', $request->namaSurat);
+				$file_surat_salinan = str_replace(' ', '_', $request->namaSurat);
+				$random = rand(100, 999);
+				$prefix = date('ymdHis').$random;
+				$file_surat = $prefix.'-'.$file_surat;
+				$data = [
+					'nama_surat' => $nama_surat,
+					'tanggal_surat' => Carbon::now(),
+					'penanda_tangan_id' => $penanda_tangan_id,
+					'file_surat' => $file_surat,
+					'file_surat_salinan' => $file_surat,
+					'created_at' => Carbon::now(),
+					'updated_at' => Carbon::now(),
+				];
+				DB::table('tr_file_tte')->insert($data);
+				$pdfData = base64_decode(explode('base64,', $request->pdf)[1]);
+				// $nama_file_tte = str_replace(' ', '_', $file_surat) . '.pdf';
+				$nama_file_tte = str_replace(' ', '_', $file_surat);
+				// file_put_contents(public_path('/gambar/file_tte/') . $nama_file_tte, $pdfData);
+				file_put_contents(public_path('/storage/surat-tte/') . $nama_file_tte, $pdfData);
+				file_put_contents(public_path('/storage/surat-tte-salinan/') . $nama_file_tte, $pdfData);
+
+				// $request->request->add([
+				// 	'pdfs' => base64_decode(explode('base64,',$request->pdf)[1])
+				// 	// 'pdfs' => explode(',',$request->pdf)[1]
+				// 	// 'pdfs' => base64_decode($request->pdf)
+				// ]);
+				// // return $request->pdfs;
+				// file_put_contents(public_path().'/gambar/file.pdf', $request->pdfs);
+				// file_put_contents(public_path().'/gambar/' .$request->file_name. '.pdf', $request->pdfs);
+				// // return $request->pdf;
+				DB::commit();
+			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
+			return response()->json($return);
+		} catch(\Exception $e) {
+			DB::rollback();
+			// throw($e);
+			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+			return response()->json($return);
+		}
+
+	}
+
 
 	// private $title = "Tanda Tangan Elektronik";
 	// private $menuActive = "tandatangan-e";
@@ -103,6 +160,9 @@ class TteController extends Controller
 	{
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratKeluar::find($request->id) : "";
+			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();
+			$data['asn'] = MasterASN::whereIn('jabatan', [0,1])->get(); # 0=Sekda, 1=Kepala badan
+
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
@@ -113,6 +173,7 @@ class TteController extends Controller
 			// 		$data['surat_tugas'] = SuratTugas::with(['suratkeluar','pegawai'])->where('surat_keluar_id',$request->id)->first();
 			// 	}
 			// }
+
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
@@ -132,17 +193,21 @@ class TteController extends Controller
 	}
 	public function show(Request $request)
 	{
+		// return $request->all();
 		try {
 			$data['data'] = (!empty($request->id)) ? FileTte::find($request->id) : "";
+			// $file = FIle::files(public_path('gambar/' .$request->id));
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data)->render();
+			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data, $file)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
+
 	public function verifSurat(Request $request)
 	{
 		// return $request->id;
@@ -155,7 +220,7 @@ class TteController extends Controller
 			$fileSurat= FileTte::find($request->id);
 			$fileSurat->is_verif=true;
 			$fileSurat->save();
-			
+
 			DB::commit();
 			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil di Verifikasi !!'];
 			return response()->json($return);
