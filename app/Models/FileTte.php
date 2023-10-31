@@ -17,4 +17,9 @@ class FileTte extends Model
     {
         return $this->belongsTo('App\Models\Users', 'penanda_tangan_id');
     }
+
+    public function penanda_tangan()
+    {
+        return $this->belongsTo('App\Models\MasterASN', 'penanda_tangan_id', 'id_mst_asn');
+    }
 }
