@@ -29,24 +29,30 @@ class LaporanSuratTugasController extends Controller
 		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
-			$paramTanggal = $request->paramTanggal;
-			if ($request->range == 'tanggal') {
-				$data = SuratTugas::where('tanggal_surat',$paramTanggal)
-				->orderBy('id_surat_perjalanan_dinas','desc')
-				->get();
-			}elseif ($request->range == 'bulan') {
-				$data = SuratTugas::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
-				->orderBy('id_surat_perjalanan_dinas','desc')
-				->get();
-			}elseif ($request->range == 'tahun') {
-				$data = SuratTugas::where('tanggal_surat',$paramTanggal)
-				->orderBy('id_surat_perjalanan_dinas','desc')
-				->get();
-			}else {
-				$data = SuratTugas::orderBy('id_surat_perjalanan_dinas','desc')->get();
+			// return $request->all();
+			// $paramTanggal = $request->paramTanggal;
+			// if ($request->range == 'tanggal') {
+			// 	$data = SuratTugas::where('tanggal_surat',$paramTanggal)
+			// 	->orderBy('id_surat_perjalanan_dinas','desc')
+			// 	->get();
+			// }elseif ($request->range == 'bulan') {
+			// 	$data = SuratTugas::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
+			// 	->orderBy('id_surat_perjalanan_dinas','desc')
+			// 	->get();
+			// }elseif ($request->range == 'tahun') {
+			// 	$data = SuratTugas::where('tanggal_surat',$paramTanggal)
+			// 	->orderBy('id_surat_perjalanan_dinas','desc')
+			// 	->get();
+			// }else {
+			// }
+			// return $request->all();
+			$data = SuratTugas::orderBy('id_surat_perjalanan_dinas','desc');
+			if(isset($request->dateStart) && isset($request->dateEnd)) {
+				$data = $data->whereDate('tanggal_surat',  '>=', $request->dateStart)->whereDate('tanggal_surat', '<=', $request->dateEnd);
 			}
+			// return $data;
 			return Datatables::of($data)
-				->addIndexColumn()
+				// ->addIndexColumn()
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showSuratTugas('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					if ($row->verifikasi_kaban == 'N') {
@@ -468,36 +474,45 @@ class LaporanSuratTugasController extends Controller
     }
 	public function excel(Request $request)
 	{
-			$date = date('Y-m-d');
+		// return $request->all();
+		$responses = SuratTugas::orderBy('id_surat_perjalanan_dinas','desc');
+			if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+				$responses = $responses->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+			}
+			// return $responses->get();
+			$data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
 			$data['judul'] = 'LAPORAN SURAT TUGAS';
-					$paramTanggal = $request->paramTanggal;
-					if ($request->range == 'tanggal') {
-						$data['periode'] = 'Tanggal '.$paramTanggal;
-						$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
-						->where('tanggal_surat',$paramTanggal)
-						->orderBy('id_surat_perjalanan_dinas','desc')
-						->get();
-					}elseif ($request->range == 'bulan'){
-						$data['periode'] = 'Bulan '.$paramTanggal;
-						$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
-						->where('tanggal_surat',$paramTanggal)
-						->orderBy('id_surat_perjalanan_dinas','desc')
-						->get();
-					}elseif ($request->range == 'tahun') {
-						$data['periode'] = 'Tahun '.$paramTanggal;
-						$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
-						->where('tanggal_surat',$paramTanggal)
-						->orderBy('id_surat_perjalanan_dinas','desc')
-						->get();
-					}else {
-						$data['lap'] = SuratTugas::with(['pegawai','tujuan'])->orderBy('id_surat_perjalanan_dinas','desc')->get();
-					}
-					// return $data['lap'];
+			$data['lap'] = $responses->get();
+		// return $query->get();
+		// 	$date = date('Y-m-d');
+		// 	$data['judul'] = 'LAPORAN SURAT TUGAS';
+		// 			$paramTanggal = $request->paramTanggal;
+		// 			if ($request->range == 'tanggal') {
+		// 				$data['periode'] = 'Tanggal '.$paramTanggal;
+		// 				$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
+		// 				->where('tanggal_surat',$paramTanggal)
+		// 				->orderBy('id_surat_perjalanan_dinas','desc')
+		// 				->get();
+		// 			}elseif ($request->range == 'bulan'){
+		// 				$data['periode'] = 'Bulan '.$paramTanggal;
+		// 				$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
+		// 				->where('tanggal_surat',$paramTanggal)myPdf
+		// 				->orderBy('id_surat_perjalanan_dinas','desc')
+		// 				->get();
+		// 			}elseif ($request->range == 'tahun') {
+		// 				$data['periode'] = 'Tahun '.$paramTanggal;
+		// 				$data['lap'] = SuratTugas::with(['pegawai','tujuan'])
+		// 				->where('tanggal_surat',$paramTanggal)
+		// 				->orderBy('id_surat_perjalanan_dinas','desc')
+		// 				->get();
+		// 			}else {
+		// 				$data['lap'] = SuratTugas::with(['pegawai','tujuan'])->orderBy('id_surat_perjalanan_dinas','desc')->get();
+		// 			}
+		// 			return $data['lap'];
 
 					
 
 			return Excel::download(new LaporanSuratTugas($data), "Laporan Surat Tugas " . $data['periode'] . '.xlsx');
-	return $data;
 		}
 
 }
