@@ -23,25 +23,29 @@ class LaporanSuratKeputusanController extends Controller
 		$this->data['submnActive'] = $this->submnActive;
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
-			$paramTanggal = $request->paramTanggal;
-			if ($request->range == 'tanggal') {
-				$data = SuratKeputusan::where('tanggal_surat',$paramTanggal)
-				->orderBy('id_surat_keputusan','desc')
-				->get();
-			}elseif ($request->range == 'bulan') {
-				$data = SuratKeputusan::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
-				->orderBy('id_surat_keputusan','desc')
-				->get();
-			}elseif ($request->range == 'tahun') {
-				$data = SuratKeputusan::whereYear('tanggal_surat',$paramTanggal)
-				->orderBy('id_surat_keputusan','desc')
-				->get();
-			}else {
-				$data = SuratKeputusan::orderBy('id_surat_keputusan','desc')->get();
+			// $paramTanggal = $request->paramTanggal;
+			// if ($request->range == 'tanggal') {
+			// 	$data = SuratKeputusan::where('tanggal_surat',$paramTanggal)
+			// 	->orderBy('id_surat_keputusan','desc')
+			// 	->get();
+			// }elseif ($request->range == 'bulan') {
+			// 	$data = SuratKeputusan::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
+			// 	->orderBy('id_surat_keputusan','desc')
+			// 	->get();
+			// }elseif ($request->range == 'tahun') {
+			// 	$data = SuratKeputusan::whereYear('tanggal_surat',$paramTanggal)
+			// 	->orderBy('id_surat_keputusan','desc')
+			// 	->get();
+			// }else {
+			// }
+
+			$data = SuratKeputusan::orderBy('id_surat_keputusan', 'desc');
+			if(isset($request->dateStart) && isset($request->dateEnd)) {
+				$data = $data->whereDate('tanggal_surat',  '>=', $request->dateStart)->whereDate('tanggal_surat', '<=', $request->dateEnd);
 			}
 			// $data = SuratKeputusan::with(['sifat','jenis','penerima'])->where('tanggal_terima_surat','like',date('Y-m-d').'%')->orderBy('id_surat_keputusan','desc')->get();
 			// $data = SuratKeputusan::onlyTrashed()->get();
-			return Datatables::of($data)
+			return Datatables::eloquent($data)
 			->addIndexColumn()
 			->make(true);;
 		}
@@ -50,7 +54,16 @@ class LaporanSuratKeputusanController extends Controller
 
 	public function excel(Request $request)
 	{
-			$date = date('Y-m-d');
+		// return $request->all();
+		$response = SuratKeputusan::orderBy('id_surat_keputusan', 'desc');
+			if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+				$response = $response->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+			}
+			$data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
+			$data['judul'] = 'LAPORAN SURAT KEPUTUSAN';
+			$data['lap'] = $response->get();
+			// return $data->get();
+			// $date = date('Y-m-d');
 			// if (!empty($request->tgl_awal)) {
 			// 		$data['tanggalAwal']  = date('Y-m-d', strtotime($request->tgl_awal));
 			// } else {
@@ -67,29 +80,27 @@ class LaporanSuratKeputusanController extends Controller
 			// $awal = date('d', strtotime($data['tanggalAwal'])) . '-' . Formatters::get_bulan(date('m', strtotime($data['tanggalAwal']))) . '-' . date('Y', strtotime($data['tanggalAwal']));
 			// $akhir = date('d', strtotime($data['tanggalAkhir'])) . '-' . Formatters::get_bulan(date('m', strtotime($data['tanggalAkhir']))) . '-' . date('Y', strtotime($data['tanggalAkhir']));
 			//
-			// $data['periodex'] = $awal . '_sampai_' . $akhir;
-			$data['judul'] = 'LAPORAN SURAT KEPUTUSAN';
 
-					$paramTanggal = $request->paramTanggal;
-					if ($request->range == 'tanggal') {
-						$data['periode'] = 'Tanggal '.$paramTanggal;
+			// 		$paramTanggal = $request->paramTanggal;
+			// 		if ($request->range == 'tanggal') {
+			// 			$data['periode'] = 'Tanggal '.$paramTanggal;
 
-						$data['lap'] = SuratKeputusan::where('tanggal_surat',$paramTanggal)
-						->orderBy('id_surat_keputusan','desc')
-						->get();
-					}elseif ($request->range == 'bulan'){
-					$data['periode'] = 'Bulan '.$paramTanggal;
-						$data['lap'] = SuratKeputusan::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
-						->orderBy('id_surat_keputusan','desc')
-						->get();
-					}elseif ($request->range == 'tahun') {
-						$data['periode'] = 'Tahun '.$paramTanggal;
-						$data['lap'] = SuratKeputusan::whereYear('tanggal_surat',$paramTanggal)
-						->orderBy('id_surat_keputusan','desc')
-						->get();
-					}else {
-						$data['lap'] = SuratKeputusan::orderBy('id_surat_keputusan','desc')->get();
-					}
+			// 			$data['lap'] = SuratKeputusan::where('tanggal_surat',$paramTanggal)
+			// 			->orderBy('id_surat_keputusan','desc')
+			// 			->get();
+			// 		}elseif ($request->range == 'bulan'){
+			// 		$data['periode'] = 'Bulan '.$paramTanggal;
+			// 			$data['lap'] = SuratKeputusan::where('tanggal_surat','LIKE','%'.$paramTanggal.'%')
+			// 			->orderBy('id_surat_keputusan','desc')
+			// 			->get();
+			// 		}elseif ($request->range == 'tahun') {
+			// 			$data['periode'] = 'Tahun '.$paramTanggal;
+			// 			$data['lap'] = SuratKeputusan::whereYear('tanggal_surat',$paramTanggal)
+			// 			->orderBy('id_surat_keputusan','desc')
+			// 			->get();
+			// 		}else {
+			// 			$data['lap'] = SuratKeputusan::orderBy('id_surat_keputusan','desc')->get();
+			// 		}
 
 					// return $data['lap'];
 			return Excel::download(new LaporanSuratKeputusan($data), "Laporan Surat Keputusan " . $data['periode'] . '.xlsx');
