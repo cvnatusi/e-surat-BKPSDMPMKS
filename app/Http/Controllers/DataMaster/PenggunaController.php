@@ -40,9 +40,11 @@ class PenggunaController extends Controller
 		try {
 			$data['data'] = (!empty($request->id)) ? Users::find($request->id) : "";
 			$data['data_asn'] = MasterASN::get();
+			$data['dataasn'] = '';
 			if (!empty($request->id)) {
 				$data['dataasn'] = MasterASN::where('users_id',$request->id)->first();
 			}
+
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content];
 		} catch (\Exception $e) {
@@ -52,6 +54,7 @@ class PenggunaController extends Controller
 	}
 	public function store(Request $request)
 	{
+        // return $request->all();
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -122,4 +125,5 @@ class PenggunaController extends Controller
 			return ['status'=>'error','message' => 'Data Gagal Dihapus','title' => 'Whoops'];
 		}
 	}
+
 }
