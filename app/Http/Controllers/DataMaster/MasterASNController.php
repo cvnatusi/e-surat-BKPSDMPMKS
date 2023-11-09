@@ -91,6 +91,7 @@ class MasterASNController extends Controller
 				$newdata->nip = $request->nip;
 				$newdata->jabatan = $request->jabatan;
 				$newdata->pangkat_golongan = $request->pangkat_golongan;
+				$newdata->eselon = $request->eselon;
 				$newdata->save();
 
 				DB::commit();
