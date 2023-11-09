@@ -67,7 +67,7 @@
                         <div class="col-lg-5 col-md-12 col-sm-12 text-column">
                             <img src="{{asset('assets_new/images/berakhlak-bangga-melayani-bangsa.png')}}" alt="" style="margin-bottom: 25px;">
                         </div>
-                        
+
                     </div>
                 </div>
                 <div class="row clearfix">
@@ -97,7 +97,7 @@
                                     <figure class="image p_relative d_block">
                                         <img src="{{asset('assets_new/images/esurat.png')}}" alt="">
                                     </figure>
-                                    <div class="flag p_absolute r_20 t_20 b_radius_50"><img src="{{asset('assets_new/images/menu-3.jpg')}}" alt=""></div>
+                                    <div class="flag p_absolute r_20 t_20 b_radius_50"><img src="{{asset('assets_new/images/gantengku.jpg')}}" alt=""></div>
                                 </div>
                                 <div class="lower-content p_relative d_block pt_25 pr_30 pb_20 pl_40">
                                     <h4 class="d_block fs_20 lh_30 mb_12"><a href="#" class="d_iblock black-color hov-color">e-Surat</a></h4>
@@ -105,6 +105,26 @@
                                     <div class="btn-box clearfix">
                                         <!-- <a target="_blank" href="http://103.131.17.23:3000/login" class="theme-btn btn-one">Buka Aplikasi</a> -->
                                         <a target="_blank" href="http:/develop/e-surat-BKPSDMPMKS/public/login" class="theme-btn btn-one">Buka Aplikasi</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-12 country-block">
+                        <div class="country-block-one wow fadeInUp animated" data-wow-delay="200ms" data-wow-duration="1500ms">
+                            <div class="inner-box p_relative d_block centred bg-white">
+                                <div class="image-box p_relative d_block">
+                                    <figure class="image p_relative d_block">
+                                        <img src="{{asset('assets_new/images/esurat.png')}}" alt="">
+                                    </figure>
+                                    <div class="flag p_absolute r_20 t_20 b_radius_50"><img src="{{asset('assets_new/images/gantengku.jpg')}}" alt=""></div>
+                                </div>
+                                <div class="lower-content p_relative d_block pt_25 pr_30 pb_20 pl_40">
+                                    <h4 class="d_block fs_20 lh_30 mb_12"><a href="#" class="d_iblock black-color hov-color">e-Pakon</a></h4>
+                                    <p class="mb_15 lh_30">Sistem Absensi Online</p>
+                                    <div class="btn-box clearfix">
+                                        <!-- <a target="_blank" href="http://103.131.17.23:3000/login" class="theme-btn btn-one">Buka Aplikasi</a> -->
+                                        <a target="_blank" href="http:/develop/siganteng-tenan/public/login" class="theme-btn btn-one">Buka Aplikasi</a>
                                     </div>
                                 </div>
                             </div>
