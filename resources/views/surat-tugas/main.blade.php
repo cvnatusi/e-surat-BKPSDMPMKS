@@ -1,4 +1,3 @@
-
 @extends('component.app')
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css">
@@ -39,7 +38,7 @@
             <td>NO SURAT</td>
             <td>TANGGAL SURAT</td>
             <td>TUJUAN</td>
-            <td style="width: 100%">PERIHAL</td>
+            <td>PERIHAL</td>
             <td>Verifikasi</td>
             <td>AKSI</td>
           </thead>
@@ -82,11 +81,6 @@
 		//initial run
 		loadTable(today , today);
 	});
-
-
-
-
-
 
   function loadTable(dateStart,dateEnd) {
     var table = $('#datagrid').DataTable({
@@ -262,6 +256,7 @@
    //   }
    // }
    function showSuratTugas(id) {
+    // console.log('jvasjhdwe');
      // $('.main-page').hide();
      $.post("{!! route('list-surat-tugas') !!}",{id:id}).done(function(data){
        if(data.status == 'success'){
