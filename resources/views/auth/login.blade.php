@@ -83,7 +83,7 @@
 											<div class="col-12">
 												<div class="d-grid">
 													{{-- <input onclick="login()" class="btn btn-primary"><i class="bx bxs-lock-open" id="btn-login"></i>Masuk --}}
-                          <input onclick="login()" class="btn btn-block btn-primary" type="button" style="margin-top: 10px" value="Sign In" id="btn-login">
+                          							<input onclick="login()" class="btn btn-block btn-primary" type="button" style="margin-top: 10px" value="Sign In" id="btn-login">
 												</div>
 											</div>
 										</form>
@@ -156,7 +156,7 @@
       }).done(function(data){
           $('.form-login').validate(data, 'has-error');
           if(data.status == 'success'){
-						swal('Selamat Datang !', data.message, 'success');
+			swal('Selamat Datang !', data.message, 'success');
             window.location.replace("{!! url($data['next_url']) !!}");
           } else if(data.status == 'error') {
               $('#btn-login').html('Login').removeAttr('disabled');
