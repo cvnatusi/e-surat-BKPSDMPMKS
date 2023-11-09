@@ -17,6 +17,13 @@ class MasterASN extends Model
   public $timestamps = true;
   protected $dates = ['deleted_at'];
 
+  // public function tr_surat_perjalanan_dinas()
+  // {
+  //   return $this->HasMany('App\Models\SuratTugas', 'id_mst_asn');
+  // }
+	// public function getIdMstAsnAttribute($value){
+	// 	return (int)$value;
+	// }
   public function jabatan_asn()
   {
     return $this->belongsTo('App\Models\Jabatan', 'jabatan');
@@ -27,5 +34,10 @@ class MasterASN extends Model
   public function users()
   {
       return $this->belongsTo('App\Models\Users', 'users_id');
+  }
+
+  public function ttd_surat()
+  {
+    return $this->hasMany(PenandaTanganSurat::class, 'pengguna_id');
   }
 }
