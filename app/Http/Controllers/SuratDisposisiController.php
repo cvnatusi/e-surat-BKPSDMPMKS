@@ -154,6 +154,8 @@ class SuratDisposisiController extends Controller
 				->setPaper([0, 0, 609.4488, 935.433], 'portrait');
 			Storage::put('public/surat-disposisi/'.$file_name_asli_surat_disposisi, $pdf->output());
 
+			// $data['qr'] = base64_encode(QrCode::format('png')->size(200)->merge('/public/assets/images/logo-icon.png', .4)->errorCorrection('H')->generate($ttd));
+
 			$update = SuratDisposisi::find($newdata->id_surat_disposisi);
 			$update->file_disposisi = $file_name_asli_surat_disposisi;
 			$update->save();
