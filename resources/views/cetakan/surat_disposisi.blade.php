@@ -165,9 +165,12 @@
           <table  border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <tbody>
               <tr>
-                <td width="42%">&nbsp;<b>Sekretaris</b></td>
+                <td width="42%">
+                  <label for="checklist">&nbsp;<b>Sekretaris</b></label>
+                </td>
                 <td width="5%">
-                  @if ($penerima->jabatan == 2)
+                  {{-- @if ($penerima->jabatan == 2) --}}
+                  @if ($penerima->jabatan == 1)
                     <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
                   @endif
                 </td>
@@ -244,13 +247,13 @@
                 </td>
               </tr>
               <tr>
-                <td height="180" colspan="3" style="vertical-align:top">
+                <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN PIMPINAN</b></p>
                   <p></p>
                 </td>
               </tr>
               <tr>
-                <td height="180" colspan="3" style="vertical-align:top">
+                <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
                   <p></p>
                 </td>
@@ -262,12 +265,13 @@
               <tr>
                 <td> 
                     <img id='barcode' 
-                    src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100" 
+                    {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
+                    src="{{asset('gambar/QR.png')}}"
                     alt="" 
                     title="" 
-                    width="40" 
-                    height="40" onblur='generateBarCode();' />
-                    <label>CREATED BY : BKPSDM PAMEKASAN</label>
+                    width="105" 
+                    height="105" onblur='generateBarCode();' />
+                    {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
                 </td>
               </tr>
             </thead>
