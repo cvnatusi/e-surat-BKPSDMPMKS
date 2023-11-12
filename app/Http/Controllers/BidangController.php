@@ -22,16 +22,12 @@ class BidangController extends Controller
                 	$text = MasterASN::where('id_mst_asn', $row->mst_asn_id)->first()->nama_asn;
                     return $text;
                 })
-                ->addColumn('check', function($row){
-					$btn = '<input class="form-check-input" id="check_('.$row->id_bidang.')" name="check[]" value="'.$row->id_bidang.'" type="checkbox"></a>';
-					return $btn;
-				})
                 ->addColumn('action', function($row){
                    $btn = '<a href="javascript:void(0)" class="btn btn-primary btn-sm" onclick="editData('.$row->id_bidang.')"><i class="bx bx-pencil me-0"></i></a>';
                    $btn = $btn.' <a href="javascript:void(0)" class="btn btn-danger btn-sm" onclick="deleteData('.$row->id_bidang.')"><i class="bx bx-trash me-0"></i></a>';
                    return $btn;
                 })
-                ->rawColumns(['action','check'])
+                ->rawColumns(['action'])
                 ->make(true);
         }
         $this->data['title'] = $this->title;
@@ -41,9 +37,15 @@ class BidangController extends Controller
 		$this->data['asn'] = MasterASN::where('status_aktif', 'Y')->get();
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
     }
+
 	public function edit(Request $request){
-		return $request->get('id');
+		// return $request->all();
+        $bidang = Bidang::leftJoin('mst_asn as ma', 'ma.id_mst_asn', 'bidang.mst_asn_id')
+            ->where('id_bidang', $request->id)->first();
+
+        return $bidang;
 	}
+	
     public function store(Request $request)
     {
     	try {
@@ -63,8 +65,18 @@ class BidangController extends Controller
 	    	}
     	} catch (Exception $e) {
     		$return = ['status'=>'error', 'code'=>'500', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
-				return response()->json($return);
+			return response()->json($return);
     	}
-    	
+    }
+
+    public function destroy(Request $request)
+    {
+        $do_delete = Bidang::find($request->id_bidang);
+		if(!empty($do_delete)){
+			$do_delete->delete();
+			return ['status' => 'success','message' => 'Anda Berhasil Menghapus Data','title' => 'Success'];
+		}else{
+			return ['status'=>'error','message' => 'Data Gagal Dihapus','title' => 'Whoops'];
+		}
     }
 }
