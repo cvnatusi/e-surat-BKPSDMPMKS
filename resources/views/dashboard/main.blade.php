@@ -23,6 +23,38 @@
 </style>
 @endsection
 @section('content')
+<h6 class="mb-0 text-uppercase">{{ $data['title'] }}</h6>
+<hr>
+<div class="card main-page">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-12">
+                <label for="">Pilih Tahun</label>
+                <input type="month" id="filterMonth" class="form-control" value="{{date('Y-m')}}">
+            </div>
+        </div>
+        <div class="clearfix" style="margin-bottom:10px"></div>
+        <figure class="highcharts-figure">
+          <div id="container"></div>
+          <div id="sliders">
+            <table style="display:none">
+              <tr>
+                <td><label for="alpha">Alpha Angle</label></td>
+                <td><input id="alpha" type="range" min="0" max="45" value="0"/> <span id="alpha-value" class="value"></span></td>
+              </tr>
+              <tr>
+                <td><label for="beta">Beta Angle</label></td>
+                <td><input id="beta" type="range" min="-45" max="45" value="0"/> <span id="beta-value" class="value"></span></td>
+              </tr>
+              <tr>
+                <td><label for="depth">Depth</label></td>
+                <td><input id="depth" type="range" min="20" max="100" value="20"/> <span id="depth-value" class="value"></span></td>
+              </tr>
+            </table>
+          </div>
+        </figure>
+      </div>
+</div>
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4" style="display:none">
     <div class="col">
         <h3>SURAT MASUK</h3>
@@ -177,7 +209,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+{{-- <div class="row">
     <div class="card">
       <div class="card-header">
         <h2>Dashboard</h2>
@@ -210,7 +242,7 @@
           </figure>
         </div>
     </div>
-</div>
+</div> --}}
 @endsection
 @section('js')
 <script type="text/javascript">
@@ -274,6 +306,205 @@
 
 </script>
 <script type="text/javascript">
+var month = $('#filterMonth').val();
+var options = {month: 'long', year: 'numeric' };
+var today  = new Date(month);
+$(function() {
+  var param = $('#filterMonth').val();
+  $.post("{!! route('getChart') !!}", {
+      id: param
+  }).done(function(data) {
+    console.log(data);
+    // const chart = new Highcharts.Chart({
+    //   chart: {
+    //     renderTo: 'container',
+    //     type: 'column',
+    //     options3d: {
+    //       enabled: true,
+    //       alpha: 0,
+    //       beta: 0,
+    //       depth: 20,
+    //       viewDistance: 25
+    //     }
+    //   },
+    //   xAxis: {
+    //     categories: ['Surat Masuk', 'Surat Keluar', 'Surat Disposisi', 'Surat Tugas', 'Surat SPPD', 'Surat Keputusan',
+    //     'Surat BAST', 'Surat TTE']
+    //   },
+    //   yAxis: {
+    //     title: {
+    //       enabled: false
+    //     }
+    //   },
+    //   tooltip: {
+    //     headerFormat: '<b>{point.key}</b><br>',
+    //     pointFormat: 'Jumlah Surat: {point.y}'
+    //   },
+    //   title: {
+    //     text: 'Grafik Surat',
+    //     align: 'center'
+    //   },
+    //   subtitle: {
+    //     text: 'Bulan: '+today.toLocaleDateString("id-ID", options),
+    //     align: 'center'
+    //   },
+    //   legend: {
+    //     enabled: false
+    //   },
+    //   plotOptions: {
+    //     column: {
+    //       depth: 25
+    //     }
+    //   },
+    //   series: [{
+    //     data: [data.surat_masuk, data.surat_keluar, data.surat_disposisi, data.surat_tugas, data.surat_sppd, data.surat_keputusan, data.surat_bast, data.surat_tte],
+    //     colorByPoint: true
+    //   }]
+    // });
+    Highcharts.chart('container', {
+    chart: {
+        plotBackgroundColor: null,
+        plotBorderWidth: null,
+        plotShadow: false,
+        type: 'pie'
+    },
+    title: {
+        text: 'Grafik Bulan: '+today.toLocaleDateString("id-ID", options),
+        align: 'left'
+    },
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.0f} Surat</b>'
+    },
+    accessibility: {
+        point: {
+            valueSuffix: 'Surat'
+        }
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: true,
+                format: '<b>{point.name}</b>: {point.percentage:.0f} Surat'
+            }
+        }
+    },
+    series: [{
+        name: 'Surat',
+        colorByPoint: true,
+        data: [{
+            name: 'Surat Masuk',
+            y: data.surat_masuk,
+            sliced: true,
+            selected: true
+        }, {
+            name: 'Surat Keluar',
+            y: data.surat_keluar
+        },  {
+            name: 'Surat Disposisi',
+            y: data.surat_disposisi
+        }, {
+            name: 'Surat Tugas',
+            y: data.surat_tugas
+        }, {
+            name: 'Surat SPPD',
+            y: data.surat_sppd
+        },  {
+            name: 'Surat Keputusan',
+            y: data.surat_keputusan
+        }, {
+            name: 'Surat BAST',
+            y: data.surat_bast
+        }, {
+            name: 'SURAT TTE',
+            y: data.surat_tte
+        }]
+    }]
+});
+
+
+
+
+
+
+
+  });
+});
+$('#filterMonth').change(function(e) {
+    var param = $('#filterMonth').val();
+    var options = {month: 'long', year: 'numeric' };
+    var today  = new Date(param);
+    $.post("{!! route('getChart') !!}", {
+        id: param
+    }).done(function(data) {
+      Highcharts.chart('container', {
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          type: 'pie'
+      },
+      title: {
+          text: 'Grafik Bulan: '+today.toLocaleDateString("id-ID", options),
+          align: 'left'
+      },
+      tooltip: {
+          pointFormat: '{series.name}: <b>{point.percentage:.0f} Surat</b>'
+      },
+      accessibility: {
+          point: {
+              valueSuffix: 'Surat'
+          }
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.0f} Surat'
+              }
+          }
+      },
+      series: [{
+          name: 'Surat',
+          colorByPoint: true,
+          data: [{
+              name: 'Surat Masuk',
+              y: data.surat_masuk,
+              sliced: true,
+              selected: true
+          }, {
+              name: 'Surat Keluar',
+              y: data.surat_keluar
+          },  {
+              name: 'Surat Disposisi',
+              y: data.surat_disposisi
+          }, {
+              name: 'Surat Tugas',
+              y: data.surat_tugas
+          }, {
+              name: 'Surat SPPD',
+              y: data.surat_sppd
+          },  {
+              name: 'Surat Keputusan',
+              y: data.surat_keputusan
+          }, {
+              name: 'Surat BAST',
+              y: data.surat_bast
+          }, {
+              name: 'SURAT TTE',
+              y: data.surat_tte
+          }]
+      }]
+  });
+    });
+});
+</script>
+
+
+{{-- <script type="text/javascript">
 var month = $('#filterMonth').val();
 var options = {month: 'long', year: 'numeric' };
 var today  = new Date(month);
@@ -387,5 +618,5 @@ $('#filterMonth').change(function(e) {
       });
     });
 });
-</script>
+</script> --}}
 @endsection
