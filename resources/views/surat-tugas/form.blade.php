@@ -5,7 +5,7 @@
         <div class="card-title d-flex align-items-center">
           <div><i class="bx bx-envelope me-1 font-22 text-primary"></i>
           </div>
-          <h5 class="mb-0 text-primary">Tambah Surat Tugas</h5>
+          <h5 class="mb-0 text-primary">@if($data) Edit @else Tambah @endif Surat Tugas</h5>
         </div>
         <hr>
         <form class="row g-3 form-save">
@@ -90,7 +90,7 @@
             <div class="row">
               <div class="panelTujuanBertugas">
                 <div class="col-md-12">
-                  <label for="alat_angkut" class="form-label">Detail Perjananan Bertugas *</label>
+                  <label for="alat_angkut" class="form-label">Detail Perjalanan Bertugas *</label>
                   <hr>
                   <table class="table mb-0" width="100%" id="table_tujuan_bertugas">
                     <thead>
@@ -141,7 +141,7 @@
                 <button type="button" class="btn btn-info px-3">Preview</button>
               </div>
               <div class="col-md-4">
-                <button type="button" class="btn btn-primary px-4 btn-submit">Simpan</button>
+                <button type="button"  class="btn btn-primary px-4 btn-submit">Simpan</button>
               </div>
             </div>
           </div>
@@ -158,7 +158,7 @@
           <h5 class="mb-0 text-primary">Preview Surat Tugas</h5>
         </div>
         <hr>
-        <form class="row g-3 form-save">
+        <form class="row g-3 form-save" style="height: 920px">
           <div class="col-md-12 panelPreview" id="panelPreview">
             @if (!empty($file_tugas[0]->file_surat_tugas))
               <iframe  width="100%" height="850px" src="{{asset('storage/surat-tugas/'.$file_tugas[0]->file_surat_tugas)}}"></iframe>
@@ -512,21 +512,21 @@ $(document).on('click', '.btn_remove_tujuan', function(){
 
  $('.btn-preview').click(function(){
    kosong();
-   // var data  = new FormData($('.form-save')[0]);
-   // array_tujuan.forEach(element => {
-   //   data.append("tujuan[]",element);
-   // });
-   // $.ajax({
-   //     url: "@{{ route('previewST') }}",
-   //     type: 'GET',
-   //     data: data,
-   //     async: true,
-   //     cache: false,
-   //     contentType: false,
-   //     processData: false
-   // }).done(function(data){
-   //   console.log(data);
-   // });
+   var data  = new FormData($('.form-save')[0]);
+   array_tujuan.forEach(element => {
+     data.append("tujuan[]",element);
+   });
+   $.ajax({
+       url: "@{{ route('previewST') }}",
+       type: 'GET',
+       data: data,
+       async: true,
+       cache: false,
+       contentType: false,
+       processData: false
+   }).done(function(data){
+     console.log(data);
+   });
  });
  $('#tanggal_mulai').change(function(){
    var tanggal_mulai = $('#tanggal_mulai').val();
@@ -552,5 +552,60 @@ $(document).on('click', '.btn_remove_tujuan', function(){
      "min" : tanggal_mulai          // values (or variables) here
    });
  });
+
+//  Ketika buat surat tugas otomatis buat SPPD
+function buatSPPD(id, surat_tugas_id) {
+  // console.log(id, surat_tugas_id)
+  $.post("{!! route('buatSPPD') !!}",{id:id, surat_tugas_id:surat_tugas_id}).done(function(data){
+    if(data.status == 'success'){
+      Lobibox.notify('success', {
+        pauseDelayOnHover: true,
+        size: 'mini',
+        rounded: true,
+        delayIndicator: false,
+        icon: 'bx bx-check-circle',
+        continueDelayOnInactiveTab: false,
+        position: 'top right',
+        sound:false,
+        msg: data.message
+      });
+        $('#modal-list-surat-tugas').modal('hide');
+        $('.modal-list-surat-tugas').html('');
+        
+    } else if(data.status == 'error') {
+        $('.btn-submit').html('Simpan <i class="fa fa-save fs-14 m-l-5"></i>').removeAttr('disabled');
+        Lobibox.notify('error', {
+          pauseDelayOnHover: true,
+          size: 'mini',
+          rounded: true,
+          delayIndicator: false,
+          icon: 'bx bx-x-circle',
+          continueDelayOnInactiveTab: false,
+          position: 'top right',
+          sound:false,
+          msg: data.message
+        });
+        swal('Error :'+data.errMsg.errorInfo[0], data.errMsg.errorInfo[2], 'warning');
+    } else {
+        var n = 0;
+        for(key in data){
+        if (n == 0) {var dt0 = key;}
+        n++;
+        }
+        $('.btn-submit').html('Simpan <i class="fa fa-save fs-14 m-l-5"></i>').removeAttr('disabled');
+        Lobibox.notify('warning', {
+          pauseDelayOnHover: true,
+          size: 'mini',
+          rounded: true,
+          delayIndicator: false,
+          icon: 'bx bx-error',
+          continueDelayOnInactiveTab: false,
+          position: 'top right',
+          sound:false,
+          msg: data.message
+        });
+    }
+  });
+}
  
 </script>
