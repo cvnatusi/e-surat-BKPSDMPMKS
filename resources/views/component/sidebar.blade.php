@@ -81,6 +81,9 @@
         <li class="{{ $data['submnActive'] == 'pengguna' ? 'mm-active' : '' }}">
           <a href="{{ route('pengguna') }}"><i class="bx bx-right-arrow-alt"></i>Data Pengguna</a>
         </li>
+        <!-- <li class="#">
+          <a href="#"><i class="bx bx-right-arrow-alt"></i>Data Penanda Tangan</a>
+        </li> -->
       @endif
       <li class="{{ $data['submnActive'] == 'instansi' ? 'mm-active' : '' }}">
         <a href="{{ route('instansi') }}"><i class="bx bx-right-arrow-alt"></i>Data Instansi</a>
@@ -99,6 +102,9 @@
       </li>
       <li class="{{ $data['submnActive'] == 'sifat-surat' ? 'mm-active' : '' }}">
         <a href="{{ route('sifat-surat') }}"><i class="bx bx-right-arrow-alt"></i>Data Sifat Surat</a>
+      </li>
+      <li class="{{ $data['submnActive'] == 'penanda-tangan-surat' ? 'mm-active' : '' }}">
+        <a href="{{ route('penandaTanganSurat') }}"><i class="bx bx-right-arrow-alt"></i>Penanda Tangan Surat</a>
       </li>
     </ul>
   </li>
