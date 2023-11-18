@@ -5,11 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Models\TAPMAN\Pegawai;
 use App\Models\TAPMAN\UsersAndroid;
 use App\Models\TAPMAN\Absensi;
+use App\Models\TAPMAN\Roster;
+use App\Models\TAPMAN\MasterShift;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Controller;
 use Validator,Hash,DB;
+
+class ObjectEmpty{};
 
 class AbsensiController extends Controller
 {
@@ -36,17 +40,22 @@ class AbsensiController extends Controller
       return Controller::custom_response(500, "error", $e->getMessage(), '');
     }
   }
-  public function list_absen(Request $request)
+  public function index(Request $request)
   {
     try {
-      $cekAbsen = Absensi::where('nip', $request->nip)->where('date_shift', $request->date_shift)->first();
+      if (!empty($request->date_shift)) {
+        $date = date('Y-m-d',strtotime($request->date_shift));
+      }else {
+        $date = date('Y-m-d');
+      }
+      $cekAbsen = Absensi::where('userid', $request->nip)->where('date_shift', $request->date_shift)->first();
       if (!empty($cekAbsen)) {
         return Controller::custom_response(200, "success", 'Ok!', $cekAbsen);
       }else {
-        return Controller::custom_response(201, "error", 'Anda Belum Melakukan Absensi!', '');
+        return Controller::custom_response(201, "error", 'Anda Belum Melakukan Absensi!', New ObjectEmpty());
       }
     } catch (\Throwable $e) {
-      return Controller::custom_response(500, "error", $e->getMessage(), '');
+      return Controller::custom_response(500, "error", $e->getMessage(), []);
     }
   }
 
@@ -54,20 +63,20 @@ class AbsensiController extends Controller
   // {
   //   try {
   //     DB::beginTransaction();
-  //     $cekAbsen = Absensi::where('nip', $request->nip)
+  //     $cekAbsen = Absensi::where('userid', $request->nip)
   //                         ->where('date_shift', $request->date_shift)
   //                         ->first();
   //     if (empty($cekAbsen)) {
   //       $insert_absen = New Absensi;
-  //       $insert_absen->nip = $request->nip;
+  //       $insert_absen->userid = $request->nip;
   //       $insert_absen->date_shift = $request->date_shift;
-  //       $insert_absen->jam_mulai_shift = $request->jam_mulai_shift;
-  //       $insert_absen->jam_akhir_shift = $request->jam_akhir_shift;
+  //       $insert_absen->shift_in = $request->jam_mulai_shift;
+  //       $insert_absen->shift_out = $request->jam_akhir_shift;
   //       $insert_absen->tanggal_masuk = $request->tanggal_masuk;
   //       $insert_absen->jam_masuk = $request->jam_masuk;
   //       $insert_absen->latitude_masuk = $request->latitude_masuk;
   //       $insert_absen->longitude_masuk = $request->longitude_masuk;
-  //       $insert_absen->absensi_id_tapman = $request->absensi_id_tapman; // ganti nanti kalau sudah konek sama tapman
+  //       // $insert_absen->absensi_id_tapman = $request->absensi_id_tapman; // ganti nanti kalau sudah konek sama tapman
   //       $insert_absen->save();
   //       DB::commit();
   //       return Controller::custom_response(200, "success", 'Berhasil Absen Masuk!', $insert_absen);
@@ -101,12 +110,70 @@ class AbsensiController extends Controller
   {
     DB::beginTransaction();
     try {
-      $cekAbsen = Absensi::where('nip', $request->nip)
-                          ->where('date_shift', $request->date_shift)
-                          ->first();
-    } catch (\Exception $e) {
+      $cekPegawai = Pegawai::where('userid', $request->nip)->first();
+      $cekRoster = Roster::where('userid', $request->nip)->where('rosterdate',date('Y-m-d'))->first();
+      if (!empty($cekRoster)) {
+        $cekShift = MasterShift::where('code_shift',$cekRoster->absence)->first();
+        $cekAbsen = Absensi::where('userid', $cekPegawai->userid)->whereDate('date_shift', $cekRoster->rosterdate)->first();
+        if (empty($cekAbsen)) {
+          if ($cekRoster <= $request->check_in) {
+            return Controller::custom_response(201, "error", 'Jam Check In Kurang Dari Jam Shift', New ObjectEmpty());
+          }
+          $insert_absen = New Absensi;
+          $insert_absen->userid = $request->nip;
+          $insert_absen->date_shift = $cekRoster->rosterdate;
+          $insert_absen->shift_in = $cekShift->start_in;
+          $insert_absen->shift_out = $cekShift->start_out;
+          $insert_absen->date_in = $request->date_in;
+          $insert_absen->check_in = $request->check_in;
+          $insert_absen->latitude_masuk = $request->latitude_masuk;
+          $insert_absen->longitude_masuk = $request->longitude_masuk;
+          $insert_absen->save();
+          DB::commit();
+          return Controller::custom_response(200, "success", 'Berhasil Absen Masuk!', $insert_absen);
+        }else {
+          $update_absen = $cekAbsen;
+          $update_absen->date_out = $request->date_out;
+          $update_absen->check_out = $request->check_out ?? date('H:i:s');
+          $update_absen->latitude_keluar = $request->latitude_keluar;
+          $update_absen->longitude_keluar = $request->longitude_keluar;
+          $update_absen->save();
+          if ($update_absen) {
+            DB::commit();
+            return Controller::custom_response(200, "success", 'Berhasil Absen Keluar!', $update_absen);
+          }
+        }
+      }else {
+        return Controller::custom_response(201, "error", 'Jadwal Tidak Tersedia', '');
+      }
+      $cekAbsen = Absensi::where('userid', $request->nip)->first();
+    } catch (\Throwable $e) {
+        DB::rollback();
+        return Controller::custom_response(500, "error", $e->getMessage(), '');
+      }
+  }
 
+  public function list_absen(Request $request)
+  {
+    try {
+      if (!empty($request->date)) {
+        $month = date('m',strtotime($request->date));
+        $year = date('Y',strtotime($request->date));
+      }else {
+        $month = date('m');
+        $year = date('Y');
+      }
+      $cekAbsen = Absensi::where('userid', $request->nip)
+      ->whereMonth('date_shift', $month)
+      ->whereYear('date_shift', $year)
+      ->get();
+      if (count($cekAbsen) > 0) {
+        return Controller::custom_response(200, "success", 'Ok!', $cekAbsen);
+      }else {
+        return Controller::custom_response(201, "error", 'Tidak Ada Absensi!', []);
+      }
+    } catch (\Throwable $e) {
+      return Controller::custom_response(500, "error", $e->getMessage(), '');
     }
-
   }
 }
