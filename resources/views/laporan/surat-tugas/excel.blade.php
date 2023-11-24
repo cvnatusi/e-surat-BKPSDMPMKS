@@ -37,12 +37,18 @@
                 array_push($arrTjn,ucwords($k['tempat_tujuan_bertugas']));
               }
               $dataTempat= implode(",",$arrTjn);
+              $asn_id = explode(",",$item->asn_id);
+              $resNamaPetugas = [];
+              foreach ($asn_id as $key => $value) {
+                $petugas = DB::table('mst_asn')->where('id_mst_asn', $value)->first();
+                array_push($resNamaPetugas, $petugas->nama_asn);
+              }
             @endphp
           @endforeach
           <tr>
             <td style="padding: 5px;" align="center" valign="middle">{{$key+1}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->nomor_surat_perjalanan_dinas)}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->pegawai->nama_asn)}}</td>
+            <td style="padding: 5px;" align="center" valign="middle">{{ucwords(implode(",",$resNamaPetugas))}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->tanggal_mulai)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->tanggal_akhir)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{$dataTempat}}</td>

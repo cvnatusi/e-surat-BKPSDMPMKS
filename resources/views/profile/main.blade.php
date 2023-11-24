@@ -4,7 +4,7 @@
 @endsection
 @section('content')
 <div class="card border-top border-0 border-4 border-primary panel-form">
-  <div class="card-body p-5">
+  <div class="card-body">
     <div class="card-title d-flex align-items-center">
       <div><i class="bx bx-cog me-1 font-22 text-primary"></i>
       </div>
@@ -32,7 +32,7 @@
 
       <div class="col-md-8">
         <label for="nip" class="form-label">PASSWORD</label>
-        <input type="password" name="password" id="password"class="form-control" maxlength="8" value="" placeholder="Masukkan Password Baru">
+        <input type="password" name="password" id="password"class="form-control" value="" placeholder="Masukkan Password Baru">
         <br>
         <input type="checkbox" onclick="myFunction()"> Tampilkan Password
 

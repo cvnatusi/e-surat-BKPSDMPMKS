@@ -44,6 +44,7 @@ class InstansiController extends Controller
 			$data['data'] = (!empty($request->id)) ? Instansi::find($request->id) : "";
 			$data['provinsi'] = Provinsi::get();
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
+			// return $data;
 			return ['status' => 'success', 'content' => $content];
 		} catch (\Exception $e) {
 			return ['status' => 'error', 'content' => '','errMsg'=>$e];

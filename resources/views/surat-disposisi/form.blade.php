@@ -1,5 +1,5 @@
 <div class="card border-top border-0 border-4 border-primary panel-form">
-  <div class="card-body p-5">
+  <div class="card-body">
     <div class="card-title d-flex align-items-center">
       <div><i class="bx bx-envelope me-1 font-22 text-primary"></i>
       </div>

@@ -65,9 +65,9 @@
           <td style="text-align:center">2.</td>
           <td>&nbsp;Nama/NIP Pegawai yang diperintahkan</td>
           <td>
-            {{$data->pegawai->nama_asn}}
+            {{$pegawai->nama_asn}}
             <br>
-            NIP. {{$data->pegawai->nip}}
+            NIP. {{$pegawai->nip}}
           </td>
         </tr>
         <tr>
@@ -81,9 +81,9 @@
           </td>
           <td>
             <ol type="a">
-              <li>{{$data->pegawai->pangkat_golongan}}</li>
-              <li>{{$data->pegawai->jabatan_asn->nama_jabatan}}</li>
-              <li>{{$data->pegawai->eselon ?? 'Staf'}}</li>
+              <li>{{$asn->pangkat_golongan}}</li>
+              <li>{{$asn->jabatan_asn->nama_jabatan}}</li>
+              <li>{{$asn->eselon ?? 'Staf'}}</li>
             </ol>
           </td>
         </tr>

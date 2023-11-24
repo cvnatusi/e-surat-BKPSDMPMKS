@@ -5,7 +5,6 @@
 @section('content')
     <h6 class="mb-0 text-uppercase">{{ $data['title'] }}</h6>
     <hr>
-
     <div class="card main-page">
         <div class="card-body">
             {{-- filter tanggal --}}
@@ -14,9 +13,9 @@
                     <div class="col-md-2">
                         <label class="form-label">Tambah Disposisi</label>
                         <button type="button" class="btn btn-primary btn-add form-control"><i
-                                class="bx bx-plus me-1"></i>Disposisi Baru</button>
+                                class="bx bx-plus me-1"></i>Buat Baru</button>
                     </div>
-                    <div class="col-md-3"></div>
+                    <div class="col-md-4"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal">
@@ -36,7 +35,7 @@
                     <thead>
                         <td>NO</td>
                         <td>NO AGENDA</td>
-                        <td>NO SURAT</td>
+                        {{-- <td>NO SURAT</td> --}}
                         <td>PERIHAL SURAT</td>
                         <td>PEMBERI DISPOSISI</td>
                         <td>PENERIMA DISPOSISI</td>
@@ -76,7 +75,10 @@
             if (day < 10) day = "0" + day;
 
             var today = year + "-" + month + "-" + day;
-            var today1 = year + "-" + month + "-" + day1;
+            // var today1 = year + "-" + month + "-" + day1;
+            var today1 = year + "-" + month + "-" + day;
+            console.log(today)
+            console.log(today1)
             $("#min").attr("value", today);
             $("#max").attr("value", today1);
 
@@ -122,13 +124,13 @@
                     //     return '<p style="color:black">' + data + '</p>';
                     //   }
                     // },
-                    {
-                        data: 'surat_masuk_id.nomor_surat_masuk',
-                        name: 'surat_masuk_id.nomor_surat_masuk',
-                        render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
-                        }
-                    },
+                    // {
+                    //     data: 'surat_masuk_id.nomor_surat_masuk',
+                    //     name: 'surat_masuk_id.nomor_surat_masuk',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
                         data: 'surat_masuk_id.perihal_surat',
                         name: 'surat_masuk_id.perihal_surat',
@@ -220,7 +222,7 @@
 
         function deleteForm(id) {
             swal({
-                title: "Apakah Anda yakin akan menghapus data ini ?",
+                title: "Apakah anda yakin?",
                 text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
                 type: "warning",
                 showCancelButton: true,

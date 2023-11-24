@@ -1,9 +1,9 @@
 <div class="card border-top border-0 border-4 border-primary panel-form">
-  <div class="card-body p-5">
+  <div class="card-body">
     <div class="card-title d-flex align-items-center">
       <div><i class="bx bx-envelope me-1 font-22 text-primary"></i>
       </div>
-      <h5 class="mb-0 text-primary">Tambah Surat Keputusan</h5>
+      <h5 class="mb-0 text-primary">@if($data) Edit @else Tambah @endif Surat Keputusan</h5>
     </div>
     <hr>
     <form class="row g-3 form-save">
@@ -77,7 +77,7 @@ $('.btn-cancel').click(function(e){
 $('.btn-submit').click(function(e){
  e.preventDefault();
     // $('.btn-submit').html('Please wait...').attr('disabled', true);
-    $('.btn-submit').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...').attr('disabled', true);
+    $('.btn-submit');
     var data  = new FormData($('.form-save')[0]);
     $.ajax({
         url: "{{ route('store-surat-keputusan') }}",

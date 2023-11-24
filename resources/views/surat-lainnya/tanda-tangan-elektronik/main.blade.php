@@ -1,4 +1,3 @@
-
 @extends('component.app')
 @section('css')
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css">
@@ -11,7 +10,7 @@
       <div class="row">
         <div class="col-md-2 mb-3" >
           <label class="form-label">Tambah</label>
-          <button type="button" class="btn btn-primary px-5 btn-add form-control"><i class="bx bx-plus me-1"></i>Tambah</button>
+          <button type="button" class="btn btn-primary btn-add form-control"><i class="bx bx-plus me-1"></i>Tambah</button>
         </div>
         <div class="col-md-4"></div>
         <div class="col-md-3 mb-3">
@@ -34,7 +33,6 @@
           <label class="form-label">Tahun</label>
           <input id="tahun" type="text" class="form-control datepickertahun" onchange="change(this)" readonly="readonly" >
         </div>
-       
       </div>
     </div>
   </div>
@@ -79,7 +77,7 @@
       defaultDate: "{{date('Y')}}"
     }
   );
-  
+
   function load_data(rangeBy, date) { 
     var table = $('#datagrid').DataTable({
       processing: true,
@@ -118,8 +116,10 @@
         }
       },
       {
-        data: 'users.name',
-        name: 'users.name',
+        // data: 'users.name',
+        // name: 'users.name',
+        name: 'penanda_tangan.nama_asn',
+        data: 'penanda_tangan.nama_asn',
         render: function(data, type, row) {
           return '<p style="color:black">' + data + '</p>';
         }
@@ -294,7 +294,7 @@
        title: "Verifikasi TTE!",
        text: "Masukkan Passphrase :",
        input: 'password',
-       showCancelButton: true
+      //  showCancelButton: true
      }).then((result) => {
        if (result.value) {
          // console.log("Result: " + result.value);

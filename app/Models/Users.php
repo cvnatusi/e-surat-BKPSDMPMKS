@@ -26,4 +26,14 @@ class Users extends Authenticatable
         'password', 'remember_token',
     ];
     protected $guard_name = 'web';
+
+    public function penanda_tangan_surat()
+    {
+        return $this->hasMany(PenandaTanganSurat::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(Users::class,  'name');
+    }
 }

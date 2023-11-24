@@ -48,6 +48,7 @@
         </div>
         <div>
           <h4 class="logo-text">BKPSDM</h4>
+          <h4 class="text" style="font-size: 13px; margin-left: 11px; color: #0d6efd; ">Pamekasan</h4>
         </div>
         <div class="toggle-icon ms-auto"><i class='bx bx-arrow-to-left'></i>
         </div>
@@ -178,6 +179,7 @@
   <!--end switcher-->
   <!-- Bootstrap JS -->
   <script src="{{asset('assets/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <!--plugins-->
   <script src="{{asset('assets/js/jquery.min.js')}}"></script>
   <script src="{{asset('assets/plugins/simplebar/js/simplebar.min.js')}}"></script>
@@ -205,6 +207,8 @@
   <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
   <!--app JS-->
   <script src="{{asset('assets/js/app.js')}}"></script>
+  {{-- Preview file --}}
+  {{-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> --}}
   <script type="text/javascript">
     $.ajaxSetup({
       headers: {

@@ -83,6 +83,8 @@
             return '<p style="color:black">OPERATOR</p>';
           }else if (data == 1) {
             return '<p style="color:black">ADMIN</p>';
+          } else if (data == 0) {
+            return '<p style="color:black">SEKRETARIS DAERAH (SEKDA)</p>';
           }
         }
       },
@@ -109,7 +111,7 @@
   });
   function editForm(id) {
     $('.main-page').hide();
-      $.post("{!! route('destroy-pengguna') !!}",{id:id}).done(function(data){
+      $.post("{!! route('form-pengguna') !!}",{id:id}).done(function(data){
           if(data.status == 'success'){
             $('.other-page').html(data.content).fadeIn();
           } else {

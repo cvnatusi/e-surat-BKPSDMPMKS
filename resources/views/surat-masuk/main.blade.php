@@ -48,7 +48,7 @@
                         <td>INSTANSI</td>
                         {{-- <td>JENIS SURAT</td> --}}
                         {{-- <td>SIFAT SURAT</td> --}}
-                        <td>TANGGAL SURAT</td>
+                        {{-- <td>TANGGAL SURAT</td> --}}
                         <td class="text-center">AKSI</td>
                     </thead>
                 </table>
@@ -177,13 +177,13 @@
                     //     return '<p style="color:black">' + data + '</p>';
                     //   }
                     // },
-                    {
-                        data: 'tanggal_surat',
-                        name: 'tanggal_surat',
-                        render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
-                        }
-                    },
+                    // {
+                    //     data: 'tanggal_surat',
+                    //     name: 'tanggal_surat',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
                         data: 'action',
                         name: 'action',
@@ -236,7 +236,7 @@
 
         function deleteForm(id) {
             swal({
-                title: "Apakah Anda yakin akan menghapus data ini ?",
+                title: "Apakah anda yakin?",
                 text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
                 type: "warning",
                 showCancelButton: true,

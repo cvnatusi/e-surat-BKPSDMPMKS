@@ -12,7 +12,9 @@ use Laravel\Sanctum\HasApiTokens;
 class Absensi extends Authenticatable
 {
   use HasApiTokens;
-  protected $table = 'absensi';
+  // protected $table = 'absensi';
+  protected $connection = 'tapman';
+	protected $table = 'process';
 
     // protected $fillable = [
     //     'email',
@@ -21,10 +23,11 @@ class Absensi extends Authenticatable
     //     'created_at',
     //     'updated_at',
     // ];
-    protected $primaryKey = 'id_absensi';
+    protected $primaryKey = 'id';
     public $incrementing = true;
     // protected $hidden = [
     //     'password', 'remember_token',
     // ];
+    public $timestamps = false;
 
 }

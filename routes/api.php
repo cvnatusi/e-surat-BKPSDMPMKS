@@ -29,7 +29,8 @@ Route::group(['middleware' => ['authapi:sanctum']], function () {
     Route::post('get-kegiatan-jabatan', [PekerjaanController::class, 'getKegiatanJabatan'])->name('getKegiatanJabatan');
   });
   Route::group(array('prefix' => 'absensi'), function () {
-    Route::post('/', [AbsensiController::class, 'list_absen'])->name('list-absen');
+    Route::post('/', [AbsensiController::class, 'index'])->name('index');
     Route::post('create-absensi', [AbsensiController::class, 'create_absen'])->name('create-absen');
+    Route::post('list-absensi', [AbsensiController::class, 'list_absen'])->name('list-absen');
   });
 });

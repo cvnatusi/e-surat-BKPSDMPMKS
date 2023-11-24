@@ -16,6 +16,14 @@
   .page-break {
     page-break-after: always;
   }
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  .table td, .table th {
+        border: 1px solid black;
+        padding: 8px;
+    }
   </style>
 </head>
 
@@ -53,11 +61,11 @@
     {{-- HEADER TULISAN SURAT TUGAS --}}
     <div style="text-align:center">
         <h3 style="margin:0 !important"><u>SURAT TUGAS</u></h3>
-        <p style="margin:0 !important">Nomor : {{$data->nomor_surat_perjalanan_dinas}}</p>
+        <p style="margin:0 !important;">Nomor : {{$data->nomor_surat_perjalanan_dinas}}</p>
     </div>
     {{-- END HEADER TULISAN SURAT TUGAS --}}
     {{-- START CONTENT --}}
-    <div class="">
+    <div class="" >
         <p>Yang bertanda tangan dibawah ini :</p>
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10px;">
             <thead>
@@ -87,6 +95,31 @@
         </table>
         <br>
         <p>Menugaskan Saudara,</p>
+        {{-- @if (count($pegawai) > 1) --}}
+        @if (count($pegawai) > 1)
+        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 11px; ">
+            <thead style="font-weight: 600; text-align: center;">
+                <tr>
+                    <td>No</td>
+                     <td>Nama</td>
+                     <td>NIP</td>
+                     <td>Pangkat Golongan</td>
+                     <td>Jabatan</td>
+                </tr>
+            </thead>
+            <tbody style="border: 0.5px;">
+                @foreach ($pegawai as $key => $i)
+                <tr >
+                    <td style="text-align: center">{{$key+1}}</td>
+                    <td>{{$i->nama_asn}}</td>
+                    <td>{{$i->nip}}</td>
+                    <td>{{$i->pangkat_golongan}}</td>
+                    <td>{{!empty($i->jabatan_asn->nama_jabatan)?$i->jabatan_asn->nama_jabatan:'-'}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+        @else
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:50px">
             <thead>
                 <tr>
@@ -113,8 +146,9 @@
                 </tr>
             </tbody>
         </table>
+        @endif
         <br>
-        <p>{{$data->isi_ringkas_surat}}, Pada </p>
+        <p>{{$data->isi_ringkas_surat}}, pada </p>
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10px;">
             <thead>
                 <tr>
@@ -145,11 +179,12 @@
         <p>Demikian Surat tugas ini dibuat, untuk dipergunakan sebagaimana mestinya.</p>
         <br><br>
         <br>
-        <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left:10em;vertical-align:middle">
+        <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 10em; vertical-align: middle">
+        {{-- <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 13em; vertical-align: middle"> --}}
             <thead>
                 <tr>
                     <th rowspan="4"></th>
-                    <td><p style="text-align:right; margin-right:14em !important">Pamekasan, {{Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</p></td>
+                    <td><p style="text-align:right; margin-right: 16.5rem; ">Pamekasan, {{Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</p></td>
                 </tr>
                 <tr>
                     <th>KEPALA BADAN KEPEGAWAIAN DAN</th>
@@ -166,13 +201,16 @@
           {{-- @php
             $data->verifikasi_kaban = 'N';
           @endphp --}}
+          {{-- <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left: 38.3em" width="90"> --}}
+          {{-- <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt=""> --}}
           @if ($data->verifikasi_kaban == 'Y')
-            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px;margin-bottom:10px;margin-left:28.5em" width="95">
+          <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="90">
             @else
               <div class="square" style="width: 100px;height: 100px;"></div>
           @endif
         </div>
-        <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:25.5em">
+        {{-- <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:25.5em; vertical-align:middle; text-align: center;"> --}}
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10rem; margin-top: -10px; vertical-align:middle; text-align: center; ">
           <tbody>
               <tr>
                   <td rowspan="3"></td>
@@ -189,7 +227,7 @@
     </div>
     {{-- END CONTENT --}}
     {{-- FOOTER --}}
-    <div class="" style="margin-top:3.1em">
+    <div class="" style="margin-top:3em">
       {{-- <footer> --}}
         <hr>
         <table width="100%" cellpadding="0" cellspacing="0" style="vertical-align:middle; width:100% !important">

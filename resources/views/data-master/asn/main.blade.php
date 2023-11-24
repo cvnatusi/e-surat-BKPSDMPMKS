@@ -76,10 +76,10 @@
         }
       },
       {
-        data: 'pangkat_golongan',
-        name: 'pangkat_golongan',
+        data: 'eselon',
+        name: 'eselon',
         render: function(data, type, row) {
-          return '<p style="color:black">' + data + '</p>';
+          return '<p style="color:black">' + (data ?? '-') + '</p>';
         }
       },
       {

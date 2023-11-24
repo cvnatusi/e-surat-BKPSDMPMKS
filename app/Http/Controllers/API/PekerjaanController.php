@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Controllers\Controller;
 use Validator,Hash,DB;
-
+class ObjectEmpty{};
 class PekerjaanController extends Controller
 {
   public function getKegiatanJabatan(Request $request)
@@ -42,8 +42,13 @@ class PekerjaanController extends Controller
   }
   public function list_pekerjaan(Request $request)
   {
+    $year = date('Y', strtotime($request->tanggal) );
+    $month = date('m', strtotime($request->tanggal) );
     try {
-      $data = Pekerjaan::where('nip', $request->nip)->whereDate('created_at',$request->tanggal)->get();
+    return  $data = Pekerjaan::where('nip', $request->nip)
+                        ->whereYear('created_at', '=', $year)
+                        ->whereMonth('created_at', '=', $month)
+                        ->get();
       if (count($data) > 0) {
         return Controller::custom_response(200, "success", 'Ok!', $data);
       }else {
@@ -58,7 +63,7 @@ class PekerjaanController extends Controller
     DB::beginTransaction();
     try {
 
-      $cekAbsen = Absensi::find($request->absensi_id);
+      $cekAbsen = Absensi::where('id',$request->absensi_id)->first();
       if (!empty($cekAbsen)) {
         $new_pekerjaan = New Pekerjaan;
         $new_pekerjaan->nip = $request->nip;
@@ -70,46 +75,46 @@ class PekerjaanController extends Controller
   				if($request->hasFile('foto_pekerjaan_1')){
   					$filename = $file->getClientOriginalName();
   					$ext_foto = $file->getClientOriginalExtension();
-  					$filename = $new_pekerjaan->nama_pekerjaan."_1-".date('YmdHis').".".$ext_foto;
+  					$filename = preg_replace("/\s+/","-",$new_pekerjaan->nama_pekerjaan)."_1-".date('YmdHis').".".$ext_foto;
   					$file->storeAs('public/absensi/pekerjaan/',$filename);
   					$new_pekerjaan->foto_pekerjaan_1 = $filename;
   				}
   			}
-        if (!empty($request->foto_pekerjaan_2)) {
-  				$file = $request->file('foto_pekerjaan_2');
-  				if($request->hasFile('foto_pekerjaan_2')){
-  					$filename = $file->getClientOriginalName();
-  					$ext_foto = $file->getClientOriginalExtension();
-  					$filename = $new_pekerjaan->nama_pekerjaan."_2-".date('YmdHis').".".$ext_foto;
-  					$file->storeAs('public/absensi/pekerjaan/',$filename);
-  					$new_pekerjaan->foto_pekerjaan_2 = $filename;
-  				}
-  			}
-        if (!empty($request->foto_pekerjaan_3)) {
-  				$file = $request->file('foto_pekerjaan_3');
-  				if($request->hasFile('foto_pekerjaan_3')){
-  					$filename = $file->getClientOriginalName();
-  					$ext_foto = $file->getClientOriginalExtension();
-  					$filename = $new_pekerjaan->nama_pekerjaan."_3-".date('YmdHis').".".$ext_foto;
-  					$file->storeAs('public/absensi/pekerjaan/',$filename);
-  					$new_pekerjaan->foto_pekerjaan_3 = $filename;
-  				}
-  			}
+        // if (!empty($request->foto_pekerjaan_2)) {
+  			// 	$file = $request->file('foto_pekerjaan_2');
+  			// 	if($request->hasFile('foto_pekerjaan_2')){
+  			// 		$filename = $file->getClientOriginalName();
+  			// 		$ext_foto = $file->getClientOriginalExtension();
+  			// 		$filename = $new_pekerjaan->nama_pekerjaan."_2-".date('YmdHis').".".$ext_foto;
+  			// 		$file->storeAs('public/absensi/pekerjaan/',$filename);
+  			// 		$new_pekerjaan->foto_pekerjaan_2 = $filename;
+  			// 	}
+  			// }
+        // if (!empty($request->foto_pekerjaan_3)) {
+  			// 	$file = $request->file('foto_pekerjaan_3');
+  			// 	if($request->hasFile('foto_pekerjaan_3')){
+  			// 		$filename = $file->getClientOriginalName();
+  			// 		$ext_foto = $file->getClientOriginalExtension();
+  			// 		$filename = $new_pekerjaan->nama_pekerjaan."_3-".date('YmdHis').".".$ext_foto;
+  			// 		$file->storeAs('public/absensi/pekerjaan/',$filename);
+  			// 		$new_pekerjaan->foto_pekerjaan_3 = $filename;
+  			// 	}
+  			// }
         $new_pekerjaan->save();
         if ($new_pekerjaan) {
           DB::commit();
           return Controller::custom_response(200, "success", 'Berhasil Menambahkan Pekerjaan!', $new_pekerjaan);
         }else {
           DB::rollback();
-          return Controller::custom_response(201, "error", 'Gagal Menambahkan Pekerjaan!', '');
+          return Controller::custom_response(201, "error", 'Gagal Menambahkan Pekerjaan!',  New ObjectEmpty());
         }
       }else {
-        return Controller::custom_response(201, "error", 'Anda Belum Melakukan Absensi!', '');
+        return Controller::custom_response(201, "error", 'Anda Belum Melakukan Absensi!',  New ObjectEmpty());
       }
     } catch(\Exception $e){
 			DB::rollback();
 			throw($e);
-      return Controller::custom_response(500, "error", $e->getMessage(), '');
+      return Controller::custom_response(500, "error", $e->getMessage(),  New ObjectEmpty());
     }
   }
 }

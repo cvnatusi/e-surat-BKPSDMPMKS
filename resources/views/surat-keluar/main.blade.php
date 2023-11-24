@@ -10,7 +10,7 @@
             {{-- filter tanggal --}}
             <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="row">
-                    <div class="col-md-2">
+                    <div class="col-md-2">              
                         <label class="form-label">Tambah Surat Keluar</label>
                         <button type="button" class="btn btn-primary btn-add form-control"><i
                                 class="bx bx-plus me-1"></i>Surat Baru</button>
@@ -34,9 +34,9 @@
                 <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
                     <thead>
                         {{-- <td>NO</td> --}}
-                        <td>NO AGENDA</td>
+                        <td>NO</td>
                         <td>NO SURAT</td>
-                        <td>JENIS SURAT</td>
+                        {{-- <td>JENIS SURAT</td> --}}
                         <td>TANGGAL SURAT</td>
                         <td>TUJUAN</td>
                         <td>PERIHAL</td>
@@ -124,13 +124,13 @@
                             return '<p style="color:black">' + data + '</p>';
                         }
                     },
-                    {
-                        data: 'jenis.nama_jenis_surat',
-                        name: 'jenis.nama_jenis_surat',
-                        render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
-                        }
-                    },
+                    // {
+                    //     data: 'jenis.nama_jenis_surat',
+                    //     name: 'jenis.nama_jenis_surat',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
                         data: 'tanggal_surat',
                         name: 'tanggal_surat',

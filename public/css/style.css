@@ -1,0 +1,107 @@
+h6 {
+    margin-bottom: -10px;
+}
+
+span {
+    color: red;
+}
+.content {
+    position: relative;
+    padding: 10px;
+}
+.box {
+    height: 37px;
+    width: 450px;
+    border-radius: 5px;
+    /* background-color: rgb(139, 67, 67); */
+    outline-width: 1px;
+    outline-style: solid;
+    outline-color: #33333341;
+    text-align: center;
+}
+.customfile::-webkit-file-upload-button {
+    background: #878b91;
+    border-radius: 10px;
+    border: none;
+    padding: 8px 16px; 
+    color: #fff;
+    cursor: pointer;
+    text-align: right;
+    /* margin-top: 14px;
+    margin-left: 3px; */
+}
+.simpan, 
+.kembali button {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+}
+/* .simpan a {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 20px;
+} */
+
+.inputBox {
+    position: relative;
+    width: 450px;
+    height: 45px;
+    border-radius: 10px;
+    padding: 3px;
+    cursor: pointer;
+}
+
+.inputBox option {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(51, 51, 51, 0.253);
+}
+.inputBox option:valid, 
+.inputBox option:focus {
+    color: #371bd4;
+    transform: translateX(10px) translateY(-7px);
+    padding: 0 10px;
+    background: #878b91;
+}
+/* .form-label1 {
+    position: absolute;
+    top: 150px;
+    left: 30px;
+    background-color: #fff;
+    padding: 0 5px;
+} */
+
+.container {
+    margin-top: 25px;
+    margin-left: -20px;
+}
+.show {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: -3px;
+    /* margin-bottom: 2px; */
+}
+.show p {
+    padding-top: 3.5px;
+    margin-left: 5px;
+    font-size: 13.5px;
+}
+.show input {
+    margin-bottom: 10px;
+    width: 21px;
+    background-color: black;
+    cursor: pointer;
+}
+
+#pdfCanvas {
+    height: 5px;
+}
+
+#pdfViewer {
+    height: 100%;
+    width: 100%;
+}
