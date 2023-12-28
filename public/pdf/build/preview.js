@@ -1,24 +1,25 @@
-function dragElement(elmnt) {
-    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById(elmnt.id + "header")) {
-      // if present, the header is where you move the DIV from:
-      document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-    } else {
-      // otherwise, move the DIV from anywhere inside the DIV:
-      elmnt.onmousedown = dragMouseDown;
-    }
+// function dragElement(elmnt) {
+//     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+//     if (document.getElementById(elmnt.id + "header")) {
+//       // if present, the header is where you move the DIV from:
+//       document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+//     } else {
+//       // otherwise, move the DIV from anywhere inside the DIV:
+//       elmnt.onmousedown = dragMouseDown;
+//     }
   
-    function dragMouseDown(e) {
-      e = e || window.event;
-      e.preventDefault();
-      // get the mouse cursor position at startup:
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      document.onmouseup = closeDragElement;
-      // call a function whenever the cursor moves:
-      document.onmousemove = elementDrag;
-    }
+//     function dragMouseDown(e) {
+//       e = e || window.event;
+//       e.preventDefault();
+//       // get the mouse cursor position at startup:
+//       pos3 = e.clientX;
+//       pos4 = e.clientY;
+//       document.onmouseup = closeDragElement;
+//       // call a function whenever the cursor moves:
+//       document.onmousemove = elementDrag;
+//     }
   
+<<<<<<< HEAD
     function elementDrag(e) {
       e = e || window.onload;
       e.preventDefault();
@@ -40,9 +41,31 @@ function dragElement(elmnt) {
       document.onmousemove = null;
     }
 };
+=======
+//     function elementDrag(e) {
+//       e = e || window.onload;
+//       e.preventDefault();
+//       // calculate the new cursor position:
+//       pos1 = pos3 - e.clientX;
+//       pos2 = pos4 - e.clientY;
+//       pos3 = e.clientX;
+//       pos4 = e.clientY;
+//       // set the element's new position:
+//       elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+//       elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+//       console.log(pos1,pos2,"X :"+pos3,"Y :"+pos4);
+//     }
   
-  dragElement(document.getElementById("mydiv")); // qrcode
-  dragElement(document.getElementById("mydiv2")); // optik
+//     function closeDragElement() {
+//       // stop moving when mouse button is released:
+//       document.onmouseup = null;
+//       document.onmousemove = null;
+//     }
+//   };
+>>>>>>> 2dbc5519e702f12f45574effc275407a9e14e8cb
+  
+//   dragElement(document.getElementById("mydiv")); // qrcode
+//   dragElement(document.getElementById("mydiv2")); // optik
 
   // Fungsi untuk menggambar elemen barcode pada elemen canvas
   function drawBarcodeOnCanvas(pos3, pos4) {
@@ -106,6 +129,8 @@ $(document).ready(function () {
             function renderPage() {
               pdfDoc.getPage(pageNum).then(function (page) {
                 const viewport = page.getViewport({ scale: 1 });
+                // console.log(viewport);
+                console.log(`Ukuran Halaman ${pageNum}: Lebar ${viewport.width}px, Panjang ${viewport.height}px`);
                 canvas.width = viewport.width;
                 canvas.height = viewport.height;
     
@@ -121,6 +146,8 @@ $(document).ready(function () {
     
               document.getElementById('page_num').textContent = pageNum;
               document.getElementById('page_count').textContent = pdfDoc.numPages;
+
+              // console.log(`Ukuran Halaman ${pageNum}: Panjang ${width}px, Lebar ${height}px`);
             }
     
             // Initial page rendering
