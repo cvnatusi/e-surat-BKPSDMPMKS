@@ -174,7 +174,7 @@ class TteController extends Controller
 			// 	}
 			// }
 
-			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form2', $data)->render();
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			throw($e);

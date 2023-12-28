@@ -54,7 +54,7 @@
 			width: 80%;
 			margin-left: 5rem;
 			/* padding: 5px 25px; */
-			border: 1px solid red;
+			/* border: 1px solid red; */
 		}
 		#save {
 			position: absolute;
@@ -131,19 +131,19 @@
 					</div> --}}
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
-					<canvas id="pdfCanvas"></canvas>
-					 {{-- Height = 583 Width = 451 --}}
-					{{-- <canvas id="canvas" width=300 height=300></canvas> --}}
-					
-					<div id="mydiv" draggable="true" style="display: none;  position: absolute; left: 100px; top: 200px;">
+					<div class="previewFile">
+						<canvas id="pdfCanvas"></canvas>
+					</div>
+					<div id="mydiv" class="draggable" draggable="true" style="display: none;  position: absolute; left: 71px; top: -1px;">
 						<img src="{{asset('gambar/QR.png')}}" id="mydivheader" style="height: 90px; width: 90px;">
 					</div>
-					<div id="mydiv2" draggable="true" style="display: none;  position: absolute; left: 100px; top: 200px;">
+					<div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
 						<img src="{{asset('assets/images/qr-code.png')}}" id="mydivheader2" style="height: 100px; width: 100px;">
 					</div>
-					<div id="footer" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px;" >
+					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
+					
 
 				</div>
 			</div>
@@ -160,9 +160,17 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" type="text/javascript" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
 		<script src="{{asset('pdf/build/preview.js')}}"></script>
-		
+		<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
+		<script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script>
 
-		<script type="text/javascript">
+		<script>
+			
+
+			
+		</script>
+
+<script type="text/javascript">
 			const gambar = document.getElementById('mydiv');
 			const gambar2 = document.getElementById('mydiv2');
 			const checkboxBarcode = document.getElementById('barCode');
@@ -170,11 +178,64 @@
 			const checkboxFooter = document.getElementById('footerTTE');
 			const suratPendukung = document.getElementById('surat_pendukung');
 
-			function PreviewImage() {
-                pdffile=document.getElementById("myPdf").files[0];
-                pdffile_url=URL.createObjectURL(pdffile);
-                $('#pdfViewer').attr('src',pdffile_url);
-            }
+			// <==== function Draggable using Interact.js
+			interact('.draggable')
+			.draggable({
+				// enable inertial throwing
+				inertia: true,
+				// keep the element within the area of it's parent
+				modifiers: [
+				interact.modifiers.restrictRect({
+					restriction: 'parent',
+					endOnly: true
+				})
+				],
+				// enable autoScroll
+				autoScroll: true,
+
+				listeners: {
+				// call this function on every dragmove event
+				move: dragMoveListener,
+
+				// call this function on every dragend event
+				end (event) {
+					var textEl = event.target.querySelector('p')
+
+					textEl && (textEl.textContent =
+					'moved a distance of ' +
+					(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
+								Math.pow(event.pageY - event.y0, 2) | 0))
+						.toFixed(2) + 'px')
+				}
+				}
+			})
+
+			function dragMoveListener (event) {
+			var target = event.target0
+			// keep the dragged position in the data-x/data-y attributes
+			var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+			var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+
+			// translate the element
+			target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+			console.log('translate(' + x + 'px, ' + y + 'px)');
+
+			// update the posiion attributes
+			target.setAttribute('data-x', x)
+			target.setAttribute('data-y', y)
+
+			}
+			// End =====>
+
+			function drawBarcode(x, y) {
+				let canvas = document.getElementById("pdfCanvas");
+				let ctx = canvas.getContext("2d");
+
+				let img = document.getElementById("mydiv");
+				ctx.drawImage(img, 70, 90, 90, 90, 50, 50);
+			}
+
+
 
 			// Event listener untuk elemen <select>
 				document.getElementById('pilihanGambar').addEventListener('change', function () {
@@ -298,136 +359,60 @@
 					document.onmousemove = null;
 					}
 				};
-			
-				
-
-				// function dragElement(elmnt) {
-				// var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-				// if (document.getElementById(elmnt.id + "header")) {
-				// 	// Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
-				// 	document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-				// } else {
-				// 	// Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
-				// 	elmnt.onmousedown = dragMouseDown;
-				// }
-
-				// function dragMouseDown(e) {
-				// 	e = e || window.event;
-				// 	e.preventDefault();
-				// 	// Dapatkan posisi kursor mouse saat memulai:
-				// 	pos3 = e.clientX;
-				// 	pos4 = e.clientY;
-				// 	document.onmouseup = closeDragElement;
-				// 	// Panggil fungsi setiap kali kursor bergerak:
-				// 	document.onmousemove = elementDrag;
-				// }
-
-				// function elementDrag(e) {
-				// 	e = e || window.event;
-				// 	e.preventDefault();
-				// 	// Hitung posisi kursor baru:
-				// 	pos1 = pos3 - e.clientX;
-				// 	pos2 = pos4 - e.clientY;
-				// 	pos3 = e.clientX;
-				// 	pos4 = e.clientY;
-				// 	// Tetapkan posisi baru elemen:
-				// 	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-				// 	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-
-				// 	// Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
-				// 	drawBarcodeOnCanvas(elmnt, pos3, pos4);
-				// }
-
-				// function closeDragElement() {
-				// 	// Berhenti menggeser ketika tombol mouse dilepas:
-				// 	document.onmouseup = null;
-				// 	document.onmousemove = null;
-				// }
-				// }
-
-				// function drawBarcodeOnCanvas(elmnt, posX, posY) {
-				// console.log(posX, posY);
-				// const canvas = document.getElementById('pdfCanvas');
-				// const ctx = canvas.getContext('2d');
-				// const penandaTangan = $('#pilihanGambar').val();
-
-				// // Ambil posisi elemen "mydiv" dan gambar barcode
-				// var qrcode = document.getElementById('mydivheader');
-				// var optik = document.getElementById('mydivheader2');
-
-				// // penandaTangan===0 {qrcode} start
-				// var image = qrcode;
-				// var divX = parseInt(posX);
-				// var divY = parseInt(posY);
-				// // penandaTangan===0 {qrcode} end
-
-				// if (penandaTangan === '52') { // penandaTangan === 52 {optik}
-				// 	image = optik;
-				// 	divX = parseInt(posX);
-				// 	divY = parseInt(posY);
-				// }
-
-				// const width = 90;
-				// const height = 90;
-
-				// ctx.drawImage(image, divX, divY, width, height);
-				// }
-
-
 
 
 				// Inisialisasi variabel global untuk menyimpan posisi elemen yang digerakkan
-				// var divX
-				// var divY
+				var divX
+				var divY
 
-				// function elementDrag(e) {
-				// 	e = e || window.event;
-				// 	e.preventDefault();
+				function elementDrag(e) {
+					e = e || window.event;
+					e.preventDefault();
 
-				// 	// Hitung posisi kursor baru relatif terhadap posisi elemen:
-				// 	var clientX = e.clientX;
-				// 	var clientY = e.clientY;
-				// 	divX = divX + pos1;
-				// 	divY = divY + pos2;
+					// Hitung posisi kursor baru relatif terhadap posisi elemen:
+					var clientX = e.clientX;
+					var clientY = e.clientY;
+					divX = divX + pos1;
+					divY = divY + pos2;
 
-				// 	// Atur posisi baru elemen:
-				// 	elmnt.style.top = divY + "px";
-				// 	elmnt.style.left = divX + "px";
+					// Atur posisi baru elemen:
+					elmnt.style.top = divY + "px";
+					elmnt.style.left = divX + "px";
 
-				// 	// Log posisi yang diperbarui untuk tujuan debugging:
-				// 	console.log("X: " + divX, "Y: " + divY);
+					// Log posisi yang diperbarui untuk tujuan debugging:
+					console.log("X: " + divX, "Y: " + divY);
 
-				// 	// Panggil fungsi untuk menggambar ulang gambar pada canvas
-				// 	drawBarcodeOnCanvas();
-				// }
-
-				// Function untuk menggambar elemen barcode
-				function drawBarcodeOnCanvas() {
-					const canvas = document.getElementById('pdfCanvas');
-					const ctx = canvas.getContext('2d');
-					const penandaTangan = $('#pilihanGambar').val();
-
-					// Ambil posisi elemen "mydiv" dan gambar barcode
-					var qrcode = document.getElementById('mydivheader');
-					var optik = document.getElementById('mydivheader2');
-
-					// penandaTangan===0 {qrcode} start
-					var image = qrcode;
-
-					if (penandaTangan === '0') { // penandaTangan === 0 {qrcode}
-						// divX dan divY telah diatur di dalam fungsi elementDrag
-					}
-
-					if (penandaTangan === '52') { // penandaTangan === 52 {optik}
-						image = optik;
-						// divX dan divY telah diatur di dalam fungsi elementDrag
-					}
-
-					const width = 90;
-					const height = 90;
-
-					ctx.drawImage(image, divX, divY, width, height);
+					// Panggil fungsi untuk menggambar ulang gambar pada canvas
+					drawBarcodeOnCanvas();
 				}
+
+				// //  Function untuk menggambar elemen barcode
+				// function drawBarcodeOnCanvas() {
+				// 	const canvas = document.getElementById('pdfCanvas');
+				// 	const ctx = canvas.getContext('2d');
+				// 	const penandaTangan = $('#pilihanGambar').val();
+
+				// 	// Ambil posisi elemen "mydiv" dan gambar barcode
+				// 	var qrcode = document.getElementById('mydivheader');
+				// 	var optik = document.getElementById('mydivheader2');
+
+				// 	// penandaTangan===0 {qrcode} start
+				// 	var image = qrcode;
+
+				// 	if (penandaTangan === '0') { // penandaTangan === 0 {qrcode}
+				// 		// divX dan divY telah diatur di dalam fungsi elementDrag
+				// 	}
+
+				// 	if (penandaTangan === '52') { // penandaTangan === 52 {optik}
+				// 		image = optik;
+				// 		// divX dan divY telah diatur di dalam fungsi elementDrag
+				// 	}
+
+				// 	const width = 90;
+				// 	const height = 90;
+
+				// 	ctx.drawImage(image, divX, divY, width, height);
+				// }
 
 
 
@@ -527,7 +512,7 @@
 									const checkboxBarcode = document.getElementById('barCode');
 									const checkboxFooter = document.getElementById('footerTTE');
 									if (checkboxBarcode.checked && checkboxFooter.checked) { // Tampilkan elemen barcode dan footer pada elemen canvas
-										drawBarcodeOnCanvas();
+										drawBarcode();
 										drawFooterOnCanvas();
 									} else if (checkboxBarcode.checked) {  // Tampilkan hanya elemen barcode pada elemen canvas
 										drawBarcodeOnCanvas();
@@ -644,90 +629,90 @@
 									}
 								});
 
-								// Fungsi untuk melakukan konversi ke PDF
-								// function convertToPDF() {
-									// 	// e.preventDefault();
-									// 	// console.log(resfile)
-									// 	window.jsPDF = window.jspdf.jsPDF;
-									// 	// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
-									// 	// drawImagesOnCanvas();
+				// Fungsi untuk melakukan konversi ke PDF
+				// function convertToPDF() {
+					// 	// e.preventDefault();
+					// 	// console.log(resfile)
+					// 	window.jsPDF = window.jspdf.jsPDF;
+					// 	// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
+					// 	// drawImagesOnCanvas();
+					// 	var penandaTangan = $('#pilihanGambar').val();
+
+					// 	// Cek checkbox yang diceklis
+					// 	const checkboxBarcode = document.getElementById('barCode');
+					// 	const checkboxFooter = document.getElementById('footerTTE');
+					// 	if (checkboxBarcode.checked && checkboxFooter.checked) {
+						// 		// Tampilkan elemen barcode dan footer pada elemen canvas
+						// 		drawBarcodeOnCanvas();
+						// 		drawFooterOnCanvas();
+						// 	} else if (checkboxBarcode.checked) {
+							// 		// Tampilkan hanya elemen barcode pada elemen canvas
+							// 		drawBarcodeOnCanvas();
+							// 	} else if (checkboxFooter.checked) {
+								// 		// Tampilkan hanya elemen footer pada elemen canvas
+								// 		drawFooterOnCanvas();
+								// 	}
+								// 	// Ubah elemen canvas menjadi URL data
+								// 	const canvas = document.getElementById('pdfViewer');
+								// 	const imgData = canvas.toDataURL('image/png');
+
+								// 	// Buat objek jsPDF
+								// 	const pdf = new jsPDF({
+									// 		orientation: "portrait",
+									// 		unit: "px",
+									// 		format: 'a4'
+									// 	});
+									// 	const imgWidth = 3508; // Lebar A4 dalam piksel
+									// 	const imgHeight = canvas.height * imgWidth / canvas.width;
+									// 	pdf.addImage(imgData, 'PNG', 0, 0, 450, 670); // Tambahkan gambar ke dokumen PDF
+
+									// 	/* Simpan dokumen PDF dalam format Base64
+									// 	Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
+									// 	const pdfBase64 = pdf.output('dataurlstring');
+									// 	// const suratPendukungBase64 = pdf.output('dataurlstring');
+									// 	// console.log	(suratPendukungBase64)
+									// 	// pdf.save("canvas_to_pdf.pdf") // Download pdf
+
 									// 	var penandaTangan = $('#pilihanGambar').val();
+									// 	// var fileSurat = $('#myPdf').val();
 
-									// 	// Cek checkbox yang diceklis
-									// 	const checkboxBarcode = document.getElementById('barCode');
-									// 	const checkboxFooter = document.getElementById('footerTTE');
-									// 	if (checkboxBarcode.checked && checkboxFooter.checked) {
-										// 		// Tampilkan elemen barcode dan footer pada elemen canvas
-										// 		drawBarcodeOnCanvas();
-										// 		drawFooterOnCanvas();
-										// 	} else if (checkboxBarcode.checked) {
-											// 		// Tampilkan hanya elemen barcode pada elemen canvas
-											// 		drawBarcodeOnCanvas();
-											// 	} else if (checkboxFooter.checked) {
-												// 		// Tampilkan hanya elemen footer pada elemen canvas
-												// 		drawFooterOnCanvas();
-												// 	}
-												// 	// Ubah elemen canvas menjadi URL data
-												// 	const canvas = document.getElementById('pdfViewer');
-												// 	const imgData = canvas.toDataURL('image/png');
+									// 	// return console.log(resfile)
 
-												// 	// Buat objek jsPDF
-												// 	const pdf = new jsPDF({
-													// 		orientation: "portrait",
-													// 		unit: "px",
-													// 		format: 'a4'
-													// 	});
-													// 	const imgWidth = 3508; // Lebar A4 dalam piksel
-													// 	const imgHeight = canvas.height * imgWidth / canvas.width;
-													// 	pdf.addImage(imgData, 'PNG', 0, 0, 450, 670); // Tambahkan gambar ke dokumen PDF
+									// 	$.ajax({
+										// 		url: '{{route("savePDF")}}',
+										// 		method: 'POST',
+										// 		data: {
+											// 			"_token" : '{{csrf_token()}}',
+											// 			// pdf: btoa(pdf)
+											// 			pdf: pdfBase64,
+											// 			// penanda_tangan : penandaTangan,
+											// 			namaSurat: resfile.name,
+											// 			penandaTangan: penandaTangan
+											// 		},
+											// 	}).done((res)=>{})
 
-													// 	/* Simpan dokumen PDF dalam format Base64
-													// 	Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
-													// 	const pdfBase64 = pdf.output('dataurlstring');
-													// 	// const suratPendukungBase64 = pdf.output('dataurlstring');
-													// 	// console.log	(suratPendukungBase64)
-													// 	// pdf.save("canvas_to_pdf.pdf") // Download pdf
+											// 	const penandaTanganSurat = $('#pilihanGambar').val()
+											// 		if(penandaTanganSurat === '5'){
+												// 			gambar.style.display = 'none'; // qrcode
+												// 		} else{
+													// 			gambar2.style.display = 'none'; // optik
+													// 		}
+													// 	}
 
-													// 	var penandaTangan = $('#pilihanGambar').val();
-													// 	// var fileSurat = $('#myPdf').val();
-
-													// 	// return console.log(resfile)
-
-													// 	$.ajax({
-														// 		url: '{{route("savePDF")}}',
-														// 		method: 'POST',
-														// 		data: {
-															// 			"_token" : '{{csrf_token()}}',
-															// 			// pdf: btoa(pdf)
-															// 			pdf: pdfBase64,
-															// 			// penanda_tangan : penandaTangan,
-															// 			namaSurat: resfile.name,
-															// 			penandaTangan: penandaTangan
-															// 		},
-															// 	}).done((res)=>{})
-
-															// 	const penandaTanganSurat = $('#pilihanGambar').val()
-															// 		if(penandaTanganSurat === '5'){
-																// 			gambar.style.display = 'none'; // qrcode
-																// 		} else{
-																	// 			gambar2.style.display = 'none'; // optik
-																	// 		}
-																	// 	}
-
-																	// Event listener untuk tombol "Convert to PDF"
-																	document.getElementById('convertToPDF').addEventListener('click', convertToPDF);
-																	function showForm(id) {
-																		// $('.main-page').hide();
-																		$.post("{!! route('show-tanda-tangan-elektronik') !!}", {
-																			id: id
-																		}).done(function(data) {
-																			if (data.status == 'success') {
-																				$('.modal-page').html(data.content).fadeIn();
-																			} else {
-																				$('.main-page').show();
-																			}
-																		});
-																	}
-																</script>
-															</body>
-															</html>
+													// Event listener untuk tombol "Convert to PDF"
+													document.getElementById('convertToPDF').addEventListener('click', convertToPDF);
+													function showForm(id) {
+														// $('.main-page').hide();
+														$.post("{!! route('show-tanda-tangan-elektronik') !!}", {
+															id: id
+														}).done(function(data) {
+															if (data.status == 'success') {
+																$('.modal-page').html(data.content).fadeIn();
+															} else {
+																$('.main-page').show();
+															}
+														});
+													}
+</script>
+</body>
+</html>

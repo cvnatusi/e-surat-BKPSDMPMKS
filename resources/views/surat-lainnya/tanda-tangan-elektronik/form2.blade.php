@@ -207,7 +207,7 @@
     </script> --}}
 
 
-    <script>
+    {{-- <script>
         $(function() {
             var img = new Image();
             img.onload = function(){
@@ -216,7 +216,7 @@
 
             img.src = "../gambar/QR.png";
         })
-    </script>
+    </script> --}}
 
 
 
