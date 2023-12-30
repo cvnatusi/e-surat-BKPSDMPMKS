@@ -12,6 +12,7 @@ class Instansi extends Model
   use SoftDeletes,Loggable;
 
   protected $table = 'mst_instansi';
+  protected $guarded = ['id_instansi'];
   protected $primaryKey = 'id_instansi';
   public $timestamps = true;
   protected $dates = ['deleted_at'];

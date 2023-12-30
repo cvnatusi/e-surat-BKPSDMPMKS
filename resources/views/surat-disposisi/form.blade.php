@@ -10,25 +10,54 @@
       @if(!empty($data))
           <input type="hidden" class="form-control" name="id" value="{{$data->id_surat_disposisi}}">
       @endif
-      <div class="col-md-12">
-        <!-- <label for="surat_masuk_id" class="form-label">No. Agenda Surat / Berkas *)</label> -->
+      <div class="col-md-4">
         <label for="surat_masuk_id" class="form-label">No. Agenda Surat / Berkas *)</label>
+        {{-- <label for="surat_masuk_id" class="form-label">No. Agenda Surat / Berkas *)</label>
         <select class="form-select surat_masuk" name="surat_masuk_id" id="surat_masuk_id">
           <option value="">-- Pilih No Agenda --</option>
           @if (!empty($surat_masuk))
             @foreach ($surat_masuk as $sm)
-              <option value="{{$sm->id_surat_masuk}}" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}}</option>
+              <option value="{{$sm->id_surat_masuk}}" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
             @endforeach
           @endif
-        </select>
+        </select> --}}
+        <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
+         {{-- <input type="text" readonly class="form-control" value="" id="nomor_agenda" value=""> --}}
+         <select class="form-select surat_masuk" name="nomor_agenda" id="nomor_agenda">
+            <option value="">-- Pilih No Agenda --</option>
+            @if (!empty($surat_masuk))
+              @foreach ($surat_masuk as $sm)
+                <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
+              @endforeach
+            @endif
+          </select>
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label">No Surat</label>
+        <input type="text" class="form-control" readonly name="no_surat_masuk" id="no_surat_masuk" value="">
+      </div>
+      <div class="col-md-4">
+        <label for="" class="form-label">Nama Pengirim</label>
+        <input type="text" class="form-control" readonly name="nama_pengirim" id="nama_pengirim" value="">
+      </div>
+      <div class="col-md-12">
+        <label for="" class="form-label">Isi Ringkas</label>
+        <input type="text" class="form-control" readonly name="isi_ringkas" id="isi_ringkas" value="">
       </div>
       <div class="col-md-6">
         <label for="pemberi_disposisi_id" class="form-label">Pemberi Disposisi *)</label>
         <select class="form-select pemberi_disposisi" name="pemberi_disposisi_id" id="pemberi_disposisi_id">
         <option value="">-- Pilih Pemberi Disposisi --</option>
+        {{-- <option value="{{$beri->id_mst_asn}}" @if(!empty($data)) @if ($data->pemberi_disposisi_id == $beri->id_mst_asn) selected="selected" @endif @endif>{{$beri->nama_asn}}</option> --}}
           @if (!empty($pemberi))
             @foreach ($pemberi as $beri)
-              <option value="{{$beri->id_mst_asn}}" @if(!empty($data)) @if ($data->pemberi_disposisi_id == $beri->id_mst_asn) selected="selected" @endif @endif>{{$beri->nama_asn}}</option>
+              {{-- <option value="{{$beri->id_mst_asn}}" @if ($data->pemberi_disposisi_id == $beri->id_mst_asn) selected="selected" @endif>{{$beri->nama_asn}}</option> --}}
+              {{-- <option value="{{ $beri->id_mst_asn }}" @if(Auth::user()->id == $beri->id_mst_asn) selected="selected" @endif>
+                {{ $beri->nama_asn }}
+            </option> --}}
+            <option value="{{ $beri->id_mst_asn }}" @if(!empty($data) && Auth::user()->id == $beri->id_mst_asn) selected="selected" @endif>
+                {{ $beri->nama_asn }}
+            </option>
             @endforeach
           @endif
         </select>
@@ -199,35 +228,35 @@ $('.btn-submit').click(function(e){
     });
 });
 
-$("#surat_masuk_id").select2(
-  {
-    theme: 'bootstrap4',
-    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-    placeholder: $(this).data('placeholder'),
-    allowClear: Boolean($(this).data('allow-clear')),
-    tags: true,
-    ajax: {
-      url: "{{route('getSuratMasukByAgenda')}}",
-      dataType: 'json',
-      type: "POST",
-      // delay: 250,
-      data: function (params) {
-        return {
-          id: params.term
-        };
-      },
-      processResults: function (data) {
-        return {
-          results: $.map(data, function (item) {
-            return {
-              id: item.id_surat_masuk,
-              text: item.nomor_surat_masuk,
-            }
-          })
-        };
-      }
-    },
-  });
+// $("#surat_masuk_id").select2(
+//   {
+//     theme: 'bootstrap4',
+//     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+//     placeholder: $(this).data('placeholder'),
+//     allowClear: Boolean($(this).data('allow-clear')),
+//     tags: true,
+//     ajax: {
+//       url: "{{route('getSuratMasukByAgenda')}}",
+//       dataType: 'json',
+//       type: "POST",
+//       // delay: 250,
+//       data: function (params) {
+//         return {
+//           id: params.term
+//         };
+//       },
+//       processResults: function (data) {
+//         return {
+//           results: $.map(data, function (item) {
+//             return {
+//               id: item.id_surat_masuk,
+//               text: item.nomor_surat_masuk,
+//             }
+//           })
+//         };
+//       }
+//     },
+//   });
   var pemberi = "{{Auth::user()->level_user}}";
 // 1	Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia Kabupaten  Pamekasan
 // 2	Sekretaris Badan Kepegawaian dan Pengembangan Sumber Daya Manusia
@@ -310,4 +339,19 @@ $("#surat_masuk_id").select2(
           }
         },
       });
+
+$(document).ready(function () {
+    const getQueryString = window.location.search;
+    const urlParams = new URLSearchParams(getQueryString);
+    const idSurat = urlParams.get('idsurat')
+    $('#surat_masuk_id').val(idSurat);
+    const noSurat = urlParams.get('nosurat')
+    $('#nomor_agenda').val(noSurat);
+    const noSuratMasuk = urlParams.get('nosuratmasuk')
+    $('#no_surat_masuk').val(noSuratMasuk);
+    const namaPengirim = urlParams.get('namapengirim');
+    $('#nama_pengirim').val(namaPengirim);
+    const isiRingkas = urlParams.get('isiringkas');
+    $('#isi_ringkas').val(isiRingkas);
+})
 </script>

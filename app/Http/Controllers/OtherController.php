@@ -79,14 +79,21 @@ class OtherController extends Controller
 		$data = MasterASN::with('users')->whereRelation('users','level_user',$request->id)->get();
 		return response()->json($data);
 	}
-	public function getInstansiByName(Request $request)
-	{
-		$key = $request->id;
-		$data = Instansi::where('kode_instansi','like',"%$key%")
-										->orWhere('nama_instansi','like',"%$key%")
-										->get();
-		return response()->json($data);
-	}
+	// public function getInstansiByName(Request $request)
+	// {
+	// 	$key = $request->id;
+	// 	$data = Instansi::where('kode_instansi','like',"%$key%")
+    //                     ->orWhere('nama_instansi','like',"%$key%")
+    //                     ->get();
+	// 	return response()->json($data);
+	// }
+    public function getInstansiByName(Request $request)
+    {
+        $key = $request->id;
+        $data = Instansi::whereRaw('LOWER(kode_instansi) LIKE ? OR LOWER(nama_instansi) LIKE ?', ["%".strtolower($key)."%", "%".strtolower($key)."%"])->get();
+        return response()->json($data);
+    }
+
 	public function test(Request $request)
 	{
 		$pdf_base64 = $request->pdfData;
@@ -95,7 +102,7 @@ class OtherController extends Controller
         if($request->case=="watermark"){
 			// return 'non';
             $pdfData = file_put_contents(public_path().'\storage/surat-tte/'.date("H i s").'-'.$pdf_name, base64_decode($pdf_base64));
-			
+
             return $store = FileTte::create([
                 'nama_surat'        => $pdf_name,
                 'tanggal_surat'     => date('Y-m-d'),

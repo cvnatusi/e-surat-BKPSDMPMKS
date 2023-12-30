@@ -31,7 +31,7 @@ class SuratMasukController extends Controller
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 				->orderBy('id_surat_masuk','desc')
 				->get();
-			
+
 				// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->orderBy('id_surat_masuk','desc')->get();
 			// return $data;
 			// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->where('tanggal_terima_surat','like',date('Y-m-d').'%')->orderBy('id_surat_masuk','desc')->get();
@@ -65,7 +65,7 @@ class SuratMasukController extends Controller
 					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					return $btn;
 				}
-					
+
 				})
 				->addColumn('check', function($row){
 					$btn = '<input class="form-check-input" id="check_('.$row->id_surat_masuk.')" name="check[]" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
@@ -190,8 +190,10 @@ class SuratMasukController extends Controller
 			}
 			$newdata->save();
 
+            $newdata->load('pengirim');
+
 			DB::commit();
-			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
+			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!', 'data' => $newdata];
 			return response()->json($return);
 		}catch(\Exception $e){
 			DB::rollback();
@@ -249,5 +251,5 @@ class SuratMasukController extends Controller
 		}
 
 	}
-	
+
 }

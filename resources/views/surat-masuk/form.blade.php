@@ -79,15 +79,20 @@
         <label for="catatan_tambahan" class="form-label">Catatan Tambahan</label>
           <textarea rows="2" cols="80" class="form-control" name="catatan_tambahan" id="catatan_tambahan">@if(!empty($data)){{$data->catatan_tambahan}}@endif</textarea>
       </div> -->
-      
+
       <div class="col-md-6">
         <div class="form-check" style="padding-left: 2em !important;">
         <label for="jenis_surat_id" class="form-label">&nbsp</label>
-
           <input class="form-check-input" checked name="sampai_bkpsdm" @if (!empty($data)) {{ ($data->sampai_bkpsdm ?? 'N') == 'Y' ? 'checked' : ''}} @endif value="Y" type="checkbox" style="transform: scale(2.0);" value="" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Sampaikan surat ini kepada Kepala Badan BKPSDM</label>
-        </div>
-      </div>
+        @if (Auth::user()->level_user == 1 )
+            <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Sampaikan surat kepada Kepala BKPSDM</label>
+        @elseif (Auth::user()->level_user == 2 )
+            <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Disposisikan Surat Kepada Sekretaris</label>
+        @elseif (Auth::user()->level_user == 5 )
+            <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Sampaikan surat kepada Kepala BKPSDM</label>
+        @endif
+</div>
+</div>
       <hr>
       <div class="col-md-12">
         <div class="d-md-flex d-grid align-items-center gap-3">
@@ -150,6 +155,7 @@ $('.btn-submit').click(function(e){
     }).done(function(data){
     $('.form-save').validate(data, 'has-error');
     if(data.status == 'success'){
+        console.log(data.data);
       Lobibox.notify('success', {
         pauseDelayOnHover: true,
         size: 'mini',
@@ -161,11 +167,13 @@ $('.btn-submit').click(function(e){
         sound:false,
         msg: data.message
       });
-        $('.other-page').fadeOut(function(){
-        $('.other-page').empty();
-        $('.card').fadeIn();
-        $('#datagrid').DataTable().ajax.reload();
-        });
+    //     $('.other-page').fadeOut(function(){
+    //     $('.other-page').empty();
+    //     $('.card').fadeIn();
+    //     $('#datagrid').DataTable().ajax.reload();
+    // });
+    var noSurat = $('#nomor_surat_masuk').val();
+    window.location = `{{ route('surat-disposisi') }}?redirect=buat-baru&idsurat=${data.data.id_surat_masuk}&nosurat=${data.data.no_agenda}&nosuratmasuk=${data.data.nomor_surat_masuk}&namapengirim=${data.data.pengirim.nama_instansi}&isiringkas=${data.data.isi_ringkas_surat}`
     } else if(data.status == 'error') {
         $('.btn-submit');
         Lobibox.notify('error', {
