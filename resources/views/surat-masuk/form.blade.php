@@ -140,6 +140,8 @@ $('.btn-cancel').click(function(e){
 });
 
 $('.btn-submit').click(function(e){
+  const levelUser = "{{ Auth::user()->level_user }}"
+  console.log(levelUser);
  e.preventDefault();
     // $('.btn-submit').html('Please wait...').attr('disabled', true);
     $('.btn-submit');
@@ -167,13 +169,16 @@ $('.btn-submit').click(function(e){
         sound:false,
         msg: data.message
       });
-    //     $('.other-page').fadeOut(function(){
-    //     $('.other-page').empty();
-    //     $('.card').fadeIn();
-    //     $('#datagrid').DataTable().ajax.reload();
-    // });
     var noSurat = $('#nomor_surat_masuk').val();
-    window.location = `{{ route('surat-disposisi') }}?redirect=buat-baru&idsurat=${data.data.id_surat_masuk}&nosurat=${data.data.no_agenda}&nosuratmasuk=${data.data.nomor_surat_masuk}&namapengirim=${data.data.pengirim.nama_instansi}&isiringkas=${data.data.isi_ringkas_surat}`
+    if (levelUser == '2') {
+      window.location = `{{ route('surat-disposisi') }}?redirect=buat-baru&idsurat=${data.data.id_surat_masuk}&nosurat=${data.data.no_agenda}&nosuratmasuk=${data.data.nomor_surat_masuk}&namapengirim=${data.data.pengirim.nama_instansi}&isiringkas=${data.data.isi_ringkas_surat}`
+    } else {
+        $('.other-page').fadeOut(function(){
+            $('.other-page').empty();
+            $('.card').fadeIn();
+            $('#datagrid').DataTable().ajax.reload();
+        });
+    }
     } else if(data.status == 'error') {
         $('.btn-submit');
         Lobibox.notify('error', {
