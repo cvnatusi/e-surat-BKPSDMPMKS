@@ -85,7 +85,7 @@
         <label for="jenis_surat_id" class="form-label">&nbsp</label>
 
           <input class="form-check-input" checked name="sampai_bkpsdm" @if (!empty($data)) {{ ($data->sampai_bkpsdm ?? 'N') == 'Y' ? 'checked' : ''}} @endif value="Y" type="checkbox" style="transform: scale(2.0);" value="" id="flexCheckDefault">
-          <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Sampaikan surat ini kepada Kepala Badan BKPSDM</label>
+          <label class="form-check-label" for="flexCheckDefault" style="padding-left: 1em;">Dispo</label>
         </div>
       </div>
       <hr>
