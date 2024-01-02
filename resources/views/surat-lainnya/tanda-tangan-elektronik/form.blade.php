@@ -317,6 +317,7 @@
 					});
 				});
 
+				// draggable footer
 				dragElement(document.getElementById("footer"));
 				function dragElement(elmnt) {
 					var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -359,6 +360,82 @@
 					document.onmousemove = null;
 					}
 				};
+			
+				
+
+				function dragElement(elmnt) {
+				var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+				if (document.getElementById(elmnt.id + "header")) {
+					// Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
+					document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+				} else {
+					// Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
+					elmnt.onmousedown = dragMouseDown;
+				}
+
+				function dragMouseDown(e) {
+					e = e || window.event;
+					e.preventDefault();
+					// Dapatkan posisi kursor mouse saat memulai:
+					pos3 = e.clientX;
+					pos4 = e.clientY;
+					document.onmouseup = closeDragElement;
+					// Panggil fungsi setiap kali kursor bergerak:
+					document.onmousemove = elementDrag;
+				}
+
+				function elementDrag(e) {
+					e = e || window.event;
+					e.preventDefault();
+					// Hitung posisi kursor baru:
+					pos1 = pos3 - e.clientX;
+					pos2 = pos4 - e.clientY;
+					pos3 = e.clientX;
+					pos4 = e.clientY;
+					// Tetapkan posisi baru elemen:
+					elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+					elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+
+					// Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
+					drawBarcodeOnCanvas(elmnt, pos3, pos4);
+				}
+
+				function closeDragElement() {
+					// Berhenti menggeser ketika tombol mouse dilepas:
+					document.onmouseup = null;
+					document.onmousemove = null;
+				}
+				}
+
+				function drawBarcodeOnCanvas(elmnt, posX, posY) {
+				console.log(posX, posY);
+				const canvas = document.getElementById('pdfCanvas');
+				const ctx = canvas.getContext('2d');
+				const penandaTangan = $('#pilihanGambar').val();
+
+				// Ambil posisi elemen "mydiv" dan gambar barcode
+				var qrcode = document.getElementById('mydivheader');
+				var optik = document.getElementById('mydivheader2');
+
+				// penandaTangan===0 {qrcode} start
+				var image = qrcode;
+				var divX = parseInt(posX);
+				var divY = parseInt(posY);
+				// penandaTangan===0 {qrcode} end
+
+				if (penandaTangan === '52') { // penandaTangan === 52 {optik}
+					image = optik;
+					divX = parseInt(posX);
+					divY = parseInt(posY);
+				}
+
+				const width = 90;
+				const height = 90;
+
+				ctx.drawImage(image, divX, divY, width, height);
+				}
+
+
 
 
 				// Inisialisasi variabel global untuk menyimpan posisi elemen yang digerakkan

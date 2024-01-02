@@ -67,7 +67,7 @@
                             </div>
                             <div class="col-md-3">
                                 <input type="text" class="form-control col-md-1" name="no_surat1" id="no_surat1"
-                                    @if (!empty($data)) value="{{ $data->no_surat1 }}" @endif>
+                                    @if (!empty($data)) value="{{ $data->no_surat1 + 1}}" @endif>
                             </div>
                             <div class="col-md-3">
                                 <input type="text" value="432.403" class="form-control col-md-1" name="no_surat3"
@@ -112,6 +112,7 @@
                             @endforeach
                             @endif
                         </select>
+
                         <!-- <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]" id="tujuan_surat_id">
               @if (!empty($data))
                 @if (
@@ -126,8 +127,8 @@
                       <option value="{{ $inst->id_mst_asn }}" @if (!empty($data)) @php $ins = explode(",",$data->tujuan_surat_id); @endphp @foreach ($ins as $key) @if ($inst->id_mst_asn == $key) selected @endif @endforeach @endif>{{ $inst->nama_asn }}</option>
                       @endforeach
                     @endif
-@else
-@if (!empty($instansi))
+                    @else
+                    @if (!empty($instansi))
                       @foreach ($instansi as $inst)
                         <option value="{{ $inst->id_instansi }}" @if (!empty($data)) @php $ins = explode(",",$data->tujuan_surat_id); @endphp @foreach ($ins as $key) @if ($inst->id_instansi == $key) selected @endif @endforeach @endif>{{ $inst->nama_instansi }}</option>
                         @endforeach
@@ -158,8 +159,8 @@
                         <label for="isi_ringkas_surat" class="form-label">Isi Ringkas Surat *</label>
                         <textarea rows="3" cols="80" class="form-control" placeholder="Ketikkan isi ringkas surat"
                             name="isi_ringkas_surat" id="isi_ringkas_surat">
-@if (!empty($data)){{ $data->isi_ringkas_surat }}@endif
-</textarea>
+                            @if (!empty($data)){{ $data->isi_ringkas_surat }}@endif
+                        </textarea>
                     </div>
 
                     <div class="col-md-12">
@@ -177,7 +178,7 @@
                     <div class="col-md-12 panelSuratTugas" style="display:none">
                         <div class="row">
                             <div class="col-md-6">
-                                <label for="tanggal_mulai" class="form-label">Tanggal Mulai *</label>
+                                <label for="tanggal_mulai"  class="form-label">Tanggal Mulai *</label>
                                 <input type="date" class="form-control" name="tanggal_mulai" id="tanggal_mulai"
                                     @if (!empty($surat_tugas)) value="{{ $surat_tugas->tanggal_mulai }}" @else value="{{ date('Y-m-d') }}" @endif>
                             </div>
@@ -249,6 +250,7 @@
     var onLoad = (function() {
         $('.panel-form').animateCss('bounceInUp');
         // $('.panelSuratManual').hide();
+
         $('.tujuan_surat').select2({
             theme: 'bootstrap4',
             width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' :

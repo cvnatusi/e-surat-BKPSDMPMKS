@@ -54,14 +54,14 @@ class SuratKeluarController extends Controller
 					}else {
 						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					}
-					
+
 					$btn .='</div></div>';
 					return $btn;
 				}
 
 
 
-					
+
 					// $btn = '<a href="javascript:void(0)" onclick="showSuratTugas('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					// if ($row->verifikasi_kaban == 'N') {
 					// 	$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
@@ -233,11 +233,11 @@ class SuratKeluarController extends Controller
 					}
 					// CEK KETIKA USER BUAT SURAT ELEKTRONIK, DISINI GENERATEKAN NOMOR SURAT OTOMATIS
 					if ($request->buatSuratElektronik == 'Y') {
-						$noSurat = $kodeJenisSurat.'/E.XXX/432.403/'.$request->no_surat4;
-						// $noSurat = $kodeJenisSurat.'/E.'.$noUrutSurat.'/432.403/'.$request->no_surat4;
+						// $noSurat = $kodeJenisSurat.'/E.XXX/432.403/'.$request->no_surat4;
+						$noSurat = $kodeJenisSurat.'/E.'.$noUrutSurat.'/432.403/'.$request->no_surat4;
 					}else {
-						$noSurat = $kodeJenisSurat.'/XXX/432.403/'.$request->no_surat4;
-						// $noSurat = $kodeJenisSurat.'/'.$noUrutSurat.'/432.403/'.$request->no_surat4;
+						// $noSurat = $kodeJenisSurat.'/XXX/432.403/'.$request->no_surat4;
+						$noSurat = $kodeJenisSurat.'/'.$noUrutSurat.'/432.403/'.$request->no_surat4;
 					}
 					$newdata->nomor_surat_keluar = $noSurat;
 				}
@@ -441,4 +441,5 @@ class SuratKeluarController extends Controller
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
+
 }

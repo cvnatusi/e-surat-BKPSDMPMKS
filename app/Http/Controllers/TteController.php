@@ -90,7 +90,7 @@ class TteController extends Controller
 	}
 
 	public function savePDF(Request $request){
-		return $request->all();
+		// return $request->all();
 		// return 'test';
 		try {
 				DB::beginTransaction();

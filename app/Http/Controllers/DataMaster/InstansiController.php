@@ -81,6 +81,7 @@ class InstansiController extends Controller
 			$newdata->kode_instansi = $request->kode_instansi;
 			$newdata->nama_instansi = $request->nama_instansi;
 			$newdata->alamat = $request->alamat;
+            $newdata->pimpinan_unit_kerja = $request->unit_kerja;
 			$newdata->nama_kota = $request->nama_kota;
 			$newdata->no_telepon = $request->no_telepon;
 			$newdata->no_fax = $request->no_fax;
@@ -89,6 +90,7 @@ class InstansiController extends Controller
 			DB::commit();
 			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
 			return response()->json($return);
+			// return $newdata;
 		}catch(\Exception $e){
 			DB::rollback();
 			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];

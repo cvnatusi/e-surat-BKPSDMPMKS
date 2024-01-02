@@ -8,7 +8,7 @@
     <hr>
     <form class="row g-3 form-save">
       @if(!empty($data))
-          <input type="hidden" class="form-control" name="id" value="{{$data->id_instansi}}">
+          <input type="hidden" class="form-control" name="id" id="id" value="{{$data->id_instansi}}">
       @endif
       <div class="col-md-6">
         <label for="kode_instansi" class="form-label">Kode Instansi *)</label>
@@ -36,10 +36,14 @@
           @endif
         </select>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label for="alamat" class="form-label">Alamat *)</label>
         <input type="text" class="form-control" name="alamat" id="alamat" @if(!empty($data)) value="{{$data->alamat}}" @endif placeholder="Alamat">
       </div>
+    <div class="col-md-6">
+        <label for="alamat" class="form-label">Pimpinan Unit Kerja *)</label>
+        <input type="text" class="form-control" name="unit_kerja" id="unit_kerja" @if(!empty($data)) value="{{$data->pimpinan_unit_kerja}}" @endif placeholder="Pimpinan Unit Kerja">
+    </div>
       <div class="col-md-6">
         <label for="no_telepon" class="form-label">No Telepon *)</label>
         <input type="text" class="form-control" name="no_telepon" id="no_telepon" @if(!empty($data)) value="{{$data->no_telepon}}" @endif placeholder="No Telepon">

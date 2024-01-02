@@ -24,7 +24,7 @@
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal">
                     </div>
-                    
+
                 </div>
                 <hr>
             </div>
@@ -65,6 +65,14 @@
         })
 
         $(document).ready(function() {
+            const getQueryString = window.location.search;
+            const urlParams = new URLSearchParams(getQueryString);
+            const product = urlParams.get('redirect')
+            console.log(product);
+
+            if(product == 'buat-baru'){
+                $('.btn-add').trigger('click');
+            }
             var date = new Date();
             var day = date.getDate();
             var day1 = date.getDate() + 1;
