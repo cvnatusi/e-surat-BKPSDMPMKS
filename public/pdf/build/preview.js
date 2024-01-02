@@ -19,29 +19,6 @@
 //       document.onmousemove = elementDrag;
 //     }
   
-<<<<<<< HEAD
-    function elementDrag(e) {
-      e = e || window.onload;
-      e.preventDefault();
-      // calculate the new cursor position:
-      pos1 = pos3 - e.clientX;
-      pos2 = pos4 - e.clientY;
-      pos3 = e.clientX;
-      pos4 = e.clientY;
-      // set the element's new position:
-      elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-      elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-      // console.log(pos1,pos2,"X :"+pos3,"Y :"+pos4);
-      console.log('asflajn[oinv');
-    }
-  
-    function closeDragElement() {
-      // stop moving when mouse button is released:
-      document.onmouseup = null;
-      document.onmousemove = null;
-    }
-};
-=======
 //     function elementDrag(e) {
 //       e = e || window.onload;
 //       e.preventDefault();
@@ -62,7 +39,6 @@
 //       document.onmousemove = null;
 //     }
 //   };
->>>>>>> 2dbc5519e702f12f45574effc275407a9e14e8cb
   
 //   dragElement(document.getElementById("mydiv")); // qrcode
 //   dragElement(document.getElementById("mydiv2")); // optik
@@ -121,7 +97,7 @@ $(document).ready(function () {
     
           // Load and render the first page of the PDF
           pdfjsLib.getDocument({ data: buffer }).promise.then(function (pdfDoc) {
-            const canvas = document.getElementById('canvas');
+            const canvas = document.getElementById('pdfCanvas');
             const context = canvas.getContext('2d');
             let pageNum = 1;
     

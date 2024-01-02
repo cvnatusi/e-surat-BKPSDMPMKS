@@ -45,7 +45,7 @@
                         <td>TANGGAL TERIMA</td>
                         <td>PERIHAL SURAT</td>
                         <td>PENGIRIM SURAT</td>
-                        <td>INSTANSI</td>
+                        {{-- <td>INSTANSI</td> --}}
                         {{-- <td>JENIS SURAT</td> --}}
                         {{-- <td>SIFAT SURAT</td> --}}
                         {{-- <td>TANGGAL SURAT</td> --}}
@@ -163,13 +163,13 @@
                             return '<p style="color:black">' + data + '</p>';
                         }
                     },
-                    {
-                        data: 'singkatan',
-                        name: 'singkatan',
-                        render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
-                        }
-                    },
+                    // {
+                    //     data: 'singkatan',
+                    //     name: 'singkatan',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     // {
                     //   data: 'sifat.nama_sifat_surat',
                     //   name: 'sifat.nama_sifat_surat',

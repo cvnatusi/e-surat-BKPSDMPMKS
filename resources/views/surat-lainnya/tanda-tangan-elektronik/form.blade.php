@@ -160,15 +160,12 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" type="text/javascript" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
 		<script src="{{asset('pdf/build/preview.js')}}"></script>
+
+		{{-- <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script> --}}
 		<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script>
 		<script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script>
 
-		<script>
-			
-
-			
-		</script>
 
 <script type="text/javascript">
 			const gambar = document.getElementById('mydiv');
@@ -183,7 +180,7 @@
 			.draggable({
 				// enable inertial throwing
 				inertia: true,
-				// keep the element within the area of it's parent
+				// keep the element within the area of its parent
 				modifiers: [
 				interact.modifiers.restrictRect({
 					restriction: 'parent',
@@ -198,34 +195,34 @@
 				move: dragMoveListener,
 
 				// call this function on every dragend event
-				end (event) {
-					var textEl = event.target.querySelector('p')
+				end(event) {
+					var textEl = event.target.querySelector('p');
 
 					textEl && (textEl.textContent =
 					'moved a distance of ' +
 					(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
-								Math.pow(event.pageY - event.y0, 2) | 0))
-						.toFixed(2) + 'px')
+						Math.pow(event.pageY - event.y0, 2) | 0))
+					.toFixed(2) + 'px');
 				}
 				}
-			})
+			});
 
-			function dragMoveListener (event) {
-			var target = event.target0
+			function dragMoveListener(event) {
+			var target = event.target;
 			// keep the dragged position in the data-x/data-y attributes
-			var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-			var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+			var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+			var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
 			// translate the element
-			target.style.transform = 'translate(' + x + 'px, ' + y + 'px)'
+			target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 			console.log('translate(' + x + 'px, ' + y + 'px)');
 
-			// update the posiion attributes
-			target.setAttribute('data-x', x)
-			target.setAttribute('data-y', y)
-
+			// update the position attributes
+			target.setAttribute('data-x', x);
+			target.setAttribute('data-y', y);
 			}
 			// End =====>
+
 
 			function drawBarcode(x, y) {
 				let canvas = document.getElementById("pdfCanvas");

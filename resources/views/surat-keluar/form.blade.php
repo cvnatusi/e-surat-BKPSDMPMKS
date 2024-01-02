@@ -18,6 +18,14 @@
                         @endif
                     @endif
 
+                    {{-- tanggal surat --}}
+                    <div class="col-md-12">
+                        <label for="tanggal_surat" class="form-label">Tanggal Surat *</label>
+                        <input type="date"
+                            @if (!empty($data)) value="{{ date('Y-m-d', strtotime($data->tanggal_surat)) }}" @else value="{{ date('Y-m-d') }}" @endif
+                            class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat">
+                    </div>
+
                     {{-- jenis surat --}}
                     <div class="col-md-12">
                         <label for="jenis_surat_id" class="form-label">Jenis Surat *</label>
@@ -136,14 +144,6 @@
                     @endif
               @endif -->
                         </select>
-                    </div>
-
-                    {{-- tanggal surat --}}
-                    <div class="col-md-12">
-                        <label for="tanggal_surat" class="form-label">Tanggal Surat *</label>
-                        <input type="date"
-                            @if (!empty($data)) value="{{ date('Y-m-d', strtotime($data->tanggal_surat)) }}" @else value="{{ date('Y-m-d') }}" @endif
-                            class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat">
                     </div>
 
                     {{-- perihal surat --}}
