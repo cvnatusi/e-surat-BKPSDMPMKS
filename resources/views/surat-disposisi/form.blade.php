@@ -22,15 +22,18 @@
           @endif
         </select> --}}
         <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
-         <input type="text" readonly class="form-control" value="" id="nomor_agenda" value="">
-         {{-- <select class="form-select surat_masuk" name="nomor_agenda" id="nomor_agenda">
-            <option value="">-- Pilih No Agenda --</option>
-            @if (!empty($surat_masuk))
-              @foreach ($surat_masuk as $sm)
-                <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
-              @endforeach
-            @endif
-          </select> --}}
+        @if (Auth::user()->level_user == 2) 
+          <input type="text" readonly class="form-control" value="" id="nomor_agenda" value="">
+        @else 
+          <select class="form-select surat_masuk" name="surat_masuk_id" id="surat_masuk_id">
+             <option value="">-- Pilih No Agenda --</option>
+             @if (!empty($surat_masuk))
+               @foreach ($surat_masuk as $sm)
+                 <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
+               @endforeach
+             @endif
+           </select>
+        @endif
       </div>
       <div class="col-md-4">
         <label for="" class="form-label">No Surat</label>
