@@ -11,8 +11,8 @@ use Validator;
 
 class AuthController extends Controller
 {
-    protected $redirectTo = '/home';
-    // protected $redirectTo = '/login';
+    // protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     public function __construct()
     {

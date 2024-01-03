@@ -45,7 +45,7 @@ use App\Models\PenandaTanganSurat as ModelsPenandaTanganSurat;
 */
 
 
-Route::get('/', [AuthController::class, 'home'])->name('home');
+Route::get('/', [AuthController::class, 'login'])->name('home');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/doLogin', [AuthController::class, 'doLogin'])->name('doLogin');
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
@@ -189,6 +189,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/destroy', [SuratDisposisiController::class, 'destroy'])->name('destroy-surat-disposisi');
 			Route::post('/show', [SuratDisposisiController::class, 'show'])->name('show-surat-disposisi');
 			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
+			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
 		});
 		Route::group(array('prefix' => 'surat-lainnya'), function () {
 			Route::group(array('prefix' => 'utama-surat-bast'), function () {
