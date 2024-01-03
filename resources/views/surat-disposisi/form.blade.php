@@ -23,9 +23,9 @@
         </select> --}}
         <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
         @if (Auth::user()->level_user == 2) 
-          <input type="text" readonly class="form-control" value="" id="nomor_agenda" value="">
+          <input type="text" readonly class="form-control" value="" id="nomor_agenda">
         @else 
-          <select class="form-select surat_masuk" name="surat_masuk_id" id="surat_masuk_id">
+          <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
              <option value="">-- Pilih No Agenda --</option>
              @if (!empty($surat_masuk))
                @foreach ($surat_masuk as $sm)
@@ -36,15 +36,15 @@
         @endif
       </div>
       <div class="col-md-4">
-        <label for="" class="form-label">No Surat</label>
+        <label for="" class="form-label">No Surat *)</label>
         <input type="text" class="form-control" readonly name="no_surat_masuk" id="no_surat_masuk" value="">
       </div>
       <div class="col-md-4">
-        <label for="" class="form-label">Nama Pengirim</label>
+        <label for="" class="form-label">Nama Pengirim *)</label>
         <input type="text" class="form-control" readonly name="nama_pengirim" id="nama_pengirim" value="">
       </div>
       <div class="col-md-12">
-        <label for="" class="form-label">Isi Ringkas</label>
+        <label for="" class="form-label">Isi Ringkas *)</label>
         <input type="text" class="form-control" readonly name="isi_ringkas" id="isi_ringkas" value="">
       </div>
       <div class="col-md-6">
@@ -342,6 +342,33 @@ $('.btn-submit').click(function(e){
           }
         },
       });
+
+      function trigger_suratMasuk(ini) {
+        let id = $(ini).find(':selected').val();
+        getSuratMasuk(id);
+      }
+
+      function getSuratMasuk(id) {
+        $.ajax({
+          type: 'GET',
+          url: "{{ route('get-surat-masuk') }}",
+          data: {
+                id: id,
+                _token: '{{ csrf_token() }}' 
+            },
+          success: function(data){
+            if (data && data.data && data.data.surat_masuk) {
+                $('#no_surat_masuk').val(data.data.surat_masuk.nomor_surat_masuk);
+                $('#nama_pengirim').val(data.data.surat_masuk.pengirim.nama_instansi);
+                $('#isi_ringkas').val(data.data.surat_masuk.isi_ringkas_surat);
+            } else {
+                $('#no_surat_masuk').val('undefined');
+                $('#nama_pengirim').val('undefined');
+                $('#isi_ringkas').val('undefined');
+            }
+          }
+        })
+      }
 
 $(document).ready(function () {
     const getQueryString = window.location.search;

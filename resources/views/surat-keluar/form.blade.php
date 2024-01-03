@@ -9,6 +9,7 @@
                 </div>
                 <hr>
                 <form class="row g-3 form-save">
+                    <input type="hidden" name="user_id" id="user_id" value="{{ Auth::user()->id }}">
                     @if (!empty($data))
                         <input type="hidden" class="form-control" name="id" id="id"
                             value="{{ $data->id_surat_keluar }}">

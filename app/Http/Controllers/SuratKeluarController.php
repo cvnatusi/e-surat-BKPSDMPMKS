@@ -42,9 +42,14 @@ class SuratKeluarController extends Controller
 					if ($row->is_verif == true) {
 						$btn .= '<a href="javascript:void(0)" onclick="editDisabledForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					}else {
-						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+						// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					}
-					$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					// $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					if (Auth::user()->id == $row->user_id || Auth::user()->level_user == 1) {
+						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';	
+						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					} else {
+					}
 					$btn .='</div></div>';
 					return $btn;
 				   }else {
@@ -52,7 +57,7 @@ class SuratKeluarController extends Controller
 					if ($row->is_verif == true) {
 						$btn .= '<a href="javascript:void(0)" onclick="editDisabledForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					}else {
-						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+						// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					}
 
 					$btn .='</div></div>';
@@ -248,6 +253,7 @@ class SuratKeluarController extends Controller
 			$newdata->tanggal_surat = $request->tanggal_surat;
 			$newdata->perihal_surat = $request->perihal_surat;
 			$newdata->isi_ringkas_surat = $request->isi_ringkas_surat;
+			$newdata->user_id = $request->user_id;
 			if (!empty($request->ttd)) {
 				$newdata->ttd = $request->ttd;
 			}else {

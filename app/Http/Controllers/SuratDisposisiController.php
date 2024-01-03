@@ -202,23 +202,34 @@ class SuratDisposisiController extends Controller
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
-  public function cetakSD(Request $request)
-  {
-    $data['data'] = SuratDisposisi::with(['suratMasukId'])->find(11);
-		$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
-    $data['penerima'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->penerima_disposisi_id)->first();
-    $data['dengan_harap'] = DenganHarap::get();
 
-    // $ttd = '1. TTD Pada Tanggal :'.$data['data']->tanggal_surat.' 2. Oleh :'.$data['asn']->nama_asn.'  3. NIP: '.$data['asn']->nip;
-    // $data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
-    // $data['qr'] = base64_encode(QrCode::format('png')->size(200)->merge('/public/assets/images/logo-icon.png', .4)->errorCorrection('H')->generate($ttd));
-    // return $data;
-    // $dompdf = new PDF();
-    $dompdf = PDF::loadView('cetakan.surat_disposisi', $data)
-                  ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
-    // Render the HTML as PDF
-    $dompdf->render();
-    // Output the generated PDF to Browser
-  return  $dompdf->stream();
-  }
+	public function getSuratMasuk(Request $request) {
+		$id = $request->query('id');
+		$data['surat_masuk'] = SuratMasuk::where('no_agenda', $id)->with('pengirim')->first();
+		// $data['instansi'] = Instansi::where('id_instansi', 1)->first();
+		return response()->json([
+            'status_code' => 200, 
+            'data' => $data
+        ]);
+	}
+
+	public function cetakSD(Request $request)
+	{
+		$data['data'] = SuratDisposisi::with(['suratMasukId'])->find(11);
+			$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
+		$data['penerima'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->penerima_disposisi_id)->first();
+		$data['dengan_harap'] = DenganHarap::get();
+
+		// $ttd = '1. TTD Pada Tanggal :'.$data['data']->tanggal_surat.' 2. Oleh :'.$data['asn']->nama_asn.'  3. NIP: '.$data['asn']->nip;
+		// $data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
+		// $data['qr'] = base64_encode(QrCode::format('png')->size(200)->merge('/public/assets/images/logo-icon.png', .4)->errorCorrection('H')->generate($ttd));
+		// return $data;
+		// $dompdf = new PDF();
+		$dompdf = PDF::loadView('cetakan.surat_disposisi', $data)
+					->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+		// Render the HTML as PDF
+		$dompdf->render();
+		// Output the generated PDF to Browser
+		return  $dompdf->stream();
+	}
 }
