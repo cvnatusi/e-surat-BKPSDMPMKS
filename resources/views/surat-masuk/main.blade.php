@@ -15,12 +15,12 @@
                         <button type="button" class="btn btn-primary btn-add form-control"><i
                                 class="bx bx-plus me-1"></i>Surat Baru</button>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2" id="cetak_all" style="display: none">
                         <label class="form-label">Cetak Semua Surat</label>
-                        <button type="button" class="btn btn-primary btn-a form-control"><i
+                        <button type="button" onclick="printAll()" class="btn btn-primary btn-a form-control"><i
                             class="bx bx-printer me-1"></i>Cetak</button>
                     </div>
-                    <div class="col-md-2"></div>
+                    <div class="col-md-4" id="span"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -66,6 +66,41 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+    function checkedRow() {
+        var selectedRow = 0;
+        $("input:checkbox[name=check]:checked").each(function() {
+            selectedRow++;
+        });
+        if (selectedRow == 3) {
+            $('#cetak_all').css('display', 'block');
+            $('#span').removeClass('col-md-4').addClass('col-md-2');
+        } else {
+            $('#cetak_all').css('display', 'none');
+            $('#span').removeClass('col-md-2').addClass('col-md-4');
+        }
+    }
+
+    function printAll() {
+        var selectedRow = 0;
+        $("input:checkbox[name=check]:checked").each(function() {
+            selectedRow++;
+        });
+        $.ajax({
+            url: "{{ route('surat-dispos-kosong') }}",
+            method: 'GET',
+            dataType: 'json',
+            success: function (response) {
+                var w = window.open();
+                for (var i = 0; i < selectedRow; i++) {
+                    $(w.document.body).append(response.html);
+                }
+                w.print();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+    }
         // filter tanggal awal akhir
         $('#min').change(() => {
             var start = $('#min').val()
@@ -234,15 +269,18 @@
             });
         }
 
-        function downloadTemplate(id) {
-            // $('.main-page').hide();
-            $.post("{!! route('download-template-surat') !!}", {
-                id: id
-            }).done(function(data) {
-                if (data.status == 'success') {
-                    $('.modal-page').html(data.content).fadeIn();
-                } else {
-                    $('.main-page').show();
+        function downloadTemplate() {
+            $.ajax({
+                url: "{{ route('surat-dispos-kosong') }}",
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var w = window.open();
+                    $(w.document.body).html(response.html);
+                    w.print();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
                 }
             });
         }
