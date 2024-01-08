@@ -13,14 +13,14 @@
                 <div class="row">
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
-                        <input type="date" id="min" class="form-control datepickertanggal">
+                        <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" id="max" class="form-control datepickertanggal">
+                        <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
                 </div>
-                <hr>
+                {{-- <hr> --}}
             </div>
             <div class="table-responsive">
                 {{-- <button type="button" class="btn btn-primary px-5 mb-1 btn-add"><i class="bx bx-plus me-1"></i>Tambah</button> --}}
@@ -58,20 +58,23 @@
         })
 
         $(document).ready(function() {
-            var date = new Date();
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
+            // var date = new Date();
+            // var day = date.getDate();
+            // var month = date.getMonth() + 1;
+            // var year = date.getFullYear();
 
-            if (month < 10) month = "0" + month;
-            if (day < 10) day = "0" + day;
+            // if (month < 10) month = "0" + month;
+            // if (day < 10) day = "0" + day;
 
-            var today = year + "-" + month + "-" + day;
-            $("#min").attr("value", today);
-            $("#max").attr("value", today);
+            // var today = year + "-" + month + "-" + day;
+            // $("#min").attr("value", today);
+            // $("#max").attr("value", today);
 
-            //initial run
-            loadTable(today, today);
+            // //initial run
+            // loadTable(today, today);
+            var start = $('#min').val()
+            var end = $('#max').val()
+            loadTable(start, end);
         });
 
 
@@ -80,6 +83,7 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
+                "pageLength": 25,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },

@@ -23,7 +23,15 @@
         </select> --}}
         <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
         @if (Auth::user()->level_user == 2) 
-          <input type="text" readonly class="form-control" value="" id="nomor_agenda">
+          <input type="text" onchange="trigger_suratMasuk(this)" class="form-control" value="" id="nomor_agenda">
+          {{-- <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
+             <option value="">-- Pilih No Agenda --</option>
+             @if (!empty($surat_masuk))
+               @foreach ($surat_masuk as $sm)
+                 <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
+               @endforeach
+             @endif
+           </select> --}}
         @else 
           <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
              <option value="">-- Pilih No Agenda --</option>
@@ -117,7 +125,8 @@
 <script type="text/javascript">
 var onLoad = (function() {
   $('.panel-form').animateCss('bounceInUp');
-  $('.surat_masuk').select2({
+  $('.surat_masuk').select2({ 
+      // $('#surat_masuk_id').
       theme: 'bootstrap4',
       width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
       placeholder: $(this).data('placeholder'),
@@ -344,7 +353,8 @@ $('.btn-submit').click(function(e){
       });
 
       function trigger_suratMasuk(ini) {
-        let id = $(ini).find(':selected').val();
+        // let id = $(ini).find(':selected').val();
+        let id = $(ini).val();
         getSuratMasuk(id);
       }
 

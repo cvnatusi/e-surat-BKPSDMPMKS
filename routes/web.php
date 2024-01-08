@@ -144,6 +144,8 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/show', [SuratMasukController::class, 'show'])->name('show-surat-masuk');
 			Route::post('/getSuratMasukByAgenda', [SuratMasukController::class, 'getSuratMasukByAgenda'])->name('getSuratMasukByAgenda');
 			Route::post('/multiPrintDisposisi', [SuratMasukController::class, 'multiPrintDisposisi'])->name('multiPrintDisposisi');
+			Route::post('/show-timeline', [SuratMasukController::class, 'showTimeline'])->name('show-timeline-surat-masuk');
+			Route::post('download-template', [SuratMasukController::class, 'downloadTemplate'])->name('download-template-surat');
 		});
 
 		Route::group(array('prefix' => 'surat-keluar'), function () {

@@ -8,6 +8,7 @@ use App\Models\SifatSurat;
 use App\Models\SuratMasuk;
 use App\Models\Instansi;
 use App\Models\DenganHarap;
+use App\Models\TimelineSuratMasuk;
 
 use DataTables,Validator,DB,Hash,Auth,File,Storage,PDF;
 
@@ -56,19 +57,22 @@ class SuratMasukController extends Controller
 				})
 				->addColumn('action', function($row){
 					if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti
-						$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+						$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info " data-toggle="popover" data-trigger="hover" title="Lihat File Surat" ><i class="bx bx-show me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary "><i class="bx bx-download me-0"></i></a>';
 						return $btn;
 				   }else {
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
 					return $btn;
 				}
 
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input" id="check_('.$row->id_surat_masuk.')" name="check[]" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input " id="check_('.$row->id_surat_masuk.')" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
@@ -92,6 +96,7 @@ class SuratMasukController extends Controller
 	}
 	public function store(Request $request)
 	{
+		// return $request->all();
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -120,7 +125,7 @@ class SuratMasukController extends Controller
 
 		$findAgendaTerakhir = SuratMasuk::whereYear('tanggal_terima_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_masuk','DESC')->count();
 		if ($findAgendaTerakhir == 0) {
-			$findAgendaTerakhir = 1;
+			$findAgendaTerakhir = 0;
 		}else {
 			$findAgendaTerakhir = $findAgendaTerakhir+1;
 		}
@@ -139,6 +144,7 @@ class SuratMasukController extends Controller
 		// }
 		try{
 			$newdata = (!empty($request->id)) ? SuratMasuk::find($request->id) : new SuratMasuk;
+			$newtimeline = New TimelineSuratMasuk;
 			if (!empty($request->id)) {
 				$newdata->no_agenda = $newdata->no_agenda;
 			}else {
@@ -226,6 +232,20 @@ class SuratMasukController extends Controller
 		}
 	}
 
+	public function showTimeline(Request $request)
+	{
+		try {
+			$data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
+			// $data['jenis_surat'] = JenisSurat::get();
+			// $data['sifat_surat'] = SifatSurat::get();
+			// $data['instansi'] = Instansi::get();
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'timeline', $data)->render();
+			return ['status' => 'success', 'content' => $content, 'data' => $data];
+		} catch (\Exception $e) {
+			return ['status' => 'error', 'content' => '','errMsg'=>$e];
+		}
+	}
+
 	public function getSuratMasukByAgenda(Request $request)
 	{
 		$data = SuratMasuk::where('no_agenda', $request->id)->get();
@@ -250,6 +270,19 @@ class SuratMasukController extends Controller
 			return ['status' => 'error','errMsg'=>$e];
 		}
 
+	}
+
+	public function downloadTemplate(Request $request) {
+		try {
+			$data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
+			// $data['jenis_surat'] = JenisSurat::get();
+			// $data['sifat_surat'] = SifatSurat::get();
+			// $data['instansi'] = Instansi::get();
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'template', $data)->render();
+			return ['status' => 'success', 'content' => $content, 'data' => $data];
+		} catch (\Exception $e) {
+			return ['status' => 'error', 'content' => '','errMsg'=>$e];
+		}
 	}
 
 }

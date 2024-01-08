@@ -40,7 +40,7 @@
       </div>
       <div class="col-md-4">
         <label for="jumlah" class="form-label">Jumlah</label>
-        <input type="number" @if(!empty($data)) value="{{$data->jumlah}}" @else value="" @endif class="form-control jumlah" name="jumlah" id="jumlah" placeholder="Rp">
+        <input type="text" @if(!empty($data)) value="{{$data->jumlah}}" @else value="" @endif class="form-control jumlah" name="jumlah" id="jumlah" placeholder="Rp">
       </div>
       <div class="col-md-4">
         <label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
@@ -173,6 +173,40 @@ $('.btn-submit').click(function(e){
       });
     });
 });
+
+$(document).ready(function () { 
+});
+$('.jumlah').on('input', function () {
+  this.value = this.value.replace(/[^0-9]/g, ''); // Hanya mengizinkan angka
+});
+
+$('#jumlah').on('input', function () {
+		var input = this;
+		var value = input.value;
+
+		// Hapus semua karakter selain angka
+		var unformattedValue = unformatRupiah(value);
+
+		// Ubah format angka dengan titik sebagai pemisah ribuan
+		var formattedValue = formatRupiah(unformattedValue);
+
+		// Tambahkan "Rp" sebagai awalan
+		input.value = 'Rp. ' +  formattedValue; // 'Rp. ' + 
+	});
+
+	// Fungsi untuk menghapus semua karakter non-digit
+	function unformatRupiah(angka) {
+		return angka.replace(/\D/g, '');
+	}
+
+	// Fungsi untuk mengubah format angka menjadi rupiah
+	function formatRupiah(angka) {
+		var reverse = angka.toString().split('').reverse().join('');
+		var ribuan = reverse.match(/\d{1,3}/g);
+		var formatted = ribuan.join('.').split('').reverse().join('');
+		return formatted;
+	}
+
 
 // $('#nomor_surat_bast').keyup(function(){
 //   let no = this.value;

@@ -71,7 +71,7 @@ class SuratDisposisiController extends Controller
 		$validator = Validator::make(
 			$request->all(),
 			[
-				'surat_masuk_id' => 'required',
+				// 'surat_masuk_id' => 'required',
 				'pemberi_disposisi_id' => 'required',
 				'penerima_disposisi_id' => 'required',
 				'dengan_harap' => 'required',
@@ -205,8 +205,12 @@ class SuratDisposisiController extends Controller
 
 	public function getSuratMasuk(Request $request) {
 		$id = $request->query('id');
-		$data['surat_masuk'] = SuratMasuk::where('no_agenda', $id)->with('pengirim')->first();
-		// $data['instansi'] = Instansi::where('id_instansi', 1)->first();
+		$data['surat_masuk'] = SuratMasuk::where('no_agenda', $id)
+								->with('pengirim')
+								->orderByDesc('no_agenda')
+								->first();
+		// $data['surat_masuk'] = SuratMasuk::where('id_surat_masuk', $id)->with('pengirim')->first();
+		// return $data;
 		return response()->json([
             'status_code' => 200, 
             'data' => $data

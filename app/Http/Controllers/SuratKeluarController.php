@@ -189,9 +189,9 @@ class SuratKeluarController extends Controller
 
 		$findAgendaTerakhir = SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keluar','DESC')->count();
 		if ($findAgendaTerakhir == 0) {
-			$findAgendaTerakhir = 1;
+			$findAgendaTerakhir = 0;
 		}else {
-			$findAgendaTerakhir = $findAgendaTerakhir+1;
+			$findAgendaTerakhir = $findAgendaTerakhir + 1;
 		}
 		try{
 			$newdata = (!empty($request->id)) ? SuratKeluar::find($request->id) : new SuratKeluar;

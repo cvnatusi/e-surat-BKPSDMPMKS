@@ -18,11 +18,11 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
-                        <input type="date" id="min" class="form-control datepickertanggal">
+                        <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" id="max" class="form-control datepickertanggal">
+                        <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
                     
                 </div>
@@ -66,20 +66,23 @@
         })
 
         $(document).ready(function() {
-            var date = new Date();
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
+            // var date = new Date();
+            // var day = date.getDate();
+            // var month = date.getMonth() + 1;
+            // var year = date.getFullYear();
 
-            if (month < 10) month = "0" + month;
-            if (day < 10) day = "0" + day;
+            // if (month < 10) month = "0" + month;
+            // if (day < 10) day = "0" + day;
 
-            var today = year + "-" + month + "-" + day;
-            $("#min").attr("value", today);
-            $("#max").attr("value", today);
+            // var today = year + "-" + month + "-" + day;
+            // $("#min").attr("value", today);
+            // $("#max").attr("value", today);
 
             //initial run
-            loadTable(today, today);
+            // loadTable(today, today);
+            var start = $('#min').val()
+            var end = $('#max').val()
+            loadTable(start, end);
         });
 
         function loadTable(dateStart, dateEnd) {
@@ -87,6 +90,7 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
+                "pageLength": 25,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },
@@ -121,7 +125,8 @@
                         data: 'nomor_surat_keluar',
                         name: 'nomor_surat_keluar',
                         render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
+                            return '<button type="button" class="btn btn-sm btn-info">' + data + '</button>'
+                            // return '<p style="color:black">' + data + '</p>';
                         }
                     },
                     // {

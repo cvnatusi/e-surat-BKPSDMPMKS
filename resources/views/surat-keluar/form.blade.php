@@ -158,10 +158,11 @@
                     {{-- isi ringkas --}}
                     <div class="col-md-12">
                         <label for="isi_ringkas_surat" class="form-label">Isi Ringkas Surat *</label>
-                        <textarea rows="3" cols="80" class="form-control" placeholder="Ketikkan isi ringkas surat"
+                        {{-- <textarea rows="3" cols="80" class="form-control" placeholder="Ketikkan isi ringkas surat"
                             name="isi_ringkas_surat" id="isi_ringkas_surat">
                             @if (!empty($data)){{ $data->isi_ringkas_surat }}@endif
-                        </textarea>
+                        </textarea> --}}
+                        <textarea rows="3" cols="80" class="form-control" placeholder="Ketikkan isi ringkas surat" name="isi_ringkas_surat" id="isi_ringkas_surat">@if(!empty($data)){{$data->isi_ringkas_surat}}@endif</textarea>
                     </div>
 
                     <div class="col-md-12">

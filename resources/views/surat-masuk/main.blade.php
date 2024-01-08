@@ -15,14 +15,19 @@
                         <button type="button" class="btn btn-primary btn-add form-control"><i
                                 class="bx bx-plus me-1"></i>Surat Baru</button>
                     </div>
-                    <div class="col-md-4"></div>
+                    <div class="col-md-2">
+                        <label class="form-label">Cetak Semua Surat</label>
+                        <button type="button" class="btn btn-primary btn-a form-control"><i
+                            class="bx bx-printer me-1"></i>Cetak</button>
+                    </div>
+                    <div class="col-md-2"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
-                        <input type="date" id="min" class="form-control datepickertanggal">
+                        <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" id="max" class="form-control datepickertanggal">
+                        <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
                     
                 </div>
@@ -74,20 +79,24 @@
         })
 
         $(document).ready(function() {
-            var date = new Date();
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
+            // var date = new Date();
+            // // var day = date.getDate();
+            // // var month = date.getMonth() + 1;
+            // // var year = date.getFullYear();
+            // var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+            // console.log(firstDay);
+            // var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+            // // if (month < 10) month = "0" + month;
+            // // if (day < 10) day = "0" + day;
 
-            if (month < 10) month = "0" + month;
-            if (day < 10) day = "0" + day;
-
-            var today = year + "-" + month + "-" + day;
-            $("#min").attr("value", today);
-            $("#max").attr("value", today);
-
+            // // var today = year + "-" + month + "-" + day;
+            // $("#min").attr("value", firstDay);
+            // $("#max").attr("value", lastDay);
+            var start = $('#min').val()
+            var end = $('#max').val()
+            loadTable(start, end);
             //initial run
-            loadTable(today, today);
+            // loadTable(start, end);
         });
 
         function loadTable(dateStart, dateEnd) {
@@ -95,6 +104,7 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
+                "pageLength": 25,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },
@@ -114,8 +124,8 @@
                         searchable: false
                     },
                     {
-                        data: 'id_surat_masuk',
-                        name: 'id_surat_masuk',
+                        data: 'no_agenda',
+                        name: 'no_agenda',
                         render: function(data, type, row) {
                             return '<p style="color:black">' + data + '</p>';
                         }
@@ -131,7 +141,8 @@
                         data: 'nomor_surat_masuk',
                         name: 'nomor_surat_masuk',
                         render: function(data, type, row) {
-                            return '<p style="color:black">' + data + '</p>';
+                        return '<button type="button" class="btn btn-sm btn-info">' + data + '</button>'
+                            // return '<p style="color:black">' + data + '</p>';
                         }
                     },
 
@@ -211,6 +222,19 @@
         function showForm(id) {
             // $('.main-page').hide();
             $.post("{!! route('show-surat-masuk') !!}", {
+                id: id
+            }).done(function(data) {
+                if (data.status == 'success') {
+                    $('.modal-page').html(data.content).fadeIn();
+                } else {
+                    $('.main-page').show();
+                }
+            });
+        }
+
+        function downloadTemplate(id) {
+            // $('.main-page').hide();
+            $.post("{!! route('download-template-surat') !!}", {
                 id: id
             }).done(function(data) {
                 if (data.status == 'success') {
@@ -384,5 +408,33 @@
                 swal("MAAF !", "Tidak Ada Data yang Dipilih !!", "warning");
             }
         });
+
+        function timeLine(id) {
+            $('.main-page').hide();
+            $.post("{!! route('show-timeline-surat-masuk') !!}", {
+                id: id
+            }).done(function(data) {
+                if (data.status == 'success') {
+                    $('.other-page').html(data.content).fadeIn();
+                } else {
+                    $('.main-page').show();
+                }
+            });
+        }
+
+        function countChecked() {
+            var arrPegawai = [];
+            $("input:checkbox[name=check]:checked").each(function() {
+                var pegawaiId = $(this).data('id');
+                // checkedIds.push($(this).val());
+                // arrPegawai.push(pegawaiId);
+                console.log(pegawaiId);
+            });
+        }
+
+        $(function() {
+            $('[data-toggle="popover"]').popover();
+        });
+        
     </script>
 @endsection

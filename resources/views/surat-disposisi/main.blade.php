@@ -18,11 +18,11 @@
                     <div class="col-md-4"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
-                        <input type="date" id="min" class="form-control datepickertanggal">
+                        <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" id="max" class="form-control datepickertanggal">
+                        <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
 
                 </div>
@@ -73,25 +73,28 @@
             if(product == 'buat-baru'){
                 $('.btn-add').trigger('click');
             }
-            var date = new Date();
-            var day = date.getDate();
-            var day1 = date.getDate() + 1;
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
+            // var date = new Date();
+            // var day = date.getDate();
+            // var day1 = date.getDate() + 1;
+            // var month = date.getMonth() + 1;
+            // var year = date.getFullYear();
 
-            if (month < 10) month = "0" + month;
-            if (day < 10) day = "0" + day;
+            // if (month < 10) month = "0" + month;
+            // if (day < 10) day = "0" + day;
 
-            var today = year + "-" + month + "-" + day;
-            // var today1 = year + "-" + month + "-" + day1;
-            var today1 = year + "-" + month + "-" + day;
-            console.log(today)
-            console.log(today1)
-            $("#min").attr("value", today);
-            $("#max").attr("value", today1);
+            // var today = year + "-" + month + "-" + day;
+            // // var today1 = year + "-" + month + "-" + day1;
+            // var today1 = year + "-" + month + "-" + day;
+            // console.log(today)
+            // console.log(today1)
+            // $("#min").attr("value", today);
+            // $("#max").attr("value", today1);
 
             //initial run
-            loadTable(today, today1);
+            var start = $('#min').val()
+            var end = $('#max').val()
+            loadTable(start, end);
+            // loadTable(today, today1);
         });
 
         function loadTable(dateStart, dateEnd) {
@@ -99,6 +102,7 @@
                 processing: true,
                 serverSide: true,
                 destroy: true,
+                "pageLength": 25,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },

@@ -487,11 +487,11 @@ class SuratTugasController extends Controller
 		try {
 			// $data['data'] = FileSuratTugas::with(['surattugas.pegawai'])->where('surat_tugas_id',$request->id)->get();
 			$data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('surat_tugas_id',$request->id)->get();
-			// foreach ($data['data'] as $key => $v) {
-			// 	$v->asnId = $v->surattugas->asn_id;
-			// }
-			// $asn_id = explode(',', $data['data'][0]->asnId);
-			// $data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', $asn_id)->get();
+			foreach ($data['data'] as $key => $v) {
+				$v->asnId = $v->surattugas->asn_id;
+			}
+			$asn_id = explode(',', $data['data'][0]->asnId);
+			$data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', $asn_id)->get();
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();

@@ -23,7 +23,11 @@ class SuratKeputusanController extends Controller
 		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
-			$data = SuratKeputusan::orderBy('id_surat_keputusan','desc')->get();
+			$paramTglAwal = $request->tglAwal;
+			$paramTglAkhir = $request->tglAkhir;
+			$data = SuratKeputusan::orderBy('id_surat_keputusan','desc')
+			->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+			->get();
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){

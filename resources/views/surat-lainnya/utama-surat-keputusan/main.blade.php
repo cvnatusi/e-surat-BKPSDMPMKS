@@ -8,10 +8,27 @@
   <hr>
   <div class="card main-page">
     <div class="card-body">
+      <div class="col-md-12" style="margin-bottom: 20px;">
+        <div class="row">
+            <div class="col-md-2">
+                <label class="form-label">Tambah Surat Keputusan</label>
+                <button type="button" class="btn btn-primary btn-add form-control"><i
+                        class="bx bx-plus me-1"></i>Surat Baru</button>
+            </div>
+            <div class="col-md-4"></div>
+            <div class="col-md-3 mb-3 panelTanggal">
+                <label class="form-label">Tanggal Awal</label>
+                <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
+            </div>
+            <div class="col-md-3 mb-3 panelTanggal">
+                <label class="form-label">Tanggal Akhir</label>
+                <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
+            </div>
+            
+        </div>
+        <hr>
+    </div>
       <div class="table-responsive">
-        <button type="button" class="btn btn-primary btn-add" style="width: 170px;">
-          <i class="bx bx-plus me-1"></i>Surat Baru</button>
-        <p></p>
         <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
           <thead>
             <td>NO</td>
@@ -30,15 +47,42 @@
 @section('js')
   <script src="{{asset('assets/js/number_format.js')}}"></script>
   <script type="text/javascript">
-  $(function() {
+    $('#min').change(() => {
+    var start = $('#min').val()
+    var end = $('#max').val()
+    loadTable(start, end);
+  })
+  $('#max').change(() => {
+      var start = $('#min').val()
+      var end = $('#max').val()
+      loadTable(start, end);
+  })
+  
+  $(document).ready(function() {
+      var start = $('#min').val()
+      var end = $('#max').val()
+      loadTable(start, end);
+      //initial run
+      // loadTable(start, end);
+  });
+  function loadTable(dateStart, dateEnd){
     var table = $('#datagrid').DataTable({
       processing: true,
       serverSide: true,
+      destroy: true,
+      "pageLength": 25,
       language: {
         searchPlaceholder: "Ketikkan yang dicari"
       },
-      ajax: "{{ route('utama-surat-keputusan') }}",
-
+      // ajax: "{{ route('utama-surat-keputusan') }}",
+      ajax: {
+        url: "{{ route('utama-surat-keputusan') }}",
+        type: 'get',
+        data: {
+            tglAwal: dateStart,
+            tglAkhir: dateEnd
+        }
+    },
       columns: [{
         data: 'DT_RowIndex',
         name: 'DT_RowIndex',
@@ -50,7 +94,8 @@
         data: 'nomor_surat_keputusan',
         name: 'nomor_surat_keputusan',
         render: function(data, type, row) {
-          return '<p style="color:black">' + data + '</p>';
+          return '<button type="button" class="btn btn-sm btn-info">' + data + '</button>'
+          // return '<p style="color:black">' + data + '</p>';
         }
       },
       {
@@ -75,7 +120,8 @@
       },
       ]
     });
-  });
+  }
+  
 
   $('.btn-add').click(function(){
       // $('.preloader').show();
