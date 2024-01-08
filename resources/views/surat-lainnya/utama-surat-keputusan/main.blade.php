@@ -71,6 +71,8 @@
       serverSide: true,
       destroy: true,
       "pageLength": 25,
+      scrollX: true,
+      scrollY: 350,
       language: {
         searchPlaceholder: "Ketikkan yang dicari"
       },

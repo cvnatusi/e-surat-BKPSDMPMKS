@@ -6,7 +6,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          
+          <input type="hidden" id="id" name="id">
+          <iframe  width="100%" height="550px" src="{{ asset('storage/surat-masuk/1-20230210144450.pdf') }}"></iframe>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

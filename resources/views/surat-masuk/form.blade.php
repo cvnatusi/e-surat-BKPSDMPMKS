@@ -14,7 +14,7 @@
         <label for="nomor_surat_masuk" class="form-label">Nomor Surat (Ketik tanpa menggunakan spasi) *</label>
         <input type="text" class="form-control" name="nomor_surat_masuk" id="nomor_surat_masuk" @if(!empty($data)) value="{{$data->nomor_surat_masuk}}" @endif placeholder="Nomor Surat Masuk">
       </div>
-      <div class="col-md-4">
+      <div class="col-md-6">
         <label for="pengirim_surat_id" class="form-label">Pengirim Surat *</label>
         <select class="form-select instansi" name="pengirim_surat_id" id="pengirim_surat_id">
           <option value="">-- Pilih Instansi --</option>
@@ -25,13 +25,13 @@
           @endif
         </select>
       </div>
-      <div class="col-md-2">
+      {{-- <div class="col-md-2">
         <label for="instansi_baru" class="form-label">&nbsp</label>
         <div class="form-check" style="padding-left: 2.5em !important; padding-top: 7px !important;">
           <input class="form-check-input" name="instansi_baru" value="Y" type="checkbox" style="transform: scale(2.0);" id="instansi_baru">
           <label class="form-check-label" for="instansi_baru" style="padding-left: 1em;">Instansi Baru</label>
         </div>
-      </div>
+      </div> --}}
       <div class="col-md-6">
         <label for="sifat_surat_id" class="form-label">Sifat Surat</label>
         <select class="form-select sifat_surat" name="sifat_surat_id" id="sifat_surat_id">

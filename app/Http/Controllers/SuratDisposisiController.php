@@ -219,8 +219,8 @@ class SuratDisposisiController extends Controller
 
 	public function cetakSD(Request $request)
 	{
-		$data['data'] = SuratDisposisi::with(['suratMasukId'])->find(11);
-			$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
+		$data['data'] = SuratDisposisi::with(['suratMasukId'])->find(81);
+		$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
 		$data['penerima'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->penerima_disposisi_id)->first();
 		$data['dengan_harap'] = DenganHarap::get();
 

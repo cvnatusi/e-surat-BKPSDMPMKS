@@ -71,7 +71,7 @@
         $("input:checkbox[name=check]:checked").each(function() {
             selectedRow++;
         });
-        if (selectedRow == 3) {
+        if (selectedRow >= 3) {
             $('#cetak_all').css('display', 'block');
             $('#span').removeClass('col-md-4').addClass('col-md-2');
         } else {

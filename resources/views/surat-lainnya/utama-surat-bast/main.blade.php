@@ -88,6 +88,8 @@
                 processing: true,
                 serverSide: true,
                 "pageLength": 25,
+                scrollX: true,
+                scrollY: 350,
                 destroy: true,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
