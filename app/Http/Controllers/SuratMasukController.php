@@ -9,7 +9,7 @@ use App\Models\SuratMasuk;
 use App\Models\Instansi;
 use App\Models\DenganHarap;
 use App\Models\TimelineSuratMasuk;
-
+use Illuminate\Support\Facades\View;
 use DataTables,Validator,DB,Hash,Auth,File,Storage,PDF;
 
 class SuratMasukController extends Controller
@@ -72,7 +72,7 @@ class SuratMasukController extends Controller
 
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input " id="check_('.$row->id_surat_masuk.')" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input " onchange="checkedRow()" id="check_('.$row->id_surat_masuk.')" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
@@ -283,6 +283,12 @@ class SuratMasukController extends Controller
 		} catch (\Exception $e) {
 			return ['status' => 'error', 'content' => '','errMsg'=>$e];
 		}
+	}
+
+    public function templateDisposisi() {
+		$html = View::make('cetakan.surat_disposisi_kosongan2')->render();
+
+    	return response()->json(['html' => $html]);
 	}
 
 }
