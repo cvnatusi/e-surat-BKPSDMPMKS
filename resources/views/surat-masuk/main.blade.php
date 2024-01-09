@@ -66,41 +66,41 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
-    function checkedRow() {
-        var selectedRow = 0;
-        $("input:checkbox[name=check]:checked").each(function() {
-            selectedRow++;
-        });
-        if (selectedRow >= 3) {
-            $('#cetak_all').css('display', 'block');
-            $('#span').removeClass('col-md-4').addClass('col-md-2');
-        } else {
-            $('#cetak_all').css('display', 'none');
-            $('#span').removeClass('col-md-2').addClass('col-md-4');
-        }
-    }
-
-    function printAll() {
-        var selectedRow = 0;
-        $("input:checkbox[name=check]:checked").each(function() {
-            selectedRow++;
-        });
-        $.ajax({
-            url: "{{ route('surat-dispos-kosong') }}",
-            method: 'GET',
-            dataType: 'json',
-            success: function (response) {
-                var w = window.open();
-                for (var i = 0; i < selectedRow; i++) {
-                    $(w.document.body).append(response.html);
-                }
-                w.print();
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
+        function checkedRow() {
+            var selectedRow = 0;
+            $("input:checkbox[name=check]:checked").each(function() {
+                selectedRow++;
+            });
+            if (selectedRow >= 3) {
+                $('#cetak_all').css('display', 'block');
+                $('#span').removeClass('col-md-4').addClass('col-md-2');
+            } else {
+                $('#cetak_all').css('display', 'none');
+                $('#span').removeClass('col-md-2').addClass('col-md-4');
             }
-        });
-    }
+        }
+
+        function printAll() {
+            var selectedRow = 0;
+            $("input:checkbox[name=check]:checked").each(function() {
+                selectedRow++;
+            });
+            $.ajax({
+                url: "{{ route('surat-dispos-kosong') }}",
+                method: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    var w = window.open();
+                    for (var i = 0; i < selectedRow; i++) {
+                        $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
+                    }
+                    w.print();
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        }
         // filter tanggal awal akhir
         $('#min').change(() => {
             var start = $('#min').val()

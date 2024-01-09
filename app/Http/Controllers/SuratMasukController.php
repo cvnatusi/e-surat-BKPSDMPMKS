@@ -60,8 +60,8 @@ class SuratMasukController extends Controller
 						$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info " data-toggle="popover" data-trigger="hover" title="Lihat File Surat" ><i class="bx bx-show me-0"></i></a>';
 						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
 						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary "><i class="bx bx-download me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success " data-toggle="popover" data-trigger="hover" title="Timeline"><i class="bx bx-video-recording me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
 						return $btn;
 				   }else {
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
