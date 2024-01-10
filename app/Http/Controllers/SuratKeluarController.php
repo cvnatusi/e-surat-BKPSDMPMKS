@@ -163,6 +163,7 @@ class SuratKeluarController extends Controller
 	public function store(Request $request)
 	{
 		// return $request->all();
+		// return $request->tujuan_surat_id;
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -187,6 +188,32 @@ class SuratKeluarController extends Controller
 
 		DB::beginTransaction();
 
+		// FUNGSI FILTER NUMERIK ATAU TIDAK
+		// ketika tidak numerik, buat instansi baru, nama instansi di uppercase
+
+		$id_tujuan = [];
+		foreach($request->tujuan_surat_id as $tujuan_surat) {
+			if (!is_numeric($tujuan_surat)) {
+				$newinstansi = new Instansi;
+				$newinstansi->nama_instansi = strtoupper($tujuan_surat);
+				$newinstansi->kode_instansi = '-';
+				$newinstansi->alamat = '-';
+				$newinstansi->pimpinan_unit_kerja = '-';
+				$newinstansi->nama_kota = '-';
+				$newinstansi->no_fax = '-';
+				$newinstansi->no_telepon = '-';
+				$newinstansi->save();
+				array_push($id_tujuan, $newinstansi->id_instansi);
+			} else {
+				array_push($id_tujuan, $tujuan_surat);
+			}
+		}
+
+		// sekarang buat fungsi untuk menambahkan data baru ke array request->tujuan_surat_id
+		// terserah mau di buatkan variabel baru atau tetap, pokok data baru yang sudah di insert ke database itu masuk ke array tujuan surat. pakai array_push
+		// awal data : ["3","farid ilham al qorni"]
+		// hasil data : ["3","4"]
+
 		$findAgendaTerakhir = SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keluar','DESC')->count();
 		if ($findAgendaTerakhir == 0) {
 			$findAgendaTerakhir = 0;
@@ -201,7 +228,8 @@ class SuratKeluarController extends Controller
 			}else {
 				$newdata->no_agenda = $findAgendaTerakhir;
 			}
-			$newdata->tujuan_surat_id = implode(",",$request->tujuan_surat_id);
+			// $newdata->tujuan_surat_id = implode(",",$request->tujuan_surat_id);
+			$newdata->tujuan_surat_id = implode(",",$id_tujuan);
 			// CEK BUAT SURAT ELEKTRONIK
 			if (!empty($request->buatSuratElektronik)) {
 				$newdata->surat_elektronik = $request->buatSuratElektronik;

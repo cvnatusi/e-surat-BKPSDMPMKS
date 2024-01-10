@@ -85,12 +85,12 @@
 					</select>
 					<div id="surat_pendukung" style="display: none; margin-bottom: 10px;">
 						<div class="col-md-12">
-							<label for="file_scan" class="form-label">Upload Surat Pendukung<span>*</span></label>
+							<label for="file_scan" class="form-label">Upload Surat Pendukung <span>*</span></label>
 							<input class="form-control" type="file" id="myPdf2" name="file_scan">
 						</div>
 					</div>
 					<div class="col-md-12">
-						<label for="file_scan" class="form-label">Upload Surat</label>
+						<label for="file_scan" class="form-label">Upload Surat <span>*</span></label>
 						<input class="form-control" type="file" id="myPdf" name="file_scan" accept="application/pdf" >
 					</div>
 					<div class="container">

@@ -123,6 +123,7 @@ class SuratMasukController extends Controller
 
 		DB::beginTransaction();
 
+
 		$findAgendaTerakhir = SuratMasuk::whereYear('tanggal_terima_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_masuk','DESC')->count();
 		if ($findAgendaTerakhir == 0) {
 			$findAgendaTerakhir = 0;
@@ -152,19 +153,33 @@ class SuratMasukController extends Controller
 			}
 			$newdata->nomor_surat_masuk = $request->nomor_surat_masuk;
 			$instansi = $request->pengirim_surat_id;
-			if (empty($request->instansi_baru)) {
+			if(!is_numeric($request->pengirim_surat_id)) {
+				$newinstansi = new Instansi;
+				$newinstansi->nama_instansi = strtoupper($request->pengirim_surat_id);
+				$newinstansi->kode_instansi = '-';
+				$newinstansi->alamat = '-';
+				$newinstansi->pimpinan_unit_kerja = '-';
+				$newinstansi->nama_kota = '-';
+				$newinstansi->no_fax = '-';
+				$newinstansi->no_telepon = '-';
+				$newinstansi->save();
+				$newdata->pengirim_surat_id = $newinstansi->id_instansi;
+			} else {
 				$newdata->pengirim_surat_id = $request->pengirim_surat_id;
-			}else {
-				$newInstansi = New Instansi;
-				$newInstansi->kode_instansi = '-';
-				$newInstansi->nama_instansi = $request->pengirim_surat_id;
-				$newInstansi->alamat = '-';
-				$newInstansi->nama_kota = 3528;
-				$newInstansi->no_telepon = '-';
-				$newInstansi->no_fax = '-';
-				$newInstansi->save();
-				$newdata->pengirim_surat_id = $newInstansi->id_instansi;
 			}
+			// if (empty($request->instansi_baru)) {
+			// 	$newdata->pengirim_surat_id = $request->pengirim_surat_id;
+			// }else {
+			// 	$newInstansi = New Instansi;
+			// 	$newInstansi->kode_instansi = '-';
+			// 	$newInstansi->nama_instansi = $request->pengirim_surat_id;
+			// 	$newInstansi->alamat = '-';
+			// 	$newInstansi->nama_kota = 3528;
+			// 	$newInstansi->no_telepon = '-';
+			// 	$newInstansi->no_fax = '-';
+			// 	$newInstansi->save();
+			// 	$newdata->pengirim_surat_id = $newInstansi->id_instansi;
+			// }
 			$newdata->sifat_surat_id = $request->sifat_surat_id;
 			$newdata->jenis_surat_id = $request->jenis_surat_id;
 			$newdata->tanggal_surat = $request->tanggal_surat;
