@@ -107,6 +107,7 @@
   function editForm(id) {
     $('.main-page').hide();
     $.post("{!! route('form-instansi') !!}",{id:id}).done(function(data){
+      
       if(data.status == 'success'){
         $('.other-page').html(data.content).fadeIn();
       } else {
