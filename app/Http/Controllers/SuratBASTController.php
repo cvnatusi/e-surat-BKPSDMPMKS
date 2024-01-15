@@ -115,6 +115,7 @@ class SuratBASTController extends Controller
 			$newdata->kegiatan = $request->kegiatan;
 			$newdata->tanggal_surat = $request->tanggal_surat;
 			$newdata->jumlah = $request->jumlah;
+			$newdata->jumlah = str_replace('.', $request->jumlah);
 			if (!empty($request->file_scan)) {
 				if (!empty($newdata->file_scan)) {
 					if (is_file($newdata->file_scan)) {

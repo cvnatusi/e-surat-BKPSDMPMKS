@@ -199,6 +199,7 @@
   <script src="{{asset('assets/plugins/validate/jquery.validate.js')}}"></script>
   {{-- <script src="{{asset('assets/js/index.js')}}"></script> --}}
   <!--notification js -->
+  <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
   <script src="{{asset('assets/plugins/notifications/js/lobibox.min.js')}}"></script>
   <script src="{{asset('assets/plugins/notifications/js/notifications.min.js')}}"></script>
   <script src="{{asset('assets/plugins/notifications/js/notification-custom-script.js')}}"></script>
@@ -231,6 +232,13 @@
       $(".knob").knob();
     });
     flatpickr.localize(flatpickr.l10ns.id);
+    Pusher.logToConsole = false;
+
+    var pusher = new Pusher('{{env("PUSHER_APP_KEY")}}', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('notif');
   </script>
 
   @yield('js')

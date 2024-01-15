@@ -42,7 +42,11 @@ class SuratDisposisiController extends Controller
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-secondary "><i class="bx bx-show me-0"></i></a>';
 					// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					if(Auth::user()->level_user == 2) {
+					} else {
+						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					}
+					// $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
 				})

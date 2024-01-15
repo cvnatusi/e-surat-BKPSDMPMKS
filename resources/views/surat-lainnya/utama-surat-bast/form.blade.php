@@ -191,7 +191,7 @@ $('#jumlah').on('input', function () {
 		var formattedValue = formatRupiah(unformattedValue);
 
 		// Tambahkan "Rp" sebagai awalan
-		input.value = 'Rp. ' +  formattedValue; // 'Rp. ' + 
+		input.value = formattedValue; // 'Rp. ' + 
 	});
 
 	// Fungsi untuk menghapus semua karakter non-digit

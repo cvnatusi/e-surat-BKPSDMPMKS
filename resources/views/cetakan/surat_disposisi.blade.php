@@ -76,7 +76,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Surat Dari :</td>
-                    <td style="text-align: right !important;">{{$data->suratMasukId->penzgirim->nama_instansi}}</td>
+                    <td style="text-align: right !important;">{{$data->suratMasukId->pengirim->nama_instansi}}</td>
                   </tr>
                 </table>
               </td>

@@ -81,8 +81,8 @@
         <li class="{{ $data['submnActive'] == 'pengguna' ? 'mm-active' : '' }}">
           <a href="{{ route('pengguna') }}"><i class="bx bx-right-arrow-alt"></i>Data Pengguna</a>
         </li>
-        <li class="{{ $data['submnActive'] == 'pengguna' ? 'mm-active' : '' }}">
-          <a href="{{ route('pengguna') }}"><i class="bx bx-right-arrow-alt"></i>Level Pengguna</a>
+        <li class="{{ $data['submnActive'] == 'level-pengguna' ? 'mm-active' : '' }}">
+          <a href="{{ route('level-pengguna') }}"><i class="bx bx-right-arrow-alt"></i>Level Pengguna</a>
         </li>
         <!-- <li class="#">
           <a href="#"><i class="bx bx-right-arrow-alt"></i>Data Penanda Tangan</a>

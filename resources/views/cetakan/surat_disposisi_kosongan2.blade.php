@@ -78,7 +78,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Surat Dari :</td>
-                    <td style="text-align: right !important;"></td>
+                    <td style="text-align: right !important;">{{$data->pengirim->nama_instansi}}</td>
                   </tr>
                 </table>
               </td>
@@ -86,7 +86,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Terima Tanggal :</td>
-                    <td style="text-align: right !important;"></td>
+                    <td style="text-align: right !important;">{{Carbon\Carbon::parse($data->tanggal_terima_surat)->locale('id')->translatedFormat(' d F Y')}}</td>
                   </tr>
                 </table>
               </td>
@@ -96,7 +96,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Nomor Agenda / Berkas :</td>
-                    <td style="text-align: right !important;"></td>
+                    <td style="text-align: right !important;">{{ $data->no_agenda }}</td>
                   </tr>
                 </table>
                 </td>
@@ -106,13 +106,16 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Tanggal Surat :</td>
-                    <td style="text-align: right !important;"></td>
+                    <td style="text-align: right !important;">{{ $data->tanggal_surat }}</td>
                   </tr>
                 </table>
               </td>
               <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
               <td width="28%">&nbsp; a. Rahasia</td>
               <td width="10%">
+                @if ($data->sifat->nama_sifat_surat == 'Rahasia')
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                @endif
               </td>
             </tr>
             <tr>
@@ -120,23 +123,32 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Nomor Surat :</td>
-                    <td style="text-align: right !important;"></td>
+                    <td style="text-align: right !important;">{{ $data->nomor_surat_masuk }}</td>
                   </tr>
                 </table>
               </td>
               <td width="28%">&nbsp; b. Biasa</td>
               <td width="10%">
+                @if ($data->sifat->nama_sifat_surat == 'Biasa')
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                @endif
               </td>
             </tr>
             <tr >
               <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">&nbsp;Perihal :&nbsp;</td>
               <td width="28%">&nbsp; c. Segera</td>
               <td width="10%">
+                @if ($data->sifat->nama_sifat_surat == 'Segera')
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                @endif
               </td>
             </tr>
             <tr>
               <td width="28%">&nbsp; d. Penting</td>
               <td width="10%">
+                @if ($data->sifat->nama_sifat_surat == 'Penting')
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                @endif
               </td>
             </tr>
           </tbody>
@@ -228,6 +240,23 @@
                 </td>
               </tr>
             </tbody>
+          </table>
+          <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; margin-top: 2px;">
+            <thead>
+              <tr>
+                <td> 
+                    <img id='barcode' 
+                    {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
+                    src="{{asset('assets/images/qr-code.png')}}"
+                    alt="" 
+                    title="" 
+                    width="100" 
+                    height="100" onblur='generateBarCode();' />
+                    {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
+                </td>
+              </tr>
+            </thead>
+            </div>
           </table>
         </div>
     </div>

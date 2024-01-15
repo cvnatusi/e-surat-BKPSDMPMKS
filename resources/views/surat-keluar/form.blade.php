@@ -408,7 +408,7 @@
         }).done(function(data) {
             $('#no_surat2').val(data.kode_jenis_surat);
             if (data.kode_jenis_surat == 090 || data.kode_jenis_surat == 091 || data.kode_jenis_surat ==
-                092 || data.kode_jenis_surat == 093 || data.kode_jenis_surat == 094 || data
+                092 || data.kode_jenis_surat == 093 || data // data.kode_jenis_surat == 094 ||
                 .kode_jenis_surat == 095) {
                 $('.panelSuratTugas').show();
                 $(".tujuan_surat").select2({
