@@ -25,6 +25,7 @@ use App\Http\Controllers\PengaturanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BidangController;
 use App\Http\Controllers\DataMaster\PenandaTanganSuratController as PenandaTanganSurat;
+use App\Http\Controllers\DataMaster\RoleController;
 use App\Http\Controllers\Laporan\LaporanSuratMasukController;
 use App\Http\Controllers\Laporan\LaporanSuratKeluarController;
 use App\Http\Controllers\Laporan\LaporanSuratBASTController;
@@ -85,6 +86,10 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/store', [PenggunaController::class, 'store'])->name('store-pengguna');
 				Route::post('/destroy', [PenggunaController::class, 'destroy'])->name('destroy-pengguna');
 			});
+			Route::group(array('prefix' => 'level-pengguna'), function() {
+				Route::get('/', [RoleController::class, 'index'])->name('level-pengguna');
+				// Route::post('/form', )
+			});
 			Route::group(array('prefix' => 'instansi'), function () {
 				Route::get('/', [InstansiController::class, 'index'])->name('instansi');
 				Route::post('/form', [InstansiController::class, 'form'])->name('form-instansi');
@@ -137,7 +142,7 @@ Route::group(['middleware'=>'XSS'], function() {
 		});
 
 		Route::group(array('prefix' => 'surat-masuk'), function () {
-			Route::get('/', [SuratMasukController::class, 'index'])->name('surat-masuk')->withTrashed();
+			Route::get('/', [SuratMasukController::class, 'index'])->name('surat-masuk');
 			Route::post('/form', [SuratMasukController::class, 'form'])->name('form-surat-masuk');
 			Route::post('/store', [SuratMasukController::class, 'store'])->name('store-surat-masuk');
 			Route::post('/destroy', [SuratMasukController::class, 'destroy'])->name('destroy-surat-masuk');
@@ -147,6 +152,9 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/show-timeline', [SuratMasukController::class, 'showTimeline'])->name('show-timeline-surat-masuk');
 			Route::post('download-template', [SuratMasukController::class, 'downloadTemplate'])->name('download-template-surat');
 			Route::get('/surat-dispos-kosong', [SuratMasukController::class, 'templateDisposisi'])->name('surat-dispos-kosong');
+			Route::get('/show-trash', [SuratMasukController::class, 'showTrash'])->name('show-trash-surat-masuk');
+			Route::post('/restore-surat', [SuratMasukController::class, 'restoreSurat'])->name('restoreSurat-surat-masuk');
+			Route::post('/delete-surat', [SuratMasukController::class, 'deleteSurat'])->name('deleteSurat-surat-masuk');
 		});
 
 		Route::group(array('prefix' => 'surat-keluar'), function () {
@@ -164,7 +172,7 @@ Route::group(['middleware'=>'XSS'], function() {
 		});
 
 		// Route::post('/store', [SuratTugasControllerOld::class, 'store'])->name('store-surat-tugas');
-		
+
 		Route::group(array('prefix' => 'surat-tugas'), function () {
 			Route::get('/', [SuratTugasController::class, 'index'])->name('surat-tugas');
 			Route::post('/form', [SuratTugasController::class, 'form'])->name('form-surat-tugas');
