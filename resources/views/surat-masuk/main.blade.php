@@ -81,7 +81,7 @@
                 $('#cetak_all').css('display', 'block');
                 $('#span').removeClass('col-md-4').addClass('col-md-2');
             } else {
-                // $('#cetak_all').css('display', 'none');
+                $('#cetak_all').css('display', 'none');
                 $('#span').removeClass('col-md-2').addClass('col-md-4');
             }
         }
