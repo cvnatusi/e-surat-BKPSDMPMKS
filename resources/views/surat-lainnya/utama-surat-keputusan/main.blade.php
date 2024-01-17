@@ -31,6 +31,7 @@
       <div class="table-responsive">
         <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
           <thead>
+            <td>PILIH</td>
             <td>NO</td>
             <td>NO SURAT</td>
             <td style="width: 100%">PERIHAL</td>
@@ -85,7 +86,14 @@
             tglAkhir: dateEnd
         }
     },
-      columns: [{
+      columns: [
+      {
+        data: 'check',
+        name: 'check',
+        orderable: false,
+        searchable: false,
+      },
+      {
         data: 'DT_RowIndex',
         name: 'DT_RowIndex',
         render: function(data, type, row) {

@@ -26,6 +26,7 @@
                 {{-- <button type="button" class="btn btn-primary px-5 mb-1 btn-add"><i class="bx bx-plus me-1"></i>Tambah</button> --}}
                 <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
                     <thead>
+                        <td>PILIH</td>
                         <!-- <td>NO</td>
                 <td>NO AGENDA</td> -->
                         <td>NO SURAT</td>
@@ -97,6 +98,12 @@
                 },
 
                 columns: [
+                    {
+                        data: 'check',
+                        name: 'check',
+                        orderable: false,
+                        searchable: false,
+                    },
                     //   {
                     //   data: 'DT_RowIndex',
                     //   name: 'DT_RowIndex',

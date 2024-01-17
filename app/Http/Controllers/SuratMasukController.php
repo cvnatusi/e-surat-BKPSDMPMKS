@@ -76,7 +76,7 @@ class SuratMasukController extends Controller
 
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow()" data-id="'.$row->id_surat_masuk.'" id="check_('.$row->id_surat_masuk.')" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
@@ -293,15 +293,8 @@ class SuratMasukController extends Controller
 
 	// TEMPLATE DISPOSISI KOSONGAN (MULTI FILE)
 	public function multiDownload(Request $request) {
-		// try {
-		// 	$data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
-		// 	$content = view($this->menuActive.'.'.$this->submnActive.'.'.'template', $data)->render();
-		// 	return ['status' => 'success', 'content' => $content, 'data' => $data];
-		// } catch (\Exception $e) {
-		// 	return ['status' => 'error', 'content' => '','errMsg'=>$e];
-		// }
-		$data['data'] = SuratMasuk::where('id_surat_masuk', $request->id)->with('pengirim', 'sifat', 'jenis')->get();
-		$html = View::make('cetakan.surat_disposisi_kosongan2', $data)->render();
+		$data['listData'] = SuratMasuk::whereIn('id_surat_masuk', $request->listId)->with('pengirim', 'sifat', 'jenis')->get();
+		$html = View::make('cetakan.surat_disposisi_kosongan_multi', $data)->render();
 
     	return response()->json(['html' => $html]);
 	}
@@ -314,10 +307,15 @@ class SuratMasukController extends Controller
     	return response()->json(['html' => $html]);
 	}
 
+	public function getId() {
+		$data = SuratMasuk::get()->pluck('id_surat_masuk');
+		return response()->json($data);
+	}
+
 
 	public function showTrash(Request $request)
 	{
-		$this->data['title'] = 'Tong Sampah '.$this->title;
+		$this->data['title'] = 'Arsip '.$this->title;
 		$this->data['menuActive'] = $this->menuActive;
 		$this->data['submnActive'] = $this->submnActive;
 		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);

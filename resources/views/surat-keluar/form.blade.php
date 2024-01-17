@@ -68,7 +68,7 @@
 
                     {{-- nomor surat --}}
                     <div class="col-md-12 panelSuratManual">
-                        <label for="perihal_surat" class="form-label">Nomor Surat *</label>
+                        <label for="perihal_surat" class="form-label">Nomor Surat * <span class="badge bg-success" id="suratTerakhir"></span></label>
                         <div class="row">
                             <div class="col-md-3">
                                 <input type="text" class="form-control col-md-1" name="no_surat2" id="no_surat2"
@@ -123,7 +123,7 @@
                         </select>
 
                         <!-- <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]" id="tujuan_surat_id">
-              @if (!empty($data))
+              {{-- @if (!empty($data))
                 @if (
                     $data->jenis_surat_id == '150' ||
                         $data->jenis_surat_id == '151' ||
@@ -143,8 +143,8 @@
                         @endforeach
                       @endif
                     @endif
-              @endif -->
-                        </select>
+              @endif --}}
+                        </select> -->
                     </div>
 
                     {{-- perihal surat --}}
@@ -177,7 +177,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12 panelSuratTugas" style="display:none">
+                    {{-- <div class="col-md-12 panelSuratTugas" style="display:none">
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="tanggal_mulai"  class="form-label">Tanggal Mulai *</label>
@@ -209,13 +209,13 @@
                             <div class="col-md-12">
                                 <label for="alamat_tujuan_bertugas" class="form-label">Alamat Tujuan Bertugas
                                     *</label>
-                                <textarea rows="3" cols="80" class="form-control" name="alamat_tujuan_bertugas"
+                                    <textarea rows="3" cols="80" class="form-control" name="alamat_tujuan_bertugas"
                                     id="alamat_tujuan_bertugas">
-@if (!empty($surat_tugas)){{ $surat_tugas->alamat_tujuan_bertugas }}@endif
-</textarea>
+                                    @if (!empty($surat_tugas)){{ $surat_tugas->alamat_tujuan_bertugas }}@endif
+                                    </textarea>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </form>
             </div>
@@ -407,74 +407,87 @@
             id: id
         }).done(function(data) {
             $('#no_surat2').val(data.kode_jenis_surat);
-            if (data.kode_jenis_surat == 090 || data.kode_jenis_surat == 091 || data.kode_jenis_surat ==
-                092 || data.kode_jenis_surat == 093 || data // data.kode_jenis_surat == 094 ||
-                .kode_jenis_surat == 095) {
-                $('.panelSuratTugas').show();
-                $(".tujuan_surat").select2({
-                    theme: 'bootstrap4',
-                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass(
-                        'w-100') ? '100%' : 'style',
-                    placeholder: $(this).data('placeholder'),
-                    allowClear: Boolean($(this).data('allow-clear')),
-                    // tags: true,
-                    ajax: {
-                        url: "{{ route('getAsnByName') }}",
-                        dataType: 'json',
-                        type: "POST",
-                        // delay: 250,
-                        data: function(params) {
-                            return {
-                                id: params.term
-                            };
-                        },
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data, function(item) {
-                                    return {
-                                        id: item.id_mst_asn,
-                                        text: item.nama_asn,
-                                    }
-                                })
-                            };
-                        }
-                    },
-                });
-                $('#label_tujuan_surat').text('Pilih Pegawai *')
+            // if (data.kode_jenis_surat == 090 || data.kode_jenis_surat == 091 || data.kode_jenis_surat ==
+            //     092 || data.kode_jenis_surat == 093 || data // data.kode_jenis_surat == 094 ||
+            //     .kode_jenis_surat == 095) {
+            //     $('.panelSuratTugas').show();
+            //     $(".tujuan_surat").select2({
+            //         theme: 'bootstrap4',
+            //         width: $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+            //             'w-100') ? '100%' : 'style',
+            //         placeholder: $(this).data('placeholder'),
+            //         allowClear: Boolean($(this).data('allow-clear')),
+            //         // tags: true,
+            //         ajax: {
+            //             url: "{{ route('getAsnByName') }}",
+            //             dataType: 'json',
+            //             type: "POST",
+            //             // delay: 250,
+            //             data: function(params) {
+            //                 return {
+            //                     id: params.term
+            //                 };
+            //             },
+            //             processResults: function(data) {
+            //                 return {
+            //                     results: $.map(data, function(item) {
+            //                         return {
+            //                             id: item.id_mst_asn,
+            //                             text: item.nama_asn,
+            //                         }
+            //                     })
+            //                 };
+            //             }
+            //         },
+            //     });
+            //     $('#label_tujuan_surat').text('Pilih Pegawai *')
 
-            } else {
-                $('.panelSuratTugas').hide();
-                $(".tujuan_surat").select2({
-                    theme: 'bootstrap4',
-                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass(
-                        'w-100') ? '100%' : 'style',
-                    placeholder: $(this).data('placeholder'),
-                    allowClear: Boolean($(this).data('allow-clear')),
-                    // tags: true,
-                    ajax: {
-                        url: "{{ route('getInstansiByName') }}",
-                        dataType: 'json',
-                        type: "POST",
-                        // delay: 250,
-                        data: function(params) {
-                            return {
-                                id: params.term
-                            };
-                        },
-                        processResults: function(data) {
-                            return {
-                                results: $.map(data, function(item) {
-                                    return {
-                                        id: item.id_instansi,
-                                        text: item.nama_instansi,
-                                    }
-                                })
-                            };
-                        }
+            // } else {
+            // }
+            $('.panelSuratTugas').hide();
+            $(".tujuan_surat").select2({
+                theme: 'bootstrap4',
+                width: $(this).data('width') ? $(this).data('width') : $(this).hasClass(
+                    'w-100') ? '100%' : 'style',
+                placeholder: $(this).data('placeholder'),
+                allowClear: Boolean($(this).data('allow-clear')),
+                // tags: true,
+                ajax: {
+                    url: "{{ route('getInstansiByName') }}",
+                    dataType: 'json',
+                    type: "POST",
+                    // delay: 250,
+                    data: function(params) {
+                        return {
+                            id: params.term
+                        };
                     },
-                });
-                $('#label_tujuan_surat').text('Tujuan Surat Kepada *')
-            }
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return {
+                                    id: item.id_instansi,
+                                    text: item.nama_instansi,
+                                }
+                            })
+                        };
+                    }
+                },
+            });
+            $('#label_tujuan_surat').text('Tujuan Surat Kepada *')
         });
+    });
+
+    $("#tanggal_surat").change(function(){
+      var tanggal = $('.tanggal_surat').val();
+      $.post("{!! route('checkSuratKeluarByDate') !!}", {
+          tanggal: tanggal
+      }).done(function(data) {
+        if (data) {
+          $("#suratTerakhir").html("Nomor Surat Terakhir : "+data.nomor_surat_keluar).show();
+        }else {
+          $("#suratTerakhir").hide();
+        }
+      });
     });
 </script>

@@ -20,7 +20,7 @@
                             class="bx bx-printer me-1"></i>Cetak</button>
                     </div>
                     <div class="col-md-2">
-                        <label class="form-label">Tong Sampah</label>
+                        <label class="form-label">Arsip</label>
                         <a href="{{ route('show-trash-surat-masuk') }}" class="btn btn-danger form-control btn-trash"><i class="bx bx-trash me-1"></i>Trash</a>
                         {{-- <button type="button" class="btn btn-danger form-control btn-trash" href="{{ route('surat-keluar') }}"><i class="bx bx-trash me-1"></i>Trash</button> --}}
                     </div>
@@ -46,7 +46,7 @@
                 <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
 
                     <thead>
-                        <td><input type="checkbox" class="form-check-input"></td>
+                        <td><input type="checkbox" id="check_" onchange="checkAll()" class="form-check-input"></td>
                         <td>NO AGENDA</td>
                         <td>NO SURAT</td>
                         <td>TANGGAL TERIMA</td>
@@ -68,16 +68,31 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
-        function checkedRow(id) {
-            var selectedRow = 0;
-            var arrPegawai = [];
-            $("input:checkbox[name=check]:checked").each(function() {
-                selectedRow++;                
-                var pegawaiId = $(this).data('id');
-                arrPegawai.push(pegawaiId);
-            });
-            console.log(arrPegawai);
-            if (selectedRow >= 1) {
+        function checkedRow(ini) {
+            var statusChecked = $(ini).is(":checked");
+            // console.log($(ini).is(":checked"));
+            if(statusChecked) {
+                listCheked.push(parseInt($(ini).val()));
+            } else {
+                let index = listCheked.indexOf($(ini).val());
+                listCheked.splice(index, 1);
+            }
+            // console.log(listCheked);
+
+            // var selectedRow = 0;
+            // var arrPegawai = [];
+            // $("input:checkbox[name=check]:checked").each(function() {
+            //     selectedRow++;
+            //     var pegawaiId = $(this).data('id');
+            //     arrPegawai.push(pegawaiId);
+            // });
+            // console.log(arrPegawai);
+            showButtonPrint();
+        }
+
+        function showButtonPrint() {
+            console.log(listCheked.length);
+            if (listCheked.length >= 1) {
                 $('#cetak_all').css('display', 'block');
                 $('#span').removeClass('col-md-4').addClass('col-md-2');
             } else {
@@ -86,27 +101,52 @@
             }
         }
 
+        function checkAll() {
+            if($('#check_').prop('checked')) {
+                $.post("{!! route('get-id-surat-masuk') !!}", {
+                    // id: id
+                }).done(function(data) {
+                    listCheked = [];
+                    listCheked = data;
+                    listCheked.forEach(element => {
+                        $('#check_' + element).prop('checked', true);
+                    });
+                    showButtonPrint();
+                    // console.log(data);
+                })
+            } else {
+                listCheked.forEach(element => {
+                    $('#check_' + element).prop('checked', false);
+                });
+                listCheked = [];
+                showButtonPrint();
+                // console.log('false');
+            }
+            
+        }
+
         function printAll() {
-            var selectedRow = 0;
-            var arrPegawai = [];
-            $("input:checkbox[name=check]:checked").each(function() {
-                selectedRow++;
-                var pegawaiId = $(this).data('id');
-                arrPegawai.push(pegawaiId);
-            });
-            var id = arrPegawai;
+            // var selectedRow = 0;
+            // var arrPegawai = [];
+            // $("input:checkbox[name=check]:checked").each(function() {
+            //     selectedRow++;
+            //     var pegawaiId = $(this).data('id');
+            //     arrPegawai.push(pegawaiId);
+            // });
+            // var id = arrPegawai;
             $.ajax({
                 url: "{{ route('multi-download') }}",
                 method: 'GET',
                 dataType: 'json',
                 data: {
-                    id: id
+                    listId: listCheked
                 },
                 success: function (response) {
+                    // console.log(response);
                     var w = window.open();
-                    for (var i = 0; i < arrPegawai; i++) {
+                    // for (var i = 0; i < arrPegawai; i++) {
                         $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
-                    }
+                    // }
                     w.print();
                 },
                 error: function (xhr, status, error) {
@@ -120,7 +160,7 @@
             var end = $('#max').val()
             loadTable(start, end);
         })
-        $('#max').change(() => {
+        $('#max').change(() => {        
             var start = $('#min').val()
             var end = $('#max').val()
             loadTable(start, end);
@@ -146,6 +186,8 @@
             //initial run
             // loadTable(start, end);
         });
+
+        let listCheked = [];
 
         function loadTable(dateStart, dateEnd) {
             var table = $('#datagrid').DataTable({
@@ -183,7 +225,17 @@
                         data: 'check',
                         name: 'check',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        render: function (data, type, row) {
+                            // console.log(listCheked, row.id_surat_masuk); 
+                            // console.log(listCheked.includes(row.id_surat_masuk.toString()));
+                            if(listCheked.includes(row.id_surat_masuk)) {
+                                // console.log('asndas');
+                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                     {
                         data: 'no_agenda',
@@ -396,7 +448,7 @@
                 }
             });
         };
-        
+
         $('.btn-print').click(function() {
             var idData = [];
             $('#datagrid input:checked').each(function(i) {
@@ -491,19 +543,9 @@
             });
         }
 
-        function countChecked() {
-            var arrPegawai = [];
-            $("input:checkbox[name=check]:checked").each(function() {
-                var pegawaiId = $(this).data('id');
-                // checkedIds.push($(this).val());
-                // arrPegawai.push(pegawaiId);
-                console.log(pegawaiId);
-            });
-        }
-
         $(function() {
             $('[data-toggle="popover"]').popover();
         });
-        
+
     </script>
 @endsection

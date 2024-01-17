@@ -156,6 +156,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::get('/show-trash', [SuratMasukController::class, 'showTrash'])->name('show-trash-surat-masuk');
 			Route::post('/restore-surat', [SuratMasukController::class, 'restoreSurat'])->name('restoreSurat-surat-masuk');
 			Route::post('/delete-surat', [SuratMasukController::class, 'deleteSurat'])->name('deleteSurat-surat-masuk');
+			Route::post('/get-id-surat-masuk', [SuratMasukController::class, 'getId'])->name('get-id-surat-masuk');
 		});
 
 		Route::group(array('prefix' => 'surat-keluar'), function () {
@@ -170,6 +171,8 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::get('/cetakSPPD', [SuratKeluarController::class, 'cetakSPPD'])->name('cetakSPPD');
 			Route::post('/verifKABAN', [SuratKeluarController::class, 'verifKABAN'])->name('verifKABAN');
 			Route::post('/show', [SuratKeluarController::class, 'show'])->name('show-surat-keluar');
+			Route::post('/checkSuratKeluarByDate', [SuratKeluarController::class, 'checkSuratKeluarByDate'])->name('checkSuratKeluarByDate');
+			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-keluar');
 		});
 
 		// Route::post('/store', [SuratTugasControllerOld::class, 'store'])->name('store-surat-tugas');
@@ -187,6 +190,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/buat-SPPD', [SuratTugasController::class, 'buatSPPD'])->name('buatSPPD');
 			Route::get('/preview-surat-tugas', [SuratTugasController::class, 'previewST'])->name('previewST');
 			Route::post('/verifikasi-ST', [SuratTugasController::class, 'verifikasiST'])->name('verifikasiST');
+			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-tugas');
 		});
 		Route::group(array('prefix' => 'surat-perjalanan-dinas'), function () {
 			Route::get('/', [SuratSPPDController::class, 'index'])->name('surat-perjalanan-dinas');
@@ -202,6 +206,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/show', [SuratDisposisiController::class, 'show'])->name('show-surat-disposisi');
 			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
 			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
+			Route::post('/get-id', [SuratDisposisiController::class, 'getId'])->name('get-id');
 		});
 		Route::group(array('prefix' => 'surat-lainnya'), function () {
 			Route::group(array('prefix' => 'utama-surat-bast'), function () {

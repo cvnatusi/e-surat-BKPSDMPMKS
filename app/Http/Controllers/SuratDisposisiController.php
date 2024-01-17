@@ -50,7 +50,11 @@ class SuratDisposisiController extends Controller
 					$btn .='</div></div>';
 					return $btn;
 				})
-				->rawColumns(['action'])
+				->addColumn('check', function($row){
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_disposisi.'" id="check_'.$row->id_surat_disposisi.'" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
+					return $btn;
+				})
+				->rawColumns(['action', 'check'])
 				->make(true);;
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
@@ -239,5 +243,10 @@ class SuratDisposisiController extends Controller
 		$dompdf->render();
 		// Output the generated PDF to Browser
 		return  $dompdf->stream();
+	}
+
+	public function getId() {
+		$data = SuratDisposisi::get()->pluck('id_surat_disposisi');
+		return response()->json($data);
 	}
 }

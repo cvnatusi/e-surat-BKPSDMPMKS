@@ -13,11 +13,11 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 100px 25px;
+      margin: 50px 25px;
   }
-  .page-break {
+  /* .page-break {
     page-break-after: always;
-  }
+  } */
   .column {
     float: left;
     width: 50%;
@@ -135,7 +135,14 @@
               </td>
             </tr>
             <tr >
-              <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">&nbsp;Perihal :&nbsp;</td>
+              <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Perihal :</td>
+                    <td style="text-align: right !important;">{{ $data->perihal_surat }}</td>
+                  </tr>
+                </table>
+              </td>
               <td width="28%">&nbsp; c. Segera</td>
               <td width="10%">
                 @if ($data->sifat->nama_sifat_surat == 'Segera')
@@ -289,3 +296,4 @@
 </body>
 </html>
 {{-- @endforeach --}}
+

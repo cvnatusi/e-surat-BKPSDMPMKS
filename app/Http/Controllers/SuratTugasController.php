@@ -98,7 +98,11 @@ class SuratTugasController extends Controller
 					}
 					return $btn;
 				})
-				->rawColumns(['action','namaPenerima','verifikasi'])
+				->addColumn('check', function($row){
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_perjalanan_dinas.'" id="check_'.$row->id_surat_perjalanan_dinas.'" name="check" value="'.$row->id_surat_perjalanan_dinas.'" type="checkbox"></a>';
+					return $btn;
+				})
+				->rawColumns(['action','namaPenerima','verifikasi', 'check'])
 				->make(true);;
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
@@ -702,4 +706,9 @@ class SuratTugasController extends Controller
      }
      return view('daterange');
     }
+
+	public function getId() {
+		$data = SuratTugas::get()->pluck('id_surat_perjalanan_dinas');
+		return response()->json($data);
+	}
 }
