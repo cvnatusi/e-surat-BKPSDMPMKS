@@ -46,7 +46,7 @@ class SuratKeluarController extends Controller
 					}
 					// $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					if (Auth::user()->id == $row->user_id || Auth::user()->level_user == 1) {
-						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';	
+						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_keluar.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					} else {
 					}
@@ -78,22 +78,22 @@ class SuratKeluarController extends Controller
 					// return $btn;
 				})
 				->addColumn('namaPenerima',function($row){
-					if ($row->jenis_surat_id == '150' || $row->jenis_surat_id == '151' || $row->jenis_surat_id == '152' || $row->jenis_surat_id == '153' || $row->jenis_surat_id == '154' || $row->jenis_surat_id == '155') {
-						$ins = explode(",",$row->tujuan_surat_id);
-						$arrMst = [];
-						if(count($ins)>0){
-							foreach($ins as $key => $val){
-								$cekInst = MasterASN::findOrFail($val);
-								// dd()
-								// if(!empty($val->mst_pramubakti)){
-								array_push($arrMst,$cekInst->nama_asn);
-								// }
-							}
-							$join = "ada";
-						}else{
-							$join = "kosong";
-						}
-					}else {
+					// if ($row->jenis_surat_id == '150' || $row->jenis_surat_id == '151' || $row->jenis_surat_id == '152' || $row->jenis_surat_id == '153' || $row->jenis_surat_id == '154' || $row->jenis_surat_id == '155') {
+					// 	$ins = explode(",",$row->tujuan_surat_id);
+					// 	$arrMst = [];
+					// 	if(count($ins)>0){
+					// 		foreach($ins as $key => $val){
+					// 			$cekInst = MasterASN::findOrFail($val);
+					// 			// dd()
+					// 			// if(!empty($val->mst_pramubakti)){
+					// 			array_push($arrMst,$cekInst->nama_asn);
+					// 			// }
+					// 		}
+					// 		$join = "ada";
+					// 	}else{
+					// 		$join = "kosong";
+					// 	}
+					// }else {
 						$ins = explode(",",$row->tujuan_surat_id);
 						$arrMst = [];
 						if(count($ins)>0){
@@ -108,13 +108,17 @@ class SuratKeluarController extends Controller
 						}else{
 							$join = "kosong";
 						}
-					}
+					// }
 					if(count($arrMst)>0){
 						$join = join(", ",$arrMst);
 					}else{
 						$join = "-";
 					}
 					return $join;
+				})
+				->addColumn('check', function($row){
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_keluar.'" id="check_'.$row->id_surat_keluar.'" name="check" value="'.$row->id_surat_keluar.'" type="checkbox"></a>';
+					return $btn;
 				})
 				// ->addColumn('verifKABAN', function($row){
 				// 	if ($row->is_verif == false) {
@@ -133,6 +137,7 @@ class SuratKeluarController extends Controller
 				// 	}
 				// 	return $btn;
 				// })
+				->rawColumns(['action','namaPenerima','verifKABAN', 'check'])
 				// ->rawColumns(['action','namaPenerima','verifKABAN'])
 				->make(true);;
 		}
@@ -275,7 +280,17 @@ class SuratKeluarController extends Controller
 					$newdata->nomor_surat_keluar = $noSurat;
 				}
 			}
-
+			$cekNoSurat = SuratKeluar::where('nomor_surat_keluar','ilike','%'.$noSurat.'%')->first(); // 0
+			if (!empty($cekNoSurat)) {
+				$cekTerakhir = SuratKeluar::where('tanggal_surat',$request->tanggal_surat)->latest()->first();
+				if (!empty($cekTerakhir)) {
+					$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!! Dengan Surat Pada Tanggal '.$cekNoSurat->tanggal_surat];
+				}else {
+					$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!!'];
+				}
+				DB::rollback();
+				return response()->json($return);
+			}
 			$newdata->sifat_surat_id = $request->sifat_surat_id;
 			$newdata->jenis_surat_id = $request->jenis_surat_id;
 			$newdata->tanggal_surat = $request->tanggal_surat;
@@ -474,6 +489,16 @@ class SuratKeluarController extends Controller
 		} catch (\Exception $e) {
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
+	}
+
+	public function checkSuratKeluarByDate(Request $request)
+	{
+	return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)->latest()->first();
+	}
+
+	public function getId() {
+		$data = SuratKeluar::get()->pluck('id_surat_keluar');
+		return response()->json($data);
 	}
 
 }

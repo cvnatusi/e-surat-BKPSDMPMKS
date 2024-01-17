@@ -13,7 +13,7 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 50px 25px;
+      margin: 60px 25px;
   }
   /* .page-break {
     page-break-after: always;
