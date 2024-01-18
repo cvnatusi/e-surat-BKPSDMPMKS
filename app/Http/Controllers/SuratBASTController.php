@@ -61,6 +61,7 @@ class SuratBASTController extends Controller
 	}
 	public function store(Request $request)
 	{
+		// return $request->all();
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -106,9 +107,6 @@ class SuratBASTController extends Controller
 				$noSurat3 = $explodeSurat[2];
 				$noSurat4 = $explodeSurat[3];
 				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-			}else {
-				// cek tanggal kemaren dengan loop
-				return 'datamu kosong';
 			}
 		}else {
 			$findAgendaTerakhir = SuratBAST::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_bast','DESC')->max('no_agenda');
@@ -139,8 +137,8 @@ class SuratBASTController extends Controller
 			$newdata->jenis_pekerjaan = $request->jenis_pekerjaan;
 			$newdata->kegiatan = $request->kegiatan;
 			$newdata->tanggal_surat = $request->tanggal_surat;
-			$newdata->jumlah = $request->jumlah;
-			// $newdata->jumlah = str_replace('.', $request->jumlah);
+			// $newdata->jumlah = $request->jumlah;
+			$newdata->jumlah = str_replace('.', '', $request->jumlah);
 			if (!empty($request->file_scan)) {
 				if (!empty($newdata->file_scan)) {
 					if (is_file($newdata->file_scan)) {
