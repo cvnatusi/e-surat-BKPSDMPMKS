@@ -215,6 +215,7 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/store', [SuratBASTController::class, 'store'])->name('store-surat-bast');
 				Route::post('/destroy', [SuratBASTController::class, 'destroy'])->name('destroy-surat-bast');
 				Route::post('/show', [SuratBASTController::class, 'show'])->name('show-surat-bast');
+				Route::post('/getSuratBASTByDate', [SuratBASTController::class, 'getSuratBASTByDate'])->name('getSuratBASTByDate');
 			});
 			Route::group(array('prefix' => 'utama-surat-keputusan'), function () {
 				Route::get('/', [SuratKeputusanController::class, 'index'])->name('utama-surat-keputusan');

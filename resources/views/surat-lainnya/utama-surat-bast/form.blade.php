@@ -46,6 +46,17 @@
         <label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
         <input class="form-control" type="file" id="file_scan" name="file_scan">
       </div>
+      <div class="col-md-12 panelSuratBAST" style="display:none">
+        <label for="jenis_pekerjaan" class="form-label">Pilih Surat BAST *</label>
+        <select class="form-select suratBAST" name="surat_bast" id="surat_bast">
+          {{-- <option value="">Pilih Instansi</option>
+          @if (!empty($instansi))
+            @foreach ($instansi as $inst)
+              <option value="{{$inst->id_instansi}}" @if(!empty($data)) @if ($data->penyedia_jasa == $inst->id_instansi) selected="selected" @endif @endif>{{$inst->nama_instansi}}</option>
+            @endforeach
+          @endif --}}
+        </select>
+      </div>
       <hr>
       <div class="col-md-12">
         <div class="d-md-flex d-grid align-items-center gap-3">
@@ -60,26 +71,33 @@
 var onLoad = (function() {
   $('.panel-form').animateCss('bounceInUp');
   $('.instansi').select2({
-      theme: 'bootstrap4',
-      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-      placeholder: $(this).data('placeholder'),
-      allowClear: Boolean($(this).data('allow-clear')),
-      tags: true,
-    });
-    $('.jenis_surat').select2({
-        theme: 'bootstrap4',
-        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-        placeholder: $(this).data('placeholder'),
-        allowClear: Boolean($(this).data('allow-clear')),
-        tags: true,
-      });
-      $('.sifat_surat').select2({
-          theme: 'bootstrap4',
-          width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-          placeholder: $(this).data('placeholder'),
-          allowClear: Boolean($(this).data('allow-clear')),
-          tags: true,
-        });
+    theme: 'bootstrap4',
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+    allowClear: Boolean($(this).data('allow-clear')),
+    tags: true,
+  });
+  $('.jenis_surat').select2({
+    theme: 'bootstrap4',
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+    allowClear: Boolean($(this).data('allow-clear')),
+    tags: true,
+  });
+  $('.sifat_surat').select2({
+    theme: 'bootstrap4',
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+    allowClear: Boolean($(this).data('allow-clear')),
+    tags: true,
+  });
+  $('.suratBAST').select2({
+    theme: 'bootstrap4',
+    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    placeholder: $(this).data('placeholder'),
+    allowClear: Boolean($(this).data('allow-clear')),
+    tags: true,
+  });
 })();
 
 $('.btn-cancel').click(function(e){
@@ -174,7 +192,7 @@ $('.btn-submit').click(function(e){
     });
 });
 
-$(document).ready(function () { 
+$(document).ready(function () {
 });
 $('.jumlah').on('input', function () {
   this.value = this.value.replace(/[^0-9]/g, ''); // Hanya mengizinkan angka
@@ -191,7 +209,7 @@ $('#jumlah').on('input', function () {
 		var formattedValue = formatRupiah(unformattedValue);
 
 		// Tambahkan "Rp" sebagai awalan
-		input.value = formattedValue; // 'Rp. ' + 
+		input.value = formattedValue; // 'Rp. ' +
 	});
 
 	// Fungsi untuk menghapus semua karakter non-digit
@@ -264,4 +282,48 @@ $('#jumlah').on('input', function () {
 //     }
 //   }
 // });
+
+
+    $("#tanggal_surat").change(function(){
+      var tanggal = $('.tanggal_surat').val();
+      var today = new Date();
+      var dd = String(today.getDate()).padStart(2, '0');
+      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+      var yyyy = today.getFullYear();
+      today = yyyy + '-' + mm + '-' + dd;
+      if (tanggal < today) {
+        $('.panelSuratBAST').show();
+        $.post("{!! route('getSuratBASTByDate') !!}", {
+          tanggal: tanggal
+        }).done(function(data) {
+          console.log(data);
+          if (data.length > 0) {
+            var ins = '<option>- Pilih Surat BAST -</option>';
+            $.each(data, function(k, v) {
+              ins += '<option value="' + v.id_surat_bast + '">' + v.nomor_surat_bast +
+              '</option>';
+            });
+
+            $('.suratBAST').html(ins);
+            $('.suratBAST').removeAttr('disabled');
+            $('.suratBAST').select2({
+              theme: 'bootstrap4',
+              width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+              placeholder: $(this).data('placeholder'),
+              allowClear: Boolean($(this).data('allow-clear')),
+            });
+          }else {
+            var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
+          }
+        });
+        // $.post("{!! route('checkSuratKeluarByDate') !!}", {
+        //   tanggal: tanggal
+        // }).done(function(data) {
+        //
+        // });
+      }else {
+        $('.panelSuratBAST').hide();
+
+      }
+    });
 </script>
