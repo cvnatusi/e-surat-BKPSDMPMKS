@@ -108,6 +108,10 @@ class SuratBASTController extends Controller
 				$noSurat4 = $explodeSurat[3];
 				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
 			}
+			// else {
+			// 	// cek tanggal kemaren dengan loop
+			// 	return 'datamu kosong';
+			// }
 		}else {
 			$findAgendaTerakhir = SuratBAST::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_bast','DESC')->max('no_agenda');
 			if ($findAgendaTerakhir == 0) {
@@ -207,6 +211,11 @@ class SuratBASTController extends Controller
 	public function getSuratBASTByDate(Request $request)
 	{
 		$data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
-		return response()->json($data);
+		if (!empty($data)) {
+			return response()->json($data);
+		}else {
+			$dataa = SuratBAST::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderByDesc('tanggal_surat')->get();
+			return response()->json($data);
+		}
 	}
 }
