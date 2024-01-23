@@ -28,6 +28,17 @@
         <label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
         <input class="form-control" type="file" id="file_scan" name="file_scan">
       </div>
+      <div class="col-md-12 panelSuratKeluar" style="display:none">
+        <label for="jenis_pekerjaan" class="form-label">Pilih Surat Keluar *</label>
+        <select class="form-select suratKeluar" name="surat_keputusan" id="surat_keputusan">
+          {{-- <option value="">Pilih Instansi</option>
+          @if (!empty($instansi))
+            @foreach ($instansi as $inst)
+              <option value="{{$inst->id_instansi}}" @if(!empty($data)) @if ($data->penyedia_jasa == $inst->id_instansi) selected="selected" @endif @endif>{{$inst->nama_instansi}}</option>
+            @endforeach
+          @endif --}}
+        </select>
+      </div>
       <hr>
       <div class="col-md-12">
         <div class="d-md-flex d-grid align-items-center gap-3">
@@ -212,4 +223,44 @@ $('.btn-submit').click(function(e){
 //     }
 //   }
 // });
+$("#tanggal_surat").change(function(){
+  var tanggal = $('.tanggal_surat').val();
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+  today = yyyy + '-' + mm + '-' + dd;
+  if (tanggal < today) {
+    $('.panelSuratKeluar').show();
+    $.post("{!! route('getSuratSKByDate') !!}", {
+      tanggal: tanggal
+    }).done(function(data) {
+      if (data.length > 0) {
+        var ins = '<option>- Pilih Surat Keluar -</option>';
+        $.each(data, function(k, v) {
+          ins += '<option value="' + v.id_surat_keputusan + '">' + v.nomor_surat_keputusan + '</option>';
+        });
+
+        $('.suratKeluar').html(ins);
+        $('.suratKeluar').removeAttr('disabled');
+        $('.suratKeluar').select2({
+          theme: 'bootstrap4',
+          width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+          placeholder: $(this).data('placeholder'),
+          allowClear: Boolean($(this).data('allow-clear')),
+        });
+      }else {
+        var ins = '<option>- Surat Keluar Tidak Ditemukan! -</option>';
+      }
+    });
+    // $.post("{!! route('checkSuratKeluarByDate') !!}", {
+    //   tanggal: tanggal
+    // }).done(function(data) {
+    //
+    // });
+  }else {
+    $('.panelSuratKeluar').hide();
+
+  }
+});
 </script>

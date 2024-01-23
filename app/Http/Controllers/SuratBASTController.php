@@ -162,7 +162,7 @@ class SuratBASTController extends Controller
 			}
 			$cekNoSurat = SuratBAST::where('nomor_surat_bast','ilike','%'.$noSurat.'%')->first(); // 0
 			if (!empty($cekNoSurat)) {
-				$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!!'];
+				$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Sudah Ada!!'];
 				DB::rollback();
 				return response()->json($return);
 			}else {

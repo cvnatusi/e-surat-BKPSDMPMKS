@@ -22,7 +22,7 @@
           @endif
         </select> --}}
         <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
-        @if (Auth::user()->level_user == 2) 
+        @if (Auth::user()->level_user == 2)
           <input type="text" onchange="trigger_suratMasuk(this)" class="form-control" value="" id="nomor_agenda">
           {{-- <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
              <option value="">-- Pilih No Agenda --</option>
@@ -32,7 +32,7 @@
                @endforeach
              @endif
            </select> --}}
-        @else 
+        @else
           <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
              <option value="">-- Pilih No Agenda --</option>
              @if (!empty($surat_masuk))
@@ -125,7 +125,7 @@
 <script type="text/javascript">
 var onLoad = (function() {
   $('.panel-form').animateCss('bounceInUp');
-  $('.surat_masuk').select2({ 
+  $('.surat_masuk').select2({
       // $('#surat_masuk_id').
       theme: 'bootstrap4',
       width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
@@ -321,6 +321,11 @@ $('.btn-submit').click(function(e){
         }
       },
     });
+    // Add a listener for the success event of the AJAX call
+    $('.pemberi_disposisi').on('select2:open', function (e) {
+    var data = e;
+    console.log(data);
+});
     $(".penerima_disposisi").select2(
       {
         theme: 'bootstrap4',
@@ -364,7 +369,7 @@ $('.btn-submit').click(function(e){
           url: "{{ route('get-surat-masuk') }}",
           data: {
                 id: id,
-                _token: '{{ csrf_token() }}' 
+                _token: '{{ csrf_token() }}'
             },
           success: function(data){
             if (data && data.data && data.data.surat_masuk) {

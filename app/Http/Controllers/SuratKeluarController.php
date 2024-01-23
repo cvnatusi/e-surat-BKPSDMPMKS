@@ -405,7 +405,7 @@ class SuratKeluarController extends Controller
 			$suratKeluar= SuratKeluar::find($request->id);
 			$findJenisSurat = JenisSurat::findOrFail($suratKeluar->jenis_surat_id);
 			$kodeJenisSurat = $findJenisSurat->kode_jenis_surat;
-			$noUrutSurat = 	SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->where('surat_manual','Y')->orderBy('id_surat_keluar','DESC')->count(); // 0
+			$noUrutSurat = 	SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->where('surat_manual','Y')->orderBy('id_surat_keluar','DESC')->max('no_agenda'); // 0
 			if ($noUrutSurat == 0) {
 					$noUrutSurat = 1;
 				}else {

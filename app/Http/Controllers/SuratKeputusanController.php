@@ -77,34 +77,57 @@ class SuratKeputusanController extends Controller
 		}
 
 		DB::beginTransaction();
-
-		$findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->count();
-		if ($findAgendaTerakhir == 0) {
-			$findAgendaTerakhir = 1;
+		$tanggal_surat = $request->tanggal_surat;
+		$tanggal_now =  date('Y-m-d');
+		if ($tanggal_surat < $tanggal_now) {
+			$cekSurat = SuratKeputusan::find($request->surat_keputusan);
+			if (!empty($cekSurat)) {
+				// buatkan nomor sisipan
+				$explodeSurat = explode("/",$cekSurat->nomor_surat_keputusan);
+				if (strpos($explodeSurat[1], '.A') !== false) {
+					$noSurat2 = str_replace("A","B",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'B') !== false) {
+					$noSurat2 = str_replace("B","C",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'C') !== false) {
+					$noSurat2 = str_replace("C","D",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'D') !== false) {
+					$noSurat2 = str_replace("D","E",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'E') !== false) {
+					$noSurat2 = str_replace("E","F",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'F') !== false) {
+					$noSurat2 = str_replace("F","G",$explodeSurat[1]);
+				}elseif (strpos($explodeSurat[1], 'G') !== false) {
+					$noSurat2 = str_replace("G","H",$explodeSurat[1]);
+				}else{
+					$noSurat2 = $explodeSurat[1].'.A';
+				}
+				$noSurat1 = $explodeSurat[0];
+				$noSurat3 = $explodeSurat[2];
+				$noSurat4 = $explodeSurat[3];
+				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
+			}
 		}else {
-			$findAgendaTerakhir = $findAgendaTerakhir+1;
+			$findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->max('no_agenda');
+			if ($findAgendaTerakhir == 0) {
+				$findAgendaTerakhir = 1;
+			}else {
+				$findAgendaTerakhir = $findAgendaTerakhir+1;
+			}
 		}
-		// if (empty($findAgendaTerakhir)) {
-		// 	$count = 0001;
-		// } else {
-		// 	$count =  $findAgendaTerakhir->no_agenda;
-		// 	$count += 1;
-		// }
-		// if ($count < 10) {
-		// 	$count = '000'.$count;
-		// }else if ($count < 100) {
-		// 	$count = '00'.$count;
-		// }else if ($count < 1000){
-		// 	$count = '0'.$count;
-		// }
+
 		try{
 			$newdata = (!empty($request->id)) ? SuratKeputusan::find($request->id) : new SuratKeputusan;
 			if (!empty($request->id)) {
 				$newdata->no_agenda = $newdata->no_agenda;
 				$noSurat = $newdata->nomor_surat_keputusan;
 			}else {
-				$newdata->no_agenda = $findAgendaTerakhir;
-				$noSurat = '188/'.$findAgendaTerakhir.'/432.403/'.date('Y');
+				if ($tanggal_surat < $tanggal_now) {
+					$newdata->no_agenda = $noSurat2;
+					$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
+				}else {
+					$newdata->no_agenda = $findAgendaTerakhir;
+					$noSurat = '188/'.$findAgendaTerakhir.'/432.403/'.date('Y');
+				}
 			}
 
 			$newdata->nomor_surat_keputusan = $noSurat;
@@ -128,7 +151,14 @@ class SuratKeputusanController extends Controller
 					$newdata->file_scan = $filename;
 				}
 			}
-			$newdata->save();
+			$cekNoSurat = SuratKeputusan::where('nomor_surat_keputusan','ilike','%'.$noSurat.'%')->first(); // 0
+			if (!empty($cekNoSurat)) {
+				$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Sudah Ada!!'];
+				DB::rollback();
+				return response()->json($return);
+			}else {
+				$newdata->save();
+			}
 
 			DB::commit();
 			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
@@ -168,5 +198,16 @@ class SuratKeputusanController extends Controller
 	{
 		$data = SuratKeputusan::where('no_agenda', $request->id)->get();
 		return response()->json($data);
+	}
+
+	public function getSuratSKByDate(Request $request)
+	{
+		$data = SuratKeputusan::where('tanggal_surat',$request->tanggal)->get();
+		if (!empty($data)) {
+			return response()->json($data);
+		}else {
+			$dataa = SuratKeputusan::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderByDesc('tanggal_surat')->get();
+			return response()->json($data);
+		}
 	}
 }
