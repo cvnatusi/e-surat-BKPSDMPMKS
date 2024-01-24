@@ -322,10 +322,10 @@ $('.btn-submit').click(function(e){
       },
     });
     // Add a listener for the success event of the AJAX call
-    $('.pemberi_disposisi').on('select2:open', function (e) {
-    var data = e;
-    console.log(data);
-});
+//     $('.pemberi_disposisi').on('select2:open', function (e) {
+//     var data = e;
+//     console.log(data);
+// });
     $(".penerima_disposisi").select2(
       {
         theme: 'bootstrap4',

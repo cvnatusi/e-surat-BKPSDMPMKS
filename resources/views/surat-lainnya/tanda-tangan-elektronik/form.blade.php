@@ -270,7 +270,7 @@
 					$('#barCode').prop('checked',false)
 				}
 				if (this.checked) {
-					if(opsiGambar == '5'){
+					if(opsiGambar == '5'
 						gambar.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
 						gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
 					}else{

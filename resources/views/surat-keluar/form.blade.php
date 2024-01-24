@@ -485,8 +485,37 @@
       }).done(function(data) {
         if (data) {
           $("#suratTerakhir").html("Nomor Surat Terakhir : "+data.nomor_surat_keluar).show();
+          let text = data.nomor_surat_keluar;
+          const myArray = text.split("/");
+          // if(Number(myArray[1])){
+          //   var txt = myArray[1]+'.A';
+          //   console.log(myArray[1]+'.A');
+          //   // $('#no_surat1').val(txt);
+          // }
+          if (myArray.indexOf(".A")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".A", ".B"));
+          }else if (myArray.indexOf(".B")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".B", ".C"));
+          }else if (myArray.indexOf(".C")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".C", ".D"));
+          }else if (myArray.indexOf(".D")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".D", ".E"));
+          }else if (myArray.indexOf(".E")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".E", ".F"));
+          }else if (myArray.indexOf(".F")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".F", ".G"));
+          }else if (myArray.indexOf(".G")) {
+            $('#no_surat1').val(myArray[1].toString().replace(".G", ".H"));
+          }else if (myArray.indexOf(".G") > 0) {
+            $('#no_surat1').val(myArray[1]+'.A');
+          }else {
+            $('#no_surat1').val(myArray[1]+'.A');
+          }
+
+
         }else {
           $("#suratTerakhir").hide();
+          $('#no_surat1').val('');
         }
       });
     });
