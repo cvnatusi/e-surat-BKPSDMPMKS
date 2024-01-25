@@ -34,6 +34,14 @@
         <label for="kegiatan" class="form-label">Kegiatan *</label>
           <textarea rows="3" cols="80" class="form-control" name="kegiatan" id="kegiatan" placeholder="Tuliskan keterangan / kegiatan">@if(!empty($data)){{$data->kegiatan}}@endif</textarea>
       </div>
+      <div class="col-md-12">
+          <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="chkSisipkanSurat"
+                  @if (!empty($data)) @if ($data->surat_manual == 'Y') checked @endif
+                  @endif value="Y" id="chkSisipkanSurat" >
+              <label class="form-check-label" for="chkSisipkanSurat">Sisipkan Surat?</label>
+          </div>
+      </div>
       <div class="col-md-4">
         <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
         <input type="date" @if(!empty($data)) value="{{date('Y-m-d',strtotime($data->tanggal_surat))}}" @else value="{{date('Y-m-d')}}" @endif class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat">
@@ -284,46 +292,42 @@ $('#jumlah').on('input', function () {
 // });
 
 
-    $("#tanggal_surat").change(function(){
-      var tanggal = $('.tanggal_surat').val();
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, '0');
-      var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-      var yyyy = today.getFullYear();
-      today = yyyy + '-' + mm + '-' + dd;
-      if (tanggal < today) {
+    $("#chkSisipkanSurat").change(function(){
+      if (this.checked) {
         $('.panelSuratBAST').show();
-        $.post("{!! route('getSuratBASTByDate') !!}", {
-          tanggal: tanggal
-        }).done(function(data) {
-          console.log(data);
-          if (data.length > 0) {
-            var ins = '<option>- Pilih Surat BAST -</option>';
-            $.each(data, function(k, v) {
-              ins += '<option value="' + v.id_surat_bast + '">' + v.nomor_surat_bast +
-              '</option>';
-            });
+          $("#tanggal_surat").change(function(){
+            var tanggal = $('.tanggal_surat').val();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+             today = yyyy + '-' + mm + '-' + dd;
+              $.post("{!! route('getSuratBASTByDate') !!}", {
+                tanggal: tanggal
+              }).done(function(data) {
+                console.log(data);
+                if (data.length > 0) {
+                  var ins = '<option>- Pilih Surat BAST -</option>';
+                  $.each(data, function(k, v) {
+                    ins += '<option value="' + v.id_surat_bast + '">' + v.nomor_surat_bast +
+                    '</option>';
+                  });
 
-            $('.suratBAST').html(ins);
-            $('.suratBAST').removeAttr('disabled');
-            $('.suratBAST').select2({
-              theme: 'bootstrap4',
-              width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-              placeholder: $(this).data('placeholder'),
-              allowClear: Boolean($(this).data('allow-clear')),
-            });
-          }else {
-            var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
-          }
-        });
-        // $.post("{!! route('checkSuratKeluarByDate') !!}", {
-        //   tanggal: tanggal
-        // }).done(function(data) {
-        //
-        // });
+                  $('.suratBAST').html(ins);
+                  $('.suratBAST').removeAttr('disabled');
+                  $('.suratBAST').select2({
+                    theme: 'bootstrap4',
+                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                    placeholder: $(this).data('placeholder'),
+                    allowClear: Boolean($(this).data('allow-clear')),
+                  });
+                }else {
+                  var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
+                }
+              });
+          });
       }else {
         $('.panelSuratBAST').hide();
-
       }
     });
 </script>

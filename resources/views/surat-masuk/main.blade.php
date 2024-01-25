@@ -122,7 +122,7 @@
                 showButtonPrint();
                 // console.log('false');
             }
-            
+
         }
 
         function printAll() {
@@ -160,7 +160,7 @@
             var end = $('#max').val()
             loadTable(start, end);
         })
-        $('#max').change(() => {        
+        $('#max').change(() => {
             var start = $('#min').val()
             var end = $('#max').val()
             loadTable(start, end);
@@ -206,9 +206,9 @@
                     style: 'os',
                     selector: 'td:first-child'
                 },
-                order: [
-                    [1, 'asc']
-                ],
+                // order: [
+                //     [1, 'desc']
+                // ],
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },
@@ -227,7 +227,7 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            // console.log(listCheked, row.id_surat_masuk); 
+                            // console.log(listCheked, row.id_surat_masuk);
                             // console.log(listCheked.includes(row.id_surat_masuk.toString()));
                             if(listCheked.includes(row.id_surat_masuk)) {
                                 // console.log('asndas');

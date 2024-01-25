@@ -25,7 +25,7 @@ class SuratKeputusanController extends Controller
 		if ($request->ajax()) {
 			$paramTglAwal = $request->tglAwal;
 			$paramTglAkhir = $request->tglAkhir;
-			$data = SuratKeputusan::orderBy('id_surat_keputusan','desc')
+			$data = SuratKeputusan::orderBy('tanggal_surat','DESC')
 			->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 			->get();
 			return Datatables::of($data)
@@ -107,7 +107,12 @@ class SuratKeputusanController extends Controller
 				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
 			}
 		}else {
-			$findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->max('no_agenda');
+			// $findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->max('no_agenda');
+			$findAgendaTerakhir = SuratKeputusan::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
+																			->whereYear('tanggal_surat', '=', date('Y'))
+																			->whereNull('deleted_at')
+																			->first()
+																			->max_number;
 			if ($findAgendaTerakhir == 0) {
 				$findAgendaTerakhir = 1;
 			}else {
@@ -203,11 +208,11 @@ class SuratKeputusanController extends Controller
 	public function getSuratSKByDate(Request $request)
 	{
 		$data = SuratKeputusan::where('tanggal_surat',$request->tanggal)->get();
-		if (!empty($data)) {
+		if (count($data) > 0) {
 			return response()->json($data);
 		}else {
 			$dataa = SuratKeputusan::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderByDesc('tanggal_surat')->get();
-			return response()->json($data);
+			return response()->json($dataa);
 		}
 	}
 }

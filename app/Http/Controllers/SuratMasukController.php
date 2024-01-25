@@ -30,7 +30,7 @@ class SuratMasukController extends Controller
 			$paramTglAkhir = $request->tglAkhir;
 				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-				->orderBy('id_surat_masuk','desc')
+				->orderByDESC('tanggal_surat')
 				->get();
 
 				// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->orderBy('id_surat_masuk','desc')->get();

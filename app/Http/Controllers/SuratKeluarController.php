@@ -31,7 +31,8 @@ class SuratKeluarController extends Controller
 			$paramTglAkhir = $request->tglAkhir;
 				$data = SuratKeluar::with(['sifat','jenis'])
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-				->orderBy('id_surat_keluar','desc')
+				->orderBy('tanggal_surat','DESC')
+				// ->orderBy('nomor_surat_keluar','DESC')
 				->get();
 				// $data = SuratKeluar::with(['sifat','jenis'])->orderBy('id_surat_keluar','DESC')->get();
 			return Datatables::of($data)

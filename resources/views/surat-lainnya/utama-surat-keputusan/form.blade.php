@@ -19,6 +19,14 @@
         <label for="tujuan" class="form-label">Tujuan</label>
         <input type="text" class="form-control" style="#" name="tujuan" id="tujuan" @if(!empty($data)) value="{{$data->tujuan}}" @endif  placeholder="Tujuan">
       </div>
+      <div class="col-md-12">
+          <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="chkSisipkanSurat"
+                  @if (!empty($data)) @if ($data->surat_manual == 'Y') checked @endif
+                  @endif value="Y" id="chkSisipkanSurat" >
+              <label class="form-check-label" for="chkSisipkanSurat">Sisipkan Surat?</label>
+          </div>
+      </div>
       <div class="col-md-6">
         <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
         <input type="date" @if(!empty($data)) value="{{date('Y-m-d',strtotime($data->tanggal_surat))}}" @else value="{{date('Y-m-d')}}" @endif class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat">
@@ -223,44 +231,80 @@ $('.btn-submit').click(function(e){
 //     }
 //   }
 // });
-$("#tanggal_surat").change(function(){
-  var tanggal = $('.tanggal_surat').val();
-  var today = new Date();
-  var dd = String(today.getDate()).padStart(2, '0');
-  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-  var yyyy = today.getFullYear();
-  today = yyyy + '-' + mm + '-' + dd;
-  if (tanggal < today) {
+// $("#tanggal_surat").change(function(){
+//   var tanggal = $('.tanggal_surat').val();
+//   var today = new Date();
+//   var dd = String(today.getDate()).padStart(2, '0');
+//   var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+//   var yyyy = today.getFullYear();
+//   today = yyyy + '-' + mm + '-' + dd;
+//   if (tanggal < today) {
+//     $('.panelSuratKeluar').show();
+//     $.post("{!! route('getSuratSKByDate') !!}", {
+//       tanggal: tanggal
+//     }).done(function(data) {
+//       if (data.length > 0) {
+//         var ins = '<option>- Pilih Surat Keluar -</option>';
+//         $.each(data, function(k, v) {
+//           ins += '<option value="' + v.id_surat_keputusan + '">' + v.nomor_surat_keputusan + '</option>';
+//         });
+//
+//         $('.suratKeluar').html(ins);
+//         $('.suratKeluar').removeAttr('disabled');
+//         $('.suratKeluar').select2({
+//           theme: 'bootstrap4',
+//           width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+//           placeholder: $(this).data('placeholder'),
+//           allowClear: Boolean($(this).data('allow-clear')),
+//         });
+//       }else {
+//         var ins = '<option>- Surat Keluar Tidak Ditemukan! -</option>';
+//       }
+//     });
+//     // $.post("{!! route('checkSuratKeluarByDate') !!}", {
+//     //   tanggal: tanggal
+//     // }).done(function(data) {
+//     //
+//     // });
+//   }else {
+//     $('.panelSuratKeluar').hide();
+//
+//   }
+// });
+$("#chkSisipkanSurat").change(function(){
+  if (this.checked) {
     $('.panelSuratKeluar').show();
-    $.post("{!! route('getSuratSKByDate') !!}", {
-      tanggal: tanggal
-    }).done(function(data) {
-      if (data.length > 0) {
-        var ins = '<option>- Pilih Surat Keluar -</option>';
-        $.each(data, function(k, v) {
-          ins += '<option value="' + v.id_surat_keputusan + '">' + v.nomor_surat_keputusan + '</option>';
-        });
+      $("#tanggal_surat").change(function(){
+        var tanggal = $('.tanggal_surat').val();
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+         today = yyyy + '-' + mm + '-' + dd;
+         $.post("{!! route('getSuratSKByDate') !!}", {
+           tanggal: tanggal
+         }).done(function(data) {
+           if (data.length > 0) {
+             var ins = '<option>- Pilih Surat Keluar -</option>';
+             $.each(data, function(k, v) {
+               ins += '<option value="' + v.id_surat_keputusan + '">' + v.nomor_surat_keputusan + '</option>';
+             });
 
-        $('.suratKeluar').html(ins);
-        $('.suratKeluar').removeAttr('disabled');
-        $('.suratKeluar').select2({
-          theme: 'bootstrap4',
-          width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-          placeholder: $(this).data('placeholder'),
-          allowClear: Boolean($(this).data('allow-clear')),
-        });
-      }else {
-        var ins = '<option>- Surat Keluar Tidak Ditemukan! -</option>';
-      }
-    });
-    // $.post("{!! route('checkSuratKeluarByDate') !!}", {
-    //   tanggal: tanggal
-    // }).done(function(data) {
-    //
-    // });
+             $('.suratKeluar').html(ins);
+             $('.suratKeluar').removeAttr('disabled');
+             $('.suratKeluar').select2({
+               theme: 'bootstrap4',
+               width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+               placeholder: $(this).data('placeholder'),
+               allowClear: Boolean($(this).data('allow-clear')),
+             });
+           }else {
+             var ins = '<option>- Surat Keluar Tidak Ditemukan! -</option>';
+           }
+         });
+      });
   }else {
     $('.panelSuratKeluar').hide();
-
   }
 });
 </script>

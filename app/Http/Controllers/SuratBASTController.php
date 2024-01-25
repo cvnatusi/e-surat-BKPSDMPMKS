@@ -26,9 +26,8 @@ class SuratBASTController extends Controller
 			$paramTglAwal = $request->tglAwal;
 			$paramTglAkhir = $request->tglAkhir;
 
-			$data = SuratBAST::orderBy('id_surat_bast','desc')
+			$data = SuratBAST::orderBy('tanggal_surat','DESC')
 			->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-			->orderBy('id_surat_bast','desc')
 			->get();
 
 			return Datatables::of($data)
@@ -113,7 +112,11 @@ class SuratBASTController extends Controller
 			// 	return 'datamu kosong';
 			// }
 		}else {
-			$findAgendaTerakhir = SuratBAST::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_bast','DESC')->max('no_agenda');
+		$findAgendaTerakhir = SuratBAST::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
+																		->whereYear('tanggal_surat', '=', date('Y'))
+																		->whereNull('deleted_at')
+																		->first()
+																		->max_number;
 			if ($findAgendaTerakhir == 0) {
 				$findAgendaTerakhir = 1;
 			}else {
@@ -211,11 +214,11 @@ class SuratBASTController extends Controller
 	public function getSuratBASTByDate(Request $request)
 	{
 		$data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
-		if (!empty($data)) {
+		if (count($data) > 0) {
 			return response()->json($data);
 		}else {
-			$dataa = SuratBAST::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderByDesc('tanggal_surat')->get();
-			return response()->json($data);
+			$dataa = SuratBAST::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderBy('tanggal_surat','DESC')->get();
+			return response()->json($dataa);
 		}
 	}
 }
