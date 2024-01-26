@@ -58,7 +58,10 @@
       <div class="col-md-6">
         <label for="pemberi_disposisi_id" class="form-label">Pemberi Disposisi *)</label>
         <select class="form-select pemberi_disposisi" name="pemberi_disposisi_id" id="pemberi_disposisi_id">
-        <option value="">-- Pilih Pemberi Disposisi --</option>
+          <option value="">-- Pilih Pemberi Disposisi --</option>
+          @if (Auth::user()->level_user != 1)
+            <option value="{{Auth::user()->email}}" selected>{{Auth::user()->name}}</option>
+          @endif
         {{-- <option value="{{$beri->id_mst_asn}}" @if(!empty($data)) @if ($data->pemberi_disposisi_id == $beri->id_mst_asn) selected="selected" @endif @endif>{{$beri->nama_asn}}</option> --}}
           @if (!empty($pemberi))
             @foreach ($pemberi as $beri)
@@ -66,7 +69,7 @@
               {{-- <option value="{{ $beri->id_mst_asn }}" @if(Auth::user()->id == $beri->id_mst_asn) selected="selected" @endif>
                 {{ $beri->nama_asn }}
             </option> --}}
-            <option value="{{ $beri->id_mst_asn }}" @if(!empty($data) && Auth::user()->id == $beri->id_mst_asn) selected="selected" @endif>
+            <option value="{{ $beri->id_mst_asn }}" @if(!empty($data) && Auth::user()->id == $beri->id_mst_asn) selected @endif>
                 {{ $beri->nama_asn }}
             </option>
             @endforeach
@@ -147,6 +150,59 @@ var onLoad = (function() {
       allowClear: Boolean($(this).data('allow-clear')),
       tags: true,
     });
+
+    var pemberi = "{{Auth::user()->level_user}}";
+  // 1	Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia Kabupaten  Pamekasan
+  // 2	Sekretaris Badan Kepegawaian dan Pengembangan Sumber Daya Manusia
+  // 3	Kasubbag Perencanaan , Umum dan Kepegawaian
+  // 4	Kasubbag keuangan dan Aset
+  // 5	Kepala Bidang Mutasi dan Promosi
+  // 6	Kepala Bidang Pengembangan Aparatur
+  // 7	Kepala Bidang Pengadaan, Pembinaan dan Informasi Kepegawaian
+  // 8	Analis SDM Aparatur Muda
+  // 9	Kepala Sub Bidang Pengadaan dan Pemberhentian
+  // 10	Analis Kepegawaian Ahli Pertama
+  // 11	Staf
+    if (pemberi == 1 || pemberi == 2|| pemberi == 5) {
+      var pem = 2;
+      var pen = 3;
+    }else if (pemberi == 3) {
+      var pem = 3;
+      var pen = 4;
+    }else if (pemberi == 4) {
+      var pem = 4;
+      var pen = 5;
+    }
+    $(".pemberi_disposisi").select2(
+      {
+        theme: 'bootstrap4',
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        allowClear: Boolean($(this).data('allow-clear')),
+        // tags: true,
+        ajax: {
+          url: "{{route('getAsnByLevel')}}",
+          dataType: 'json',
+          type: "POST",
+          delay: 250,
+          data: function (params) {
+            return {
+              id: pem
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  id: item.id_mst_asn,
+                  text: item.nama_asn,
+                }
+              })
+            };
+             cache: true
+          }
+        },
+      });
 })();
 
 $('.btn-cancel').click(function(e){
@@ -269,63 +325,7 @@ $('.btn-submit').click(function(e){
 //       }
 //     },
 //   });
-  var pemberi = "{{Auth::user()->level_user}}";
-// 1	Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia Kabupaten  Pamekasan
-// 2	Sekretaris Badan Kepegawaian dan Pengembangan Sumber Daya Manusia
-// 3	Kasubbag Perencanaan , Umum dan Kepegawaian
-// 4	Kasubbag keuangan dan Aset
-// 5	Kepala Bidang Mutasi dan Promosi
-// 6	Kepala Bidang Pengembangan Aparatur
-// 7	Kepala Bidang Pengadaan, Pembinaan dan Informasi Kepegawaian
-// 8	Analis SDM Aparatur Muda
-// 9	Kepala Sub Bidang Pengadaan dan Pemberhentian
-// 10	Analis Kepegawaian Ahli Pertama
-// 11	Staf
-  if (pemberi == 1 || pemberi == 2|| pemberi == 5) {
-    var pem = 2;
-    var pen = 3;
-  }else if (pemberi == 3) {
-    var pem = 3;
-    var pen = 4;
-  }else if (pemberi == 4) {
-    var pem = 4;
-    var pen = 5;
-  }
-  $(".pemberi_disposisi").select2(
-    {
-      theme: 'bootstrap4',
-      width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-      placeholder: $(this).data('placeholder'),
-      allowClear: Boolean($(this).data('allow-clear')),
-      // tags: true,
-      ajax: {
-        url: "{{route('getAsnByLevel')}}",
-        // url: "{{route('getAsnByKategori')}}",
-        dataType: 'json',
-        type: "POST",
-        // delay: 250,
-        data: function (params) {
-          return {
-            id: pem
-          };
-        },
-        processResults: function (data) {
-          return {
-            results: $.map(data, function (item) {
-              return {
-                id: item.id_mst_asn,
-                text: item.nama_asn,
-              }
-            })
-          };
-        }
-      },
-    });
-    // Add a listener for the success event of the AJAX call
-//     $('.pemberi_disposisi').on('select2:open', function (e) {
-//     var data = e;
-//     console.log(data);
-// });
+
     $(".penerima_disposisi").select2(
       {
         theme: 'bootstrap4',
