@@ -34,19 +34,19 @@ class SuratDisposisiController extends Controller
 				->whereBetween('created_at',[$paramTglAwal,$paramTglAkhir])
 				->orderBy('id_surat_disposisi','desc')
 				->get();
-			
+
 				// $data = SuratDisposisi::with(['suratMasukId','pemberi','penerima'])->orderBy('id_surat_disposisi','desc')->get();
-		
+
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-secondary "><i class="bx bx-show me-0"></i></a>';
-					// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-warning "data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
 					if(Auth::user()->level_user == 2) {
 					} else {
 						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					}
-					// $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="previewSuratMasuk('.$row->surat_masuk_id.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-download me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
 				})
@@ -62,11 +62,12 @@ class SuratDisposisiController extends Controller
 	public function form(Request $request)
 	{
 		try {
-			$data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
+			$data['data'] = (!empty($request->id)) ? SuratDisposisi::with('suratMasukId.pengirim')->find($request->id) : "";
 			$data['jenis_surat'] = JenisSurat::get();
 			$data['sifat_surat'] = SifatSurat::get();
 			$data['instansi'] = Instansi::get();
 			$data['dengan_harap'] = DenganHarap::get();
+			$data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
@@ -122,13 +123,28 @@ class SuratDisposisiController extends Controller
 				$newdata->no_agenda_disposisi = $newdata->no_agenda_disposisi;
 			}else {
 				$suratMasuk = SuratMasuk::findOrFail($request->surat_masuk_id);
+				if (Auth::user()->level_user == '2') {
+					$suratMasuk->status_disposisi = 'Disposisi Kaban';
+					$suratMasuk->save();
+				}
 				$newdata->no_agenda_disposisi = $suratMasuk->no_agenda;
+				$cekDisposisi = SuratDisposisi::where('surat_masuk_id',$request->surat_masuk_id)->first();
+				if (!empty($cekDisposisi)) {
+					$return = ['status'=>'error', 'code'=>'201', 'message'=>'Surat Disposisi Sudah Dibuat!!','errMsg'=>'Duplikasi Data'];
+					return response()->json($return);
+				}
 			}
-			$newdata->surat_masuk_id = $request->surat_masuk_id;
-			$newdata->pemberi_disposisi_id = $request->pemberi_disposisi_id;
-			$newdata->penerima_disposisi_id = $request->penerima_disposisi_id;
+			if (empty($request->id)) {
+				$newdata->surat_masuk_id = $request->surat_masuk_id;
+				$newdata->pemberi_disposisi_id = $request->pemberi_disposisi_id;
+				$newdata->penerima_disposisi_id = $request->penerima_disposisi_id;
+				$newdata->catatan_disposisi = $request->catatan_disposisi ;
+			}else {
+				$newdata->pemberi_disposisi2_id = $request->pemberi_disposisi_id;
+				$newdata->penerima_disposisi2_id = $request->penerima_disposisi_id;
+				$newdata->catatan_disposisi_sekretaris = $request->catatan_disposisi_sekretaris ;
+			}
 			$newdata->dengan_hormat_harap = implode(",",$request->dengan_harap);
-			$newdata->catatan_disposisi = $request->catatan_disposisi ;
 			// if (!empty($request->file_scan)) {
 			// 	if (!empty($newdata->file_scan)) {
 			// 		if (is_file($newdata->file_scan)) {
@@ -220,7 +236,7 @@ class SuratDisposisiController extends Controller
 		// $data['surat_masuk'] = SuratMasuk::where('id_surat_masuk', $id)->with('pengirim')->first();
 		// return $data;
 		return response()->json([
-            'status_code' => 200, 
+            'status_code' => 200,
             'data' => $data
         ]);
 	}

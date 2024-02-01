@@ -76,7 +76,12 @@ class OtherController extends Controller
 	}
 	public function getAsnByLevel(Request $request)
 	{
-		$data = MasterASN::with('users')->whereRelation('users','level_user',$request->id)->get();
+		if (Auth::user()->level_user == 1 || Auth::user()->level_user == 2) {
+			$data = MasterASN::leftJoin('users','users.id','mst_asn.users_id')->whereIn('users.level_user',[2,3,4])->get();
+
+		}else{
+			$data = MasterASN::with('users')->whereRelation('users','level_user',$request->id)->get();
+		}
 		return response()->json($data);
 	}
 	// public function getInstansiByName(Request $request)

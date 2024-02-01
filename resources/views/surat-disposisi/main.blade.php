@@ -83,7 +83,7 @@
                 listCheked = [];
                 // console.log('false');
             }
-            
+
         }
 
         // filter tanggal awal akhir
@@ -174,8 +174,8 @@
                         }
                     },
                     {
-                        data: 'surat_masuk_id.id_surat_masuk',
-                        name: 'surat_masuk_id.id_surat_masuk',
+                        data: 'surat_masuk_id.no_agenda',
+                        name: 'surat_masuk_id.no_agenda',
                         render: function(data, type, row) {
                             return '<p style="color:black">' + data + '</p>';
                         }
@@ -338,5 +338,18 @@
                 }
             });
         };
+
+        function previewSuratMasuk(id) {
+            // $('.main-page').hide();
+            $.post("{!! route('show-surat-masuk') !!}", {
+                id: id
+            }).done(function(data) {
+                if (data.status == 'success') {
+                    $('.modal-page').html(data.content).fadeIn();
+                } else {
+                    $('.main-page').show();
+                }
+            });
+        }
     </script>
 @endsection

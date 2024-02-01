@@ -13,7 +13,7 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 60px 25px;
+      margin: 60px 5px;
   }
   /* .page-break {
     page-break-after: always;
@@ -30,6 +30,10 @@
     content: "";
     display: table;
     clear: both;
+  }
+
+  input.largerCheckbox {
+    transform: scale(1.5);
   }
   </style>
 </head>
@@ -114,7 +118,7 @@
               <td width="28%">&nbsp; a. Rahasia</td>
               <td width="10%">
                 @if ($data->sifat->nama_sifat_surat == 'Rahasia')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -130,7 +134,7 @@
               <td width="28%">&nbsp; b. Biasa</td>
               <td width="10%">
                 @if ($data->sifat->nama_sifat_surat == 'Biasa')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -146,7 +150,7 @@
               <td width="28%">&nbsp; c. Segera</td>
               <td width="10%">
                 @if ($data->sifat->nama_sifat_surat == 'Segera')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -154,7 +158,7 @@
               <td width="28%">&nbsp; d. Penting</td>
               <td width="10%">
                 @if ($data->sifat->nama_sifat_surat == 'Penting')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -178,7 +182,7 @@
                 <td width="5%">
                 </td>
                 <td width="53%" rowspan="6">
-                  {{-- <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;">
+                  <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;">
                     @php
                     $num = 1;
                     @endphp
@@ -192,7 +196,7 @@
                         @endphp
                         @if ($count>0)
                           <td>
-                            <input type="checkbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
+                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
                               <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}}</label>
                             </td>
                             @if (($num%2)==0)
@@ -204,7 +208,7 @@
                           $num++;
                           @endphp
                         @endforeach
-                      </table> --}}
+                      </table>
                     </td>
                   </tr>
               <tr>
@@ -251,13 +255,13 @@
           <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; margin-top: 2px;">
             <thead>
               <tr>
-                <td> 
-                    <img id='barcode' 
+                <td>
+                    <img id='barcode'
                     {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
                     src="{{asset('assets/images/qr-code.png')}}"
-                    alt="" 
-                    title="" 
-                    width="100" 
+                    alt=""
+                    title=""
+                    width="100"
                     height="100" onblur='generateBarCode();' />
                     {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
                 </td>
@@ -296,4 +300,3 @@
 </body>
 </html>
 {{-- @endforeach --}}
-

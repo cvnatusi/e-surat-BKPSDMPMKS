@@ -28,10 +28,18 @@ class SuratMasukController extends Controller
 		if ($request->ajax()) {
 			$paramTglAwal = $request->tglAwal;
 			$paramTglAkhir = $request->tglAkhir;
+			if (Auth::user()->level_user != 1) {
+				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
+				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+					->whereNull('status_disposisi')
+				->orderByDESC('tanggal_surat')
+				->get();
+			}else {
 				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 				->orderByDESC('tanggal_surat')
 				->get();
+			}
 
 				// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->orderBy('id_surat_masuk','desc')->get();
 			// return $data;
@@ -301,6 +309,7 @@ class SuratMasukController extends Controller
 
 	// TEMPLATE DISPOSISI KOSONGAN (SINGLE FILE)
     public function templateDisposisi(Request $request) {
+			$data['dengan_harap'] = DenganHarap::get();
 		$data['data'] = SuratMasuk::where('id_surat_masuk', $request->id)->with('pengirim', 'sifat', 'jenis')->first();
 		$html = View::make('cetakan.surat_disposisi_kosongan2', $data)->render();
 

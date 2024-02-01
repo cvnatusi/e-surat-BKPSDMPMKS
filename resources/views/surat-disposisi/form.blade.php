@@ -10,57 +10,58 @@
       @if(!empty($data))
           <input type="hidden" class="form-control" name="id" value="{{$data->id_surat_disposisi}}">
       @endif
-      <div class="col-md-4">
-        <label for="surat_masuk_id" class="form-label">No. Agenda Surat / Berkas *)</label>
-        {{-- <label for="surat_masuk_id" class="form-label">No. Agenda Surat / Berkas *)</label>
-        <select class="form-select surat_masuk" name="surat_masuk_id" id="surat_masuk_id">
-          <option value="">-- Pilih No Agenda --</option>
-          @if (!empty($surat_masuk))
-            @foreach ($surat_masuk as $sm)
-              <option value="{{$sm->id_surat_masuk}}" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
-            @endforeach
-          @endif
-        </select> --}}
-        <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
-        @if (Auth::user()->level_user == 2)
-          <input type="text" onchange="trigger_suratMasuk(this)" class="form-control" value="" id="nomor_agenda">
-          {{-- <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
-             <option value="">-- Pilih No Agenda --</option>
-             @if (!empty($surat_masuk))
-               @foreach ($surat_masuk as $sm)
-                 <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
-               @endforeach
-             @endif
-           </select> --}}
+      @if (!empty($data))
+        <div class="col-md-2">
+          <label for="surat_masuk_id" class="form-label">No. Agenda*)</label>
+          <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
+          <input type="text" class="form-control" readonly name="nomor_agenda" id="nomorAgenda" @if(!empty($data)) value="{{$data->suratMasukId->no_agenda}}" @endif>
+          {{-- <input type="text" class="form-control" @if(!empty($data)) value="{{$data->suratMasukId->tanggal_surat}}" @endif  id="nomor_agenda"> --}}
+        </div>
         @else
-          <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
-             <option value="">-- Pilih No Agenda --</option>
-             @if (!empty($surat_masuk))
-               @foreach ($surat_masuk as $sm)
-                 <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
-               @endforeach
-             @endif
-           </select>
-        @endif
-      </div>
-      <div class="col-md-4">
+          <div class="col-md-2">
+            <label for="surat_masuk_id" class="form-label">No. Agenda*)</label>
+            <input type="hidden" name="surat_masuk_id" id="surat_masuk_id">
+            @if (Auth::user()->level_user == 2)
+              <input type="text" onchange="trigger_suratMasuk(this)" class="form-control" value="" id="nomor_agenda">
+            @else
+              <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
+                 <option value="">-- Pilih No Agenda --</option>
+                 @if (!empty($surat_masuk))
+                   @foreach ($surat_masuk as $sm)
+                     <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
+                   @endforeach
+                 @endif
+               </select>
+            @endif
+          </div>
+      @endif
+
+      <div class="col-md-2">
         <label for="" class="form-label">No Surat *)</label>
-        <input type="text" class="form-control" readonly name="no_surat_masuk" id="no_surat_masuk" value="">
+        <input type="text" class="form-control" readonly name="no_surat_masuk" id="noSuratMasuk" @if(!empty($data)) value="{{$data->suratMasukId->nomor_surat_masuk}}" @endif>
       </div>
       <div class="col-md-4">
         <label for="" class="form-label">Nama Pengirim *)</label>
-        <input type="text" class="form-control" readonly name="nama_pengirim" id="nama_pengirim" value="">
+        <input type="text" class="form-control" readonly name="nama_pengirim" id="namaPengirim" @if(!empty($data)) value="{{$data->suratMasukId->pengirim->nama_instansi}}" @endif>
+      </div>
+      <div class="col-md-2">
+        <label for="" class="form-label">Tanggal Dikirim *)</label>
+        <input type="text" class="form-control" readonly name="tanggal_dikirim" id="tanggal_dikirim" @if(!empty($data)) value="{{$data->suratMasukId->tanggal_surat}}" @endif>
+      </div>
+      <div class="col-md-2">
+        <label for="" class="form-label">Tanggal Diterima *)</label>
+        <input type="text" class="form-control" readonly name="tanggal_terima_surat" id="tanggal_terima_surat" @if(!empty($data)) value="{{$data->suratMasukId->tanggal_terima_surat}}" @endif>
       </div>
       <div class="col-md-12">
         <label for="" class="form-label">Isi Ringkas *)</label>
-        <input type="text" class="form-control" readonly name="isi_ringkas" id="isi_ringkas" value="">
+        <input type="text" class="form-control" readonly name="isi_ringkas" id="isiRingkas"@if(!empty($data)) value="{{$data->suratMasukId->isi_ringkas_surat}}" @endif>
       </div>
       <div class="col-md-6">
         <label for="pemberi_disposisi_id" class="form-label">Pemberi Disposisi *)</label>
         <select class="form-select pemberi_disposisi" name="pemberi_disposisi_id" id="pemberi_disposisi_id">
           <option value="">-- Pilih Pemberi Disposisi --</option>
           @if (Auth::user()->level_user != 1)
-            <option value="{{Auth::user()->email}}" selected>{{Auth::user()->name}}</option>
+            <option value="{{$user_login->id_mst_asn}}" selected>{{$user_login->nama_asn}}</option>
           @endif
         {{-- <option value="{{$beri->id_mst_asn}}" @if(!empty($data)) @if ($data->pemberi_disposisi_id == $beri->id_mst_asn) selected="selected" @endif @endif>{{$beri->nama_asn}}</option> --}}
           @if (!empty($pemberi))
@@ -115,6 +116,12 @@
         <label for="catatan_disposisi" class="form-label">Catatan Disposisi</label>
           <textarea rows="2" cols="80" class="form-control" placeholder="Ketikkan catatan penting" name="catatan_disposisi" id="catatan_disposisi">@if(!empty($data)){{$data->catatan_disposisi}}@endif</textarea>
       </div>
+      @if (!empty($data))
+        <div class="col-md-12">
+          <label for="catatan_disposisi_sekretaris" class="form-label">Catatan Disposisi Sekretaris</label>
+            <textarea rows="2" cols="80" class="form-control" placeholder="Ketikkan catatan penting" name="catatan_disposisi_sekretaris" id="catatan_disposisi_sekretaris"></textarea>
+        </div>
+      @endif
       <hr>
       <div class="col-md-12">
         <div class="d-md-flex d-grid align-items-center gap-3">
@@ -200,6 +207,37 @@ var onLoad = (function() {
               })
             };
              cache: true
+          }
+        },
+      });
+
+      $(".penerima_disposisi").select2(
+      {
+        theme: 'bootstrap4',
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        allowClear: Boolean($(this).data('allow-clear')),
+        // tags: true,
+        ajax: {
+          url: "{{route('getAsnByLevel')}}",
+          // url: "{{route('getAsnByKategori')}}",
+          dataType: 'json',
+          type: "POST",
+          // delay: 250,
+          data: function (params) {
+            return {
+              id: pen
+            };
+          },
+          processResults: function (data) {
+            return {
+              results: $.map(data, function (item) {
+                return {
+                  id: item.id_mst_asn,
+                  text: item.nama_asn,
+                }
+              })
+            };
           }
         },
       });
@@ -326,36 +364,7 @@ $('.btn-submit').click(function(e){
 //     },
 //   });
 
-    $(".penerima_disposisi").select2(
-      {
-        theme: 'bootstrap4',
-        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-        placeholder: $(this).data('placeholder'),
-        allowClear: Boolean($(this).data('allow-clear')),
-        // tags: true,
-        ajax: {
-          url: "{{route('getAsnByLevel')}}",
-          // url: "{{route('getAsnByKategori')}}",
-          dataType: 'json',
-          type: "POST",
-          // delay: 250,
-          data: function (params) {
-            return {
-              id: pen
-            };
-          },
-          processResults: function (data) {
-            return {
-              results: $.map(data, function (item) {
-                return {
-                  id: item.id_mst_asn,
-                  text: item.nama_asn,
-                }
-              })
-            };
-          }
-        },
-      });
+
 
       function trigger_suratMasuk(ini) {
         // let id = $(ini).find(':selected').val();
@@ -376,10 +385,14 @@ $('.btn-submit').click(function(e){
                 $('#no_surat_masuk').val(data.data.surat_masuk.nomor_surat_masuk);
                 $('#nama_pengirim').val(data.data.surat_masuk.pengirim.nama_instansi);
                 $('#isi_ringkas').val(data.data.surat_masuk.isi_ringkas_surat);
+                $('#tanggal_dikirim').val(data.data.surat_masuk.tanggal_surat);
+                $('#tanggal_terima_surat').val(data.data.surat_masuk.tanggal_terima_surat);
             } else {
                 $('#no_surat_masuk').val('undefined');
                 $('#nama_pengirim').val('undefined');
                 $('#isi_ringkas').val('undefined');
+                $('#tanggal_dikirim').val('undefined');
+                $('#tanggal_terima_surat').val('undefined');
             }
           }
         })

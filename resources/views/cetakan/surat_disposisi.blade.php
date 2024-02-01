@@ -29,6 +29,10 @@
     display: table;
     clear: both;
   }
+
+  input.largerCheckbox {
+    transform: scale(1.5);
+  }
   </style>
 </head>
 
@@ -189,7 +193,7 @@
                         @endphp
                         @if ($count>0)
                           <td>
-                            <input type="checkbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
+                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
                               <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}}</label>
                             </td>
                             @if (($num%2)==0)
@@ -249,13 +253,13 @@
               <tr>
                 <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN PIMPINAN</b></p>
-                  <p></p>
+                  <p>{{$data->catatan_disposisi}}</p>
                 </td>
               </tr>
               <tr>
                 <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
-                  <p></p>
+                  <p>{{$data->catatan_disposisi_sekretaris}}</p>
                 </td>
               </tr>
             </tbody>
@@ -263,13 +267,13 @@
           <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <thead>
               <tr>
-                <td> 
-                    <img id='barcode' 
+                <td>
+                    <img id='barcode'
                     {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
                     src="{{asset('gambar/QR.png')}}"
-                    alt="" 
-                    title="" 
-                    width="105" 
+                    alt=""
+                    title=""
+                    width="105"
                     height="105" onblur='generateBarCode();' />
                     {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
                 </td>

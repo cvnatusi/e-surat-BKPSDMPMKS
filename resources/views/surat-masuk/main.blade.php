@@ -355,10 +355,17 @@
                     id: id
                 },
                 success: function (response) {
+
                     // console.log(id);
                     var w = window.open();
                     $(w.document.body).html(response.html);
-                    w.print();
+                    setTimeout(function () {
+                      // printWindow.focus();
+                      // printWindow.print();
+                      w.focus();
+                      w.print();
+                      w.close();
+                    }, 500);
                 },
                 error: function (xhr, status, error) {
                     console.error(error);
