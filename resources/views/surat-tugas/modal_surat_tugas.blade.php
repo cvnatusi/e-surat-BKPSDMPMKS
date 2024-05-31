@@ -20,15 +20,15 @@
           </thead>
           <tbody>
             @foreach ($data as $key => $value)
-            {{-- @foreach ($pegawai as $k => $pg) --}}
+            @foreach ($pegawai as $k => $pg)
             <tr>
-              <td>{{$key+1}}</td>
-              <td>{{$value->pegawai->nama_asn}}</td>
-              <td>{{$value->pegawai->nip}}</td>
+              <td>{{$k+1}}</td>
+              <td>{{$pg->nama_asn}}</td>
+              <td>{{$pg->nip}}</td>
               <td>{{$value->surattugas->nomor_surat_perjalanan_dinas ?? '-'}}</td>
               <td>{{$value->file_surat_tugas}}</td>
               @if (!empty($value->file_surat_tugas))
-                <td><a href="{{asset('storage/surat-tugas/'.$value->file_surat_tugas)}}" 
+                <td><a href="{{asset('storage/surat-tugas/'.$value->file_surat_tugas)}}"
                   target="_blank" class="btn btn-sm btn-info px-4">Preview</a></td>
                 @else
                   <td><a href="javascript:void(0)" type="button" onclick="(function(){ swal('Whoops!','Berkas Tidak Ditemukan!','warning');return false;})();return false;" class="btn btn-info px-5"><i class="bx bx-cloud-download me-1"></i>Preview Surat Tugas</a></td>
@@ -36,11 +36,11 @@
               @if (!empty($value->file_surat_sppd))
                 <td><small>Sudah dibuat</small></td>
                 @else
-                  <td><a href="javascript:void(0)" type="button" 
+                  <td><a href="javascript:void(0)" type="button"
                     onclick="buatSPPD({{$value->asn_id}}, {{$value->surat_tugas_id}})" class="btn btn-sm btn-success px-4"></i>Buat</a></td>
               @endif
             </tr>
-            {{-- @endforeach --}}
+            @endforeach
             @endforeach
           </tbody>
         </table>
@@ -79,7 +79,7 @@ function buatSPPD(id, surat_tugas_id) {
       });
         $('#modal-list-surat-tugas').modal('hide');
         $('.modal-list-surat-tugas').html('');
-        
+
     } else if(data.status == 'error') {
         $('.btn-submit').html('Simpan <i class="fa fa-save fs-14 m-l-5"></i>').removeAttr('disabled');
         Lobibox.notify('error', {

@@ -191,6 +191,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::get('/preview-surat-tugas', [SuratTugasController::class, 'previewST'])->name('previewST');
 			Route::post('/verifikasi-ST', [SuratTugasController::class, 'verifikasiST'])->name('verifikasiST');
 			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-tugas');
+			Route::get('/st-kosong', [SuratTugasController::class, 'stKosong'])->name('st-kosong');
 		});
 		Route::group(array('prefix' => 'surat-perjalanan-dinas'), function () {
 			Route::get('/', [SuratSPPDController::class, 'index'])->name('surat-perjalanan-dinas');

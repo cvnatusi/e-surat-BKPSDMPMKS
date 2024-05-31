@@ -18,7 +18,7 @@
     @endif
     <form class="row g-3 form-save" action="{{ url('profile/update') }}" enctype="multipart/form-data" method="POST">
     @csrf
-    
+
         <input class="form-control" hidden value="{{Auth::user()->id}}" name="id" id="id" type="text">
       <div class="col-md-8">
         <label for="nama_kepala_badan" class="form-label">NAMA PENGGUNA</label>
@@ -43,7 +43,7 @@
       </div>
 
       <div class="col-12">
-        <button type="submit" class="btn btn-primary px-5 btn-submit">Simpan</button>
+        <button type="button" class="btn btn-primary px-5 btn-submit">Simpan</button>
         <!-- <button type="button" class="btn btn-secondary px-5 btn-cancel">Kembali</button> -->
       </div>
     </form>
@@ -57,10 +57,10 @@ $("body").on("click",".upload-image",function(e){
     $(this).parents("form").ajaxForm(options);
   });
 
-  var options = { 
-    complete: function(response) 
+  var options = {
+    complete: function(response)
     {
-      
+
         if($.isEmptyObject(response.responseJSON.error)){
             $("input[name='pengguna']").val('');
             $("input[name='kode_surat']").val('');
@@ -71,7 +71,7 @@ $("body").on("click",".upload-image",function(e){
             alert('You clicked the button!');
         }else{
             printErrorMsg(response.responseJSON.error);
-            
+
         }
     }
   };
@@ -83,7 +83,7 @@ $("body").on("click",".upload-image",function(e){
         $(".print-error-msg").find("ul").append('<li>'+value+'</li>');
     });
   }
-document.getElementById('nama_badan').readOnly = true;
+// document.getElementById('nama_badan').readOnly = true;
 function myFunction() {
   var x = document.getElementById("password");
   if (x.type === "password") {

@@ -66,7 +66,7 @@
     {{-- HEADER TULISAN SURAT TUGAS --}}
     <div style="text-align:center">
         <h3 style="margin:0 !important"><u>SURAT TUGAS</u></h3>
-        <p style="margin:0 !important;">Nomor : {{$data->nomor_surat_perjalanan_dinas}}</p>
+        <p style="margin:0 !important;">Nomor : 12524112323</p>
     </div>
     {{-- END HEADER TULISAN SURAT TUGAS --}}
     {{-- START CONTENT --}}
@@ -77,31 +77,31 @@
                 <tr>
                     <td width="20%">Nama</td>
                     <td width="2%">:</td>
-                    <td width="78%" style="vertical-align: bottom;">{{$asn->nama_asn}}</td>
+                    <td width="78%" style="vertical-align: bottom;">FARID ILHAM AL QORNI, S.Kom M.Pdm</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>NIP</td>
                     <td>:</td>
-                    <td>{{$asn->nip}}</td>
+                    <td>199111162019021003</td>
                 </tr>
                 <tr>
                     <td>Pangkat/Golongan</td>
                     <td>:</td>
-                    <td>{{$asn->pangkat_golongan}}</td>
+                    <td>SEKDA</td>
                 </tr>
                 <tr>
                     <td style="vertical-align:top">Jabatan</td>
                     <td style="vertical-align:top">:</td>
-                    <td>{{$asn->jabatan_asn->nama_jabatan}}</td>
+                    <td>SEKDA</td>
                 </tr>
             </tbody>
         </table>
         <br>
         <p>Menugaskan Saudara,</p>
         {{-- @if (count($pegawai) > 1) --}}
-        @if (count($pegawai) > 1)
+        {{-- @if (count($pegawai) > 1)
         <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 11px; ">
             <thead style="font-weight: 600; text-align: center;">
                 <tr>
@@ -176,7 +176,7 @@
                           {{$suratTugas->tempat_tujuan_bertugas}} ({{$suratTugas->alamat_tujuan_bertugas}}) <br>
                         @endforeach
                     </td>
-                    {{-- <td>{{$surat_tugas->tempat_tujuan_bertugas}} <br>{{$surat_tugas->alamat_tujuan_bertugas}}</td> --}}
+                    <td>{{$surat_tugas->tempat_tujuan_bertugas}} <br>{{$surat_tugas->alamat_tujuan_bertugas}}</td>
                 </tr>
             </tbody>
         </table>
@@ -185,7 +185,7 @@
         <br><br>
         <br>
         <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 10em; vertical-align: middle">
-        {{-- <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 13em; vertical-align: middle"> --}}
+        <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 13em; vertical-align: middle">
             <thead>
                 <tr>
                     <th rowspan="4"></th>
@@ -203,20 +203,18 @@
             </thead>
         </table>
         <div class="image">
-          {{-- @php
+          @php
             $data->verifikasi_kaban = 'N';
-          @endphp --}}
-          {{-- <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left: 38.3em"  width="90"> --}}
-          {{-- <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt=""> --}}
+          @endphp
+          <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left: 38.3em" width="90">
+          <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt="">
           @if ($data->verifikasi_kaban == 'Y')
-          <div class="square" style="width: 100px;height: 120px;">
-            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="90">
-          </div>
+          <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="90">
             @else
               <div class="square" style="width: 100px;height: 100px;"></div>
           @endif
         </div>
-        {{-- <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:25.5em; vertical-align:middle; text-align: center;"> --}}
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:25.5em; vertical-align:middle; text-align: center;">
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10rem; margin-top: -10px; vertical-align:middle; text-align: center; ">
           <tbody>
               <tr>
@@ -230,7 +228,7 @@
                   <td>NIP {{$asn->nip}}</td>
               </tr>
           </tbody>
-        </table>
+        </table> --}}
     </div>
     {{-- END CONTENT --}}
     {{-- FOOTER --}}
@@ -244,8 +242,8 @@
                 <p style="font-size: 10px;margin:0 !important">- UU ITE No 11 Tahun 2008 Pasal 5 Ayat 1</p>
               </td>
               <td rowspan="3">
-                  {{-- <img src="{{asset('assets/images/logo-bsre.png')}}" width="95" alt="logo-bsre"> --}}
-                  <img src="{{$logo_bsre}}" width="95" alt="logo-bsre">
+                  {{-- <img src="{{asset('assets/images/logo-bsre.png')}}" width="95"  alt="logo-bsre"> --}}
+                  <img src="{{$logo_bsre}}" width="95"  alt="logo-bsre">
               </td>
             </tr>
             <tr>
@@ -261,7 +259,7 @@
           {{-- </thead> --}}
         </table>
     </div>
-    @if ($data->verifikasi_kaban != 'Y')
+    {{-- @if ($data->verifikasi_kaban != 'Y')
       <div style="position: fixed;
       bottom: 500px;
       left: 90px;
@@ -272,6 +270,6 @@
       opacity: 0.2;">
       DRAFT
     </div>
-    @endif
+    @endif --}}
 </body>
 </html>
