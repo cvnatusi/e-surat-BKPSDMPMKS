@@ -34,7 +34,7 @@ class SuratBASTController extends Controller
 				->addIndexColumn()
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" o nclick="editForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
