@@ -38,7 +38,15 @@
         }
 
         .draggable {
-         touch-action: none;
+         position: absolute;
+         user-select: none;
+         /* overflow: hidden; */
+         /* will-change: width, height, transform; */
+         /* touch-action: none; */
+        }
+
+        .draggable img {
+         pointer-events: none;
         }
 
 		img {
@@ -207,61 +215,59 @@
 
         interact('.draggable')
             .resizable({
-            edges: { left: true, right: true, bottom: true, top: true },
+                edges: { left: true, right: true, bottom: true, top: true },
 
-            listeners: {
-            move(event) {
-                var target = event.target;
-                var x = (parseFloat(target.getAttribute('data-x')) || 0);
-                var y = (parseFloat(target.getAttribute('data-y')) || 0);
+                listeners: {
+                    move(event) {
+                        var target = event.target.querySelector('img'); // target the img element inside the div
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        var y = (parseFloat(target.getAttribute('data-y')) || 0);
 
-                // Update the element's style
-                target.style.width = event.rect.width + 'px';
-                target.style.height = event.rect.height + 'px';
+                        // Update the element's style
+                        target.style.width = event.rect.width + 'px';
+                        target.style.height = event.rect.height + 'px';
 
-                // Translate when resizing from top or left edges
-                x += event.deltaRect.left;
-                y += event.deltaRect.top;
+                        // Translate when resizing from top or left edges
+                        x += event.deltaRect.left;
+                        y += event.deltaRect.top;
 
-                target.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+                        target.parentElement.style.transform = 'translate(' + x + 'px,' + y + 'px)'; // move the parent element
 
-                target.setAttribute('data-x', x);
-                target.setAttribute('data-y', y);
-                target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height);
-            }
-            },
-            modifiers: [
-            interact.modifiers.restrictEdges({
-                outer: 'parent'
-            }),
-            interact.modifiers.restrictSize({
-                min: { width: 100, height: 50 }
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+                    }
+                },
+                modifiers: [
+                    interact.modifiers.restrictEdges({
+                        outer: 'parent'
+                    }),
+                    interact.modifiers.restrictSize({
+                        min: { width: 100, height: 50 }
+                    })
+                ],
+                inertia: true
             })
-            ],
-            inertia: true
-        })
-        .draggable({
-            listeners: {
-            move(event) {
-                var target = event.target;
-                var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+            .draggable({
+                listeners: {
+                    move(event) {
+                        var target = event.target;
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-                target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-                // console.log('translate(' + x + 'px, ' + y + 'px)');
+                        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
 
-                target.setAttribute('data-x', x);
-                target.setAttribute('data-y', y);
-            }
-            },
-            inertia: true,
-            modifiers: [
-            interact.modifiers.restrictRect({
-                restriction: 'parent',
-                endOnly: true
-            })
-            ]
-        });
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+                    }
+                },
+                inertia: true,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true
+                    })
+                ]
+            });
 
         function drawBarcode(x, y) {
             let canvas = document.getElementById("pdfCanvas");
