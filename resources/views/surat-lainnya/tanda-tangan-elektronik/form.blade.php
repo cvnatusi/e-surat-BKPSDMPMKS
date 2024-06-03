@@ -74,7 +74,7 @@
 				<h6><b><i>e</i> -Tanda Tangan</b></h6>
 				<hr>
 				<label for="inputBox yang_bertanda_tangan" id="label_tujuan_surat" class="form-label">Penanda Tangan Surat Tugas <span>*</span></label>
-				<select class="form-select mb-3" id="pilihanGambar" aria-label="Default select example">
+				<select class="form-select mb-3 select2" id="pilihanGambar" aria-label="Default select example">
 					<option value="" selected>-- Pilih penanda tangan --</option>
 						@foreach ($asn as $ttd)
 							<option value="{{$ttd->id_mst_asn}}" >{{$ttd->nama_asn}} @if ($ttd->id_mst_asn == 5) (KABAN) @else SEKDA @endif</option>
@@ -82,7 +82,7 @@
 								<option value="1" >Ir. TOTOK HARTONO (SEKDA)</option> --}}
 						@endforeach
 					</select>
-					<div class="col-md-12">
+					<div class="col-md-12 mt-3">
 						<label for="file_scan" class="form-label">Upload Surat <span>*</span></label>
 						<input class="form-control" type="file" id="myPdf" name="file_scan" accept="application/pdf" >
 					</div>
@@ -122,7 +122,7 @@
 					<button type="button" class="btn btn-secondary" id="next">Next</button>
 					&nbsp; &nbsp;
 					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-	
+
 					{{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
 					{{-- <div class="col ms-2">
 						<button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
@@ -142,7 +142,7 @@
 					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
-					
+
 
 				</div>
 			</div>
@@ -163,10 +163,19 @@
 		{{-- <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script> --}}
 		<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-		<script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script>
+        <script src="{{ asset('js/interact.min.js') }}"></script>
+		{{-- <script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script> --}}
+
 
 
 <script type="text/javascript">
+    $('.select2').select2({
+        theme: 'bootstrap4',
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        allowClear: Boolean($(this).data('allow-clear')),
+        tags: true,
+    });
 		// var onLoad = (function() {
 		// 	$('.penanda-tangan').select2({
 		// 		theme: 'bootstrap4',
@@ -184,36 +193,36 @@
 		const suratPendukung = document.getElementById('surat_pendukung');
 
 		// <==== function Draggable using Interact.js
-		interact('.draggable')
-		.draggable({
-			// enable inertial throwing
-			inertia: true,
-			// keep the element within the area of its parent
-			modifiers: [
-			interact.modifiers.restrictRect({
-				restriction: 'parent',
-				endOnly: true
-			})
-			],
-			// enable autoScroll
-			autoScroll: true,
+		// interact('.draggable')
+		// .draggable({
+		// 	// enable inertial throwing
+		// 	inertia: true,
+		// 	// keep the element within the area of its parent
+		// 	modifiers: [
+		// 	interact.modifiers.restrictRect({
+		// 		restriction: 'parent',
+		// 		endOnly: true
+		// 	})
+		// 	],
+		// 	// enable autoScroll
+		// 	autoScroll: true,
 
-			listeners: {
-			// call this function on every dragmove event
-			move: dragMoveListener,
+		// 	listeners: {
+		// 	// call this function on every dragmove event
+		// 	move: dragMoveListener,
 
-			// call this function on every dragend event
-			end(event) {
-				var textEl = event.target.querySelector('p');
+		// 	// call this function on every dragend event
+		// 	end(event) {
+		// 		var textEl = event.target.querySelector('p');
 
-				textEl && (textEl.textContent =
-				'moved a distance of ' +
-				(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
-					Math.pow(event.pageY - event.y0, 2) | 0))
-				.toFixed(2) + 'px');
-			}
-			}
-		});
+		// 		textEl && (textEl.textContent =
+		// 		'moved a distance of ' +
+		// 		(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
+		// 			Math.pow(event.pageY - event.y0, 2) | 0))
+		// 		.toFixed(2) + 'px');
+		// 	}
+		// 	}
+		// });
 
 		function dragMoveListener(event) {
 			var target = event.target;
@@ -270,7 +279,7 @@
 					$('#barCode').prop('checked',false)
 				}
 				if (this.checked) {
-					if(opsiGambar == '5'
+					if(opsiGambar == '5') {
 						gambar.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
 						gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
 					}else{
@@ -364,8 +373,8 @@
 				document.onmousemove = null;
 				}
 			};
-		
-			
+
+
 
 			function dragElement(elmnt) {
 			var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -497,8 +506,8 @@
 
 
 
-			
-			
+
+
 
 		// // Fungsi untuk menggambar elemen footer pada elemen canvas
 		function drawFooterOnCanvas() {

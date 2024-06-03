@@ -17,6 +17,6 @@
         "postcss": "^8.1.14"
     },
     "dependencies": {
-        "interactjs": "^1.10.26"
+        "interactjs": "^1.10.27"
     }
 }
