@@ -158,6 +158,7 @@ class TteController extends Controller
 	// }
 	public function form(Request $request)
 	{
+        // return 'asdasd';
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratKeluar::find($request->id) : "";
 			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();

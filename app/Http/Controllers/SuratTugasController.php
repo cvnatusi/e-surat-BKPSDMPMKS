@@ -564,21 +564,23 @@ class SuratTugasController extends Controller
 	}
 	public function buatSPPD(Request $request)
 	{
-        return $request;
+        // return $request;
 		try {
 			DB::beginTransaction();
 			// $data['data'] = SuratTugas::find($request->id);
-			$data['file'] = FileSuratTugas::where([
-				['asn_id',$request->id],
-				['surat_tugas_id',$request->surat_tugas_id]
-			])->first();
+			// $data['file'] = FileSuratTugas::where([
+			// 	['asn_id',$request->id],
+			// 	['surat_tugas_id',$request->surat_tugas_id]
+			// ])->first();
+            $data['file'] = FileSuratTugas::find($request->id);
+			// return $data;
 			$data['data'] = SuratTugas::find($data['file']->surat_tugas_id);
 			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();
 			$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->yang_bertanda_tangan_asn_id)->first();
 			// $data['asn'] = MasterASN::with('jabatan_asn')->where('jabatan',$request->id)->first();
 			$data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
 			// return $data['data']->pegawai->nama_asn;
-			return $data;
+			// return $data;
 			// $asn = explode(",",$data['data']->asn_id);
 			// return $asn;
 			if (!empty($data['file']->file_surat_sppd)) {

@@ -15,3 +15,5 @@ mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
+    
+mix.copy("node_modules/interactjs/dist/interact.min.js", "public/js");
