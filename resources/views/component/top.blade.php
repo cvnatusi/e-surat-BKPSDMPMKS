@@ -59,13 +59,13 @@
               </div>
             </div>
           </li>
-              @php 
+              @php
                 $level= Auth::user()->level_user;
                 $suratMasuk1= App\Models\SuratMasuk::select(['id_surat_masuk'])->whereDate('tanggal_surat', '=', date('Y-m-d'))->whereNull('deleted_at')->count() ;
                 $suratKeluar1= App\Models\SuratKeluar::select(['id_surat_keluar'])->whereDate('tanggal_surat', '=', date('Y-m-d'))->whereNull('deleted_at')->count();
                 $tandaTangan1= App\Models\FileTte::select(['id_file_surat'])->whereDate('tanggal_surat', '=', date('Y-m-d'))->whereNull('deleted_at')->count();
                 $suratDisposisi1= App\Models\SuratDisposisi::select(['id_surat_disposisi'])->whereDate('created_at', '=', date('Y-m-d'))->whereNull('deleted_at')->count();
-                
+
                 if($level==1){
                   $notif=$suratMasuk1;
                 }elseif($level==4 || $level==5){
@@ -192,10 +192,15 @@
           document.getElementsByName(name)[0].value = 0;
         }
       </script>
+        @php
+            $fotoPath = 'foto/' . Auth::user()->foto;
+        @endphp
       <div class="user-box dropdown">
         <a class="d-flex align-items-center nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           {{-- <img src="./foto/{{Auth::user()->foto}}" class="user-img" alt="user avatar">  --}}
-          <img src="{{URL::to('/')}}/foto/{{Auth::user()->foto}}" class="user-img" alt="user avatar">
+          {{-- <img src="{{URL::to('/')}}/foto/{{Auth::user()->foto}}" class="user-img" alt="user avatar"> --}}
+          {{-- <img src="{{asset('default.png')}}" class="user-img" alt="user avatar"> --}}
+          <img src="{{ File::exists(public_path($fotoPath)) ? URL::to('/') . '/' . $fotoPath : asset('default.png') }}" class="user-img" alt="user avatar">
           <div class="user-info ps-3">
             <p class="user-name mb-0">{{Auth::user()->name}}</p>
             <p class="designattion mb-0">
