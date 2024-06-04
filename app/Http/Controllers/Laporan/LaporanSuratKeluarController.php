@@ -97,30 +97,31 @@ class LaporanSuratKeluarController extends Controller
 	{
 		// return $request->all();
 		$datas = SuratKeluar::orderBy('id_surat_keluar','desc');
+        // return $datas;
 		if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
 			$datas = $datas->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
 		}
 		$data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
 		$data['judul'] = 'LAPORAN SURAT KELUAR';
 		$data['lap'] = $datas->get();
-		// return $data;
+		// return $data['lap'];
 		// if ($request->range == 'tanggal') {
 		// 	$data['periode'] = 'Tanggal '.$request->rangeAwal;
-		
+
 		// 	$data['lap'] = SuratKeluar::with(['sifat', 'jenis', 'penerima'])
 		// 							  ->whereDate('tanggal_surat', $request->rangeAwal)
 		// 							  ->orderBy('id_surat_keluar', 'desc')
 		// 							  ->get();
 		// } elseif ($request->range == 'bulan') {
 		// 	$data['periode'] = 'Bulan '.$request->rangeAwal;
-		
+
 		// 	$data['lap'] = SuratKeluar::with(['sifat', 'jenis', 'penerima'])
 		// 							  ->where('tanggal_surat', 'LIKE', '%'.$request->rangeAwal.'%')
 		// 							  ->orderBy('id_surat_keluar', 'desc')
 		// 							  ->get();
 		// } elseif ($request->range == 'tahun') {
 		// 	$data['periode'] = 'Tahun '.$request->rangeAwal;
-		
+
 		// 	$data['lap'] = SuratKeluar::with(['sifat', 'jenis', 'penerima'])
 		// 							  ->whereYear('tanggal_surat', $request->rangeAwal)
 		// 							  ->orderBy('id_surat_keluar', 'desc')
@@ -130,7 +131,7 @@ class LaporanSuratKeluarController extends Controller
 		// 							  ->orderBy('id_surat_keluar', 'desc')
 		// 							  ->get();
 		// }
-		
+
 
 		// return $data->get();
 			// $date = date('Y-m-d');
@@ -172,7 +173,7 @@ class LaporanSuratKeluarController extends Controller
 					// }else {
 					// 	$data['lap'] = SuratKeluar::with(['sifat','jenis','penerima'])->orderBy('id_surat_keluar','desc')->get();
 					// }
-					
+
 
 					// return $data['lap'];
 					// $startDate = $request->input('start_date');
@@ -181,6 +182,6 @@ class LaporanSuratKeluarController extends Controller
 
 					return Excel::download(new LaporanSuratKeluar($data), "Laporan Surat Keluar " . $data['periode'] . '.xlsx');
 
-					
+
 }
 }

@@ -41,6 +41,7 @@
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->nomor_surat_keluar)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->tanggal_surat)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->penerima->nama_instansi ?? '-')}}</td>
+            {{-- <td style="padding: 5px;" align="center" valign="middle">NAMA INSTANSI</td> --}}
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->jenis->nama_jenis_surat)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->sifat->nama_sifat_surat)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->perihal_surat)}}</td>

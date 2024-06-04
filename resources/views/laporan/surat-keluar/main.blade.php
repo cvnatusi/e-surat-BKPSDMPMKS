@@ -86,7 +86,7 @@
   //   var end = $('#max').val()
   //   $('#datagrid').DataTable().destroy();
 	// 	loadTable(start, end);
-  // })  
+  // })
 
  // $(".datepickertanggal").flatpickr({
   //   defaultDate: "{{date('Y-m-d')}}"
@@ -343,17 +343,17 @@ $(document).ready(function () {
 			// 	method: 'POST',
 			// 	data: {
 			// 		rangeAwal: rangeAwal,
-			// 		rangeAkhir: rangeAkhir, 
+			// 		rangeAkhir: rangeAkhir,
 			// 	},
 
 			// }).done(function(data){
 			// 	console.log(data);
 			// 	});
-				
+
 
         // var url = '{{  url('') }}';
         // var urs = url+'/laporan/laporan-surat-keluar/excel/'+range+'/'+paramTanggal;
-        window.open("{{ url('laporan/laporan-surat-keluar/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir); 
+        window.open("{{ url('laporan/laporan-surat-keluar/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
         // console.log(range);
         // // window.location.href = urs;
         // window.open(urs, '_blank');

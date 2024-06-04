@@ -37,7 +37,8 @@
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->jenis_pekerjaan )?? '-'}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->kegiatan)}}</td>
             <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->penyedia_jasa)}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{'Rp '.number_format($item->jumlah, 2,',','.')}}</td>
+            {{-- <td style="padding: 5px;" align="center" valign="middle">{{'Rp '.number_format($item->jumlah, 0,',','.')}}</td> --}}
+            <td style="padding: 5px;" align="center" valign="middle">{{ is_numeric($item->jumlah) ? 'Rp. ' . number_format($item->jumlah, 0, ',', '.') : '-' }}</td>
           </tr>
         @endforeach
 

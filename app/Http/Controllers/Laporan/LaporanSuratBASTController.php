@@ -38,16 +38,19 @@ class LaporanSuratBASTController extends Controller
 			// 	->get();
 			// }else {
 				// }
-			$data = SuratBAST::orderBy('id_surat_bast','desc')->get();
+			$data = SuratBAST::orderBy('id_surat_bast','desc');
 			if(isset($request->dateStart) && isset($request->dateEnd)) {
 				$data = $data->whereDate('tanggal_surat',  '>=', $request->dateStart)->whereDate('tanggal_surat', '<=', $request->dateEnd);
-
 			}
 			// $data = SuratBAST::with(['sifat','jenis','penerima'])->where('tanggal_terima_surat','like',date('Y-m-d').'%')->orderBy('id_surat_bast','desc')->get();
 			// $data = SuratBAST::onlyTrashed()->get();
 			return Datatables::of($data)
 			->addIndexColumn()
-			->make(true);;
+            ->addColumn('jumlah', function($row) {
+                return number_format($row->jumlah, 0, ',', '.');
+            })
+			->make(true);
+            // return $data;
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
@@ -62,8 +65,8 @@ class LaporanSuratBASTController extends Controller
 			$data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
 			$data['judul'] = 'LAPORAN SURAT BAST';
 			$data['lap'] = $querys->get();
-			// return $querys->get();
-		
+			// return count($data['lap']);
+
 		// return $data->get();
 			// $date = date('Y-m-d');
 			// if (!empty($request->tgl_awal)) {
