@@ -213,6 +213,7 @@
 		const checkboxFooter = document.getElementById('footerTTE');
 		const suratPendukung = document.getElementById('surat_pendukung');
 
+      let imgWidth, imgHeight;
         interact('.draggable')
             .resizable({
                 edges: { left: true, right: true, bottom: true, top: true },
@@ -235,6 +236,8 @@
 
                         target.setAttribute('data-x', x);
                         target.setAttribute('data-y', y);
+
+                        // console.log('width: ' + event.rect.width + 'px, height: ' + event.rect.height + 'px');
                     }
                 },
                 modifiers: [
@@ -242,7 +245,7 @@
                         outer: 'parent'
                     }),
                     interact.modifiers.restrictSize({
-                        min: { width: 50, height: 50 }
+                        min: { width: 30, height: 30 }
                     })
                 ],
                 inertia: true
@@ -255,9 +258,16 @@
                         var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
                         target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                        // console.log('translate x: ' + x + 'px, translate y: ' + y + 'px');
 
                         target.setAttribute('data-x', x);
                         target.setAttribute('data-y', y);
+
+                        // ukuran barcode sebelum dan setelah di resizable
+                        imgWidth = Math.floor(event.rect.width);
+                        imgHeight = Math.floor(event.rect.height);
+                        // imgWidth = event.rect.width;
+                        // imgHeight = event.rect.height;
                     }
                 },
                 inertia: true,
@@ -272,10 +282,18 @@
         function drawBarcode(x, y) {
             let canvas = document.getElementById("pdfCanvas");
             let ctx = canvas.getContext("2d");
-            let img = document.getElementById("mydiv");
-            ctx.drawImage(img, 5, 5);
+            let img = document.querySelector("#mydiv img");
+            console.log(imgHeight, imgWidth);
+            // ctx.drawImage(img, x, y, imgHeight, imgWidth);
+            if (imgWidth > 0 && imgHeight > 0) {
+                ctx.drawImage(img, x, y, imgWidth, imgHeight);
+            } else {
+                ctx.drawImage(img, x, y);
+            }
         }
 
+      //   setTimeout(() => drawBarcode(10, 10), 1000);
+      //   drawBarcode(10, 10);
 		// <==== function Draggable using Interact.js
 		// interact('.draggable')
 		// .draggable({
@@ -375,15 +393,6 @@
         //     })
         //     ]
         // })
-
-
-		function drawBarcode(x, y) {
-			let canvas = document.getElementById("pdfCanvas");
-			let ctx = canvas.getContext("2d");
-			let img = document.getElementById("mydiv");
-			ctx.drawImage(img, 5, 5);
-		}
-
 
 
 		// Event listener untuk elemen <select>

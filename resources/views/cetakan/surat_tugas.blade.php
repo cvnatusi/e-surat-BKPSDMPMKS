@@ -102,7 +102,7 @@
         <p>Menugaskan Saudara,</p>
         {{-- @if (count($pegawai) > 1) --}}
         @if (count($pegawai) > 1)
-        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 11px; ">
+        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 12px; width: 100%;">
             <thead style="font-weight: 600; text-align: center;">
                 <tr>
                     <td>No</td>
