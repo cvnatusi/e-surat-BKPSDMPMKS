@@ -13,6 +13,10 @@
   @page {
       margin: 100px 25px;
   }
+
+  html {
+    font-size: 12px;
+  }
   .page-break {
     page-break-after: always;
   }
@@ -32,7 +36,7 @@
         $logo = public_path('assets/images/logo-icon.png');
         $logo_bsre = public_path('assets/images/logo-bsre.png');
     @endphp
-    <table width="100%" cellpadding="0" cellspacing="0">
+    <table width="100%" cellpadding="0" cellspacing="0" >
         <thead>
             <tr>
                 <td rowspan="5">
@@ -102,7 +106,7 @@
         <p>Menugaskan Saudara,</p>
         {{-- @if (count($pegawai) > 1) --}}
         @if (count($pegawai) > 1)
-        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 12px; width: 100%;">
+        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 15px; width: 100%;">
             <thead style="font-weight: 600; text-align: center;">
                 <tr>
                     <td>No</td>
