@@ -159,7 +159,7 @@
 					<div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
 						<img src="{{asset('assets/images/qr-code.png')}}" id="mydivheader2" style="height: 100px; width: 100px;">
 					</div>
-					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px;" >
+					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; cursor: pointer;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
 
@@ -242,7 +242,7 @@
                         outer: 'parent'
                     }),
                     interact.modifiers.restrictSize({
-                        min: { width: 100, height: 50 }
+                        min: { width: 50, height: 50 }
                     })
                 ],
                 inertia: true
