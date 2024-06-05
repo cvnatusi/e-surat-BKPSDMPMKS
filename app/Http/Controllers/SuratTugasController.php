@@ -130,6 +130,7 @@ class SuratTugasController extends Controller
 	public function store(Request $request)
 	{
 		// return $request->all();
+        // return $request->tujuan_surat_id;
 		// $vr=implode($request->tujuan_surat_id,",");
 		$validator = Validator::make(
 			$request->all(),
@@ -171,7 +172,7 @@ class SuratTugasController extends Controller
 			}else {
 				$newdata->no_agenda = $findAgendaTerakhir;
 			}
-			$newdata->asn_id = implode($request->tujuan_surat_id,",");
+			$newdata->asn_id = implode(',', $request->tujuan_surat_id);
 
 				// CEK KETIKA USER TIDAK BUAT SURAT MANUAL, DISINI GENERATEKAN NOMOR SURAT OTOMATIS
 				if (empty($request->id)) {
