@@ -67,26 +67,26 @@ class LaporanSuratMasukController extends Controller
 	{
 		// return $request->all();
 		$query = SuratMasuk::orderBy('id_surat_masuk','desc');
-			if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
-				$query = $query->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
-			}
-			// return $data->get();
+        if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+            $query = $query->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+        }
+        $data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
+        // $date = date('Y-m-d');
+        $data['judul'] = 'LAPORAN SURAT MASUK';
+        $data['lap'] = $query->get();
+			return count($data['lap']);
 		// if (!empty($request->rangeAwal)) {
 		// 			$data['tanggalAwal']  = date('Y-m-d', strtotime($request->rangeAwal));
-		// 	} 
+		// 	}
 		// 	if (!empty($request->rangeAkhir)) {
 		// 			$data['tanggalAkhir']  = date('Y-m-d', strtotime($request->rangeAkhir));
 		// 	}
 		// 	$rangeAwal = $data['tanggalAwal'];
 		// 	$tgl_akhir = $data['tanggalAkhir'];
-			
+
 		// 	$awal = date('d', strtotime($data['tanggalAwal'])) . '-' . Formatters::get_bulan(date('m', strtotime($data['tanggalAwal']))) . '-' . date('Y', strtotime($data['tanggalAwal']));
 		// 	$akhir = date('d', strtotime($data['tanggalAkhir'])) . '-' . Formatters::get_bulan(date('m', strtotime($data['tanggalAkhir']))) . '-' . date('Y', strtotime($data['tanggalAkhir']));
 		// 	//
-			$data['periode'] = $request->rangeAwal . '_sampai_' . $request->rangeAkhir;
-			// $date = date('Y-m-d');
-			$data['judul'] = 'LAPORAN SURAT MASUK';
-			$data['lap'] = $query->get();
 			// return $data;
 			// 		$paramTanggal = $request->paramTanggal;
 			// 		if ($request->range == 'tanggal') {

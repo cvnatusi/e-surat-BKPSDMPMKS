@@ -98,7 +98,7 @@
 		if (month < 10) month = "0" + month;
 		if (day < 10) day = "0" + day;
 
-		var today = year + "-" + month + "-" + day ;      
+		var today = year + "-" + month + "-" + day ;
 		$("#min").attr("value", today);
 		$("#max").attr("value", today);
 
@@ -162,7 +162,7 @@
   // //     });
 
 
-  // function loadTable(dateStart, dateEnd) { 
+  // function loadTable(dateStart, dateEnd) {
   //       var table = $('#datagrid').DataTable({
   //         processing: true,
   //         serverSide: true,
@@ -229,67 +229,67 @@
   // $(document).ready(function () {
   // var dataTable;
 
-  function loadTable(dateStart, dateEnd) {
-    if ($.fn.DataTable.isDataTable('#datagrid')) {
-      dataTable.destroy();
-    }
+      function loadTable(dateStart, dateEnd) {
+        if ($.fn.DataTable.isDataTable('#datagrid')) {
+          dataTable.destroy();
+        }
 
-    dataTable = $('#datagrid').DataTable({
-      processing: true,
-      serverSide: true,
-      ajax: {
-        url: "{{ route('laporan-surat-keluar') }}",
-        data: {
-          dateStart: dateStart,
-          dateEnd: dateEnd
-        }
-      },
-      columns: [
-        {
-          data: 'no_agenda',
-          name: 'no_agenda',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        },
-        {
-          data: 'nomor_surat_keluar',
-          name: 'nomor_surat_keluar',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        },
-        {
-          data: 'jenis.nama_jenis_surat',
-          name: 'jenis.nama_jenis_surat',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        },
-        {
-          data: 'tanggal_surat',
-          name: 'tanggal_surat',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        },
-        {
-          data: 'penerima',
-          name: 'penerima',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        },
-        {
-          data: 'perihal_surat',
-          name: 'perihal_surat',
-          render: function(data, type, row) {
-            return '<p style="color:black">' + data + '</p>';
-          }
-        }
-      ]
-    });
-  }
+        dataTable = $('#datagrid').DataTable({
+          processing: true,
+          serverSide: true,
+          ajax: {
+            url: "{{ route('laporan-surat-bast') }}",
+            data: {
+              dateStart: dateStart,
+              dateEnd: dateEnd
+            }
+          },
+          columns: [
+            {
+              data: 'no_agenda',
+              name: 'no_agenda',
+              render: function(data, type, row) {
+                return '<p style="color:black">' + data + '</p>';
+              }
+            },
+            {
+                data: 'tanggal_surat',
+                name: 'tanggal_surat',
+                render: function(data, type, row) {
+                    return '<p style="color:black">' + data + '</p>';
+              }
+            },
+            {
+              data: 'jenis_pekerjaan',
+              name: 'jenis_pekerjaan',
+              render: function(data, type, row) {
+                return '<p style="color:black">' + data + '</p>';
+              }
+            },
+            {
+              data: 'kegiatan',
+              name: 'kegiatan',
+              render: function(data, type, row) {
+                return '<p style="color:black">' + data + '</p>';
+              }
+            },
+            {
+              data: 'penyedia_jasa',
+              name: 'penyedia_jasa',
+              render: function(data, type, row) {
+                return '<p style="color:black">' + data + '</p>';
+              }
+            },
+            {
+              data: 'jumlah',
+              name: 'jumlah',
+              render: function(data, type, row) {
+                return '<p style="color:black">Rp. ' + data + '</p>';
+              }
+            }
+          ]
+        });
+      }
 
     function initializeDatePicker() {
       var date = new Date();

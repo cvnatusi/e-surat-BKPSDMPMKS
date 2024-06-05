@@ -28,7 +28,27 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script> --}}
 	<title>TTE</title>
 	<style>
-		#draggable { width: 150px; height: 150px; padding: 0.5em; }
+		#draggable {
+            width: 150px;
+            height: 150px;
+            padding: 0.5em;
+            user-select: none;
+            overflow: hidden;
+            will-change: width, height, transform;
+        }
+
+        .draggable {
+         position: absolute;
+         user-select: none;
+         /* overflow: hidden; */
+         /* will-change: width, height, transform; */
+         /* touch-action: none; */
+        }
+
+        .draggable img {
+         pointer-events: none;
+        }
+
 		img {
 			cursor: move;
 		}
@@ -74,15 +94,15 @@
 				<h6><b><i>e</i> -Tanda Tangan</b></h6>
 				<hr>
 				<label for="inputBox yang_bertanda_tangan" id="label_tujuan_surat" class="form-label">Penanda Tangan Surat Tugas <span>*</span></label>
-				<select class="form-select mb-3" id="pilihanGambar" aria-label="Default select example">
-					<option value="" selected>-- Pilih penanda tangan --</option>
+				<select class="form-select mb-3 select2" id="pilihanGambar" aria-label="Default select example">
+					<option value="" selected disabled>-- Pilih penanda tangan --</option>
 						@foreach ($asn as $ttd)
-							<option value="{{$ttd->id_mst_asn}}" >{{$ttd->nama_asn}} @if ($ttd->id_mst_asn == 5) (KABAN) @else SEKDA @endif</option>
+							<option value="{{$ttd->id_mst_asn}}" >{{$ttd->nama_asn}} {{ ($ttd->id_mst_asn == 5) ? '(KABAN)' : '(SEKDA)' }}</option>
 							{{-- <option value="0" >Drs. SAUDI RAHMAN, M.Si (KABAN)</option>
 								<option value="1" >Ir. TOTOK HARTONO (SEKDA)</option> --}}
 						@endforeach
 					</select>
-					<div class="col-md-12">
+					<div class="col-md-12 mt-3">
 						<label for="file_scan" class="form-label">Upload Surat <span>*</span></label>
 						<input class="form-control" type="file" id="myPdf" name="file_scan" accept="application/pdf" >
 					</div>
@@ -122,7 +142,7 @@
 					<button type="button" class="btn btn-secondary" id="next">Next</button>
 					&nbsp; &nbsp;
 					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-	
+
 					{{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
 					{{-- <div class="col ms-2">
 						<button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
@@ -139,10 +159,10 @@
 					<div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
 						<img src="{{asset('assets/images/qr-code.png')}}" id="mydivheader2" style="height: 100px; width: 100px;">
 					</div>
-					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px;" >
+					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; cursor: pointer;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
-					
+
 
 				</div>
 			</div>
@@ -163,10 +183,20 @@
 		{{-- <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.11/dist/interact.min.js"></script> --}}
 		<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-		<script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script>
+        {{-- <script src="{{ asset('js/interact.min.js') }}"></script> --}}
+		{{-- <script src="{{ asset('../node_modules/interactjs/dist/interact.min.js') }}"></script> --}}
+        <script src="{{ asset('js/dist/interact.min.js') }}"></script>
+
 
 
 <script type="text/javascript">
+    $('.select2').select2({
+        theme: 'bootstrap4',
+        width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+        placeholder: $(this).data('placeholder'),
+        allowClear: Boolean($(this).data('allow-clear')),
+        tags: true,
+    });
 		// var onLoad = (function() {
 		// 	$('.penanda-tangan').select2({
 		// 		theme: 'bootstrap4',
@@ -183,62 +213,186 @@
 		const checkboxFooter = document.getElementById('footerTTE');
 		const suratPendukung = document.getElementById('surat_pendukung');
 
+      let imgWidth, imgHeight;
+        interact('.draggable')
+            .resizable({
+                edges: { left: true, right: true, bottom: true, top: true },
+
+                listeners: {
+                    move(event) {
+                        var target = event.target.querySelector('img'); // target the img element inside the div
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0);
+                        var y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+                        // Update the element's style
+                        target.style.width = event.rect.width + 'px';
+                        target.style.height = event.rect.height + 'px';
+
+                        // Translate when resizing from top or left edges
+                        x += event.deltaRect.left;
+                        y += event.deltaRect.top;
+
+                        target.parentElement.style.transform = 'translate(' + x + 'px,' + y + 'px)'; // move the parent element
+
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+
+                        // console.log('width: ' + event.rect.width + 'px, height: ' + event.rect.height + 'px');
+                    }
+                },
+                modifiers: [
+                    interact.modifiers.restrictEdges({
+                        outer: 'parent'
+                    }),
+                    interact.modifiers.restrictSize({
+                        min: { width: 30, height: 30 }
+                    })
+                ],
+                inertia: true
+            })
+            .draggable({
+                listeners: {
+                    move(event) {
+                        var target = event.target;
+                        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+                        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+                        // console.log('translate x: ' + x + 'px, translate y: ' + y + 'px');
+
+                        target.setAttribute('data-x', x);
+                        target.setAttribute('data-y', y);
+
+                        // ukuran barcode sebelum dan setelah di resizable
+                        imgWidth = Math.floor(event.rect.width);
+                        imgHeight = Math.floor(event.rect.height);
+                        // imgWidth = event.rect.width;
+                        // imgHeight = event.rect.height;
+                    }
+                },
+                inertia: true,
+                modifiers: [
+                    interact.modifiers.restrictRect({
+                        restriction: 'parent',
+                        endOnly: true
+                    })
+                ]
+            });
+
+        function drawBarcode(x, y) {
+            let canvas = document.getElementById("pdfCanvas");
+            let ctx = canvas.getContext("2d");
+            let img = document.querySelector("#mydiv img");
+            console.log(imgHeight, imgWidth);
+            // ctx.drawImage(img, x, y, imgHeight, imgWidth);
+            if (imgWidth > 0 && imgHeight > 0) {
+                ctx.drawImage(img, x, y, imgWidth, imgHeight);
+            } else {
+                ctx.drawImage(img, x, y);
+            }
+        }
+
+      //   setTimeout(() => drawBarcode(10, 10), 1000);
+      //   drawBarcode(10, 10);
 		// <==== function Draggable using Interact.js
-		interact('.draggable')
-		.draggable({
-			// enable inertial throwing
-			inertia: true,
-			// keep the element within the area of its parent
-			modifiers: [
-			interact.modifiers.restrictRect({
-				restriction: 'parent',
-				endOnly: true
-			})
-			],
-			// enable autoScroll
-			autoScroll: true,
+		// interact('.draggable')
+		// .draggable({
+		// 	// enable inertial throwing
+		// 	inertia: true,
+		// 	// keep the element within the area of its parent
+		// 	modifiers: [
+		// 	interact.modifiers.restrictRect({
+		// 		restriction: 'parent',
+		// 		endOnly: true
+		// 	})
+		// 	],
+		// 	// enable autoScroll
+		// 	autoScroll: true,
 
-			listeners: {
-			// call this function on every dragmove event
-			move: dragMoveListener,
+		// 	listeners: {
+		// 	// call this function on every dragmove event
+		// 	move: dragMoveListener,
 
-			// call this function on every dragend event
-			end(event) {
-				var textEl = event.target.querySelector('p');
+		// 	// call this function on every dragend event
+		// 	end(event) {
+		// 		var textEl = event.target.querySelector('p');
 
-				textEl && (textEl.textContent =
-				'moved a distance of ' +
-				(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
-					Math.pow(event.pageY - event.y0, 2) | 0))
-				.toFixed(2) + 'px');
-			}
-			}
-		});
+		// 		textEl && (textEl.textContent =
+		// 		'moved a distance of ' +
+		// 		(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
+		// 			Math.pow(event.pageY - event.y0, 2) | 0))
+		// 		.toFixed(2) + 'px');
+		// 	}
+		// 	}
+		// });
 
-		function dragMoveListener(event) {
-			var target = event.target;
-			// keep the dragged position in the data-x/data-y attributes
-			var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-			var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+		// function dragMoveListener(event) {
+		// 	var target = event.target;
+		// 	// keep the dragged position in the data-x/data-y attributes
+		// 	var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+		// 	var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-			// translate the element
-			target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-			console.log('translate(' + x + 'px, ' + y + 'px)');
+		// 	// translate the element
+		// 	target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+		// 	// console.log('translate x: (' + x + 'px, ' + y + 'px)');
+		// 	console.log('translate x: ' + x + 'px, translate y: ' + y + 'px');
 
-			// update the position attributes
-			target.setAttribute('data-x', x);
-			target.setAttribute('data-y', y);
-		}
+		// 	// update the position attributes
+		// 	target.setAttribute('data-x', x);
+		// 	target.setAttribute('data-y', y);
+		// }
 		// End =====>
 
+        // interact('.draggable')
+        // .resizable({
+        //     // resize from all edges and corners
+        //     edges: { left: true, right: true, bottom: true, top: true },
 
-		function drawBarcode(x, y) {
-			let canvas = document.getElementById("pdfCanvas");
-			let ctx = canvas.getContext("2d");
-			let img = document.getElementById("mydiv");
-			ctx.drawImage(img, 5, 5);
-		}
+        //     listeners: {
+        //     move (event) {
+        //         var target = event.target
+        //         var x = (parseFloat(target.getAttribute('data-x')) || 0)
+        //         var y = (parseFloat(target.getAttribute('data-y')) || 0)
 
+        //         // update the element's style
+        //         target.style.width = event.rect.width + 'px'
+        //         target.style.height = event.rect.height + 'px'
+
+        //         // translate when resizing from top or left edges
+        //         x += event.deltaRect.left
+        //         y += event.deltaRect.top
+
+        //         target.style.transform = 'translate(' + x + 'px,' + y + 'px)'
+
+        //         target.setAttribute('data-x', x)
+        //         target.setAttribute('data-y', y)
+        //         target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
+        //     }
+        //     },
+        //     modifiers: [
+        //     // keep the edges inside the parent
+        //     interact.modifiers.restrictEdges({
+        //         outer: 'parent'
+        //     }),
+
+        //     // minimum size
+        //     interact.modifiers.restrictSize({
+        //         min: { width: 100, height: 50 }
+        //     })
+        //     ],
+
+        //     inertia: true
+        // })
+        // .draggable({
+        //     listeners: { move: window.dragMoveListener },
+        //     inertia: true,
+        //     modifiers: [
+        //     interact.modifiers.restrictRect({
+        //         restriction: 'parent',
+        //         endOnly: true
+        //     })
+        //     ]
+        // })
 
 
 		// Event listener untuk elemen <select>
@@ -270,7 +424,7 @@
 					$('#barCode').prop('checked',false)
 				}
 				if (this.checked) {
-					if(opsiGambar == '5'
+					if(opsiGambar == '5') {
 						gambar.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
 						gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
 					}else{
@@ -322,121 +476,121 @@
 			});
 
 			// draggable footer
-			dragElement(document.getElementById("footer"));
+			// dragElement(document.getElementById("footer"));
+			// function dragElement(elmnt) {
+			// 	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+			// 	if (document.getElementById(elmnt.id + "header")) {
+			// 	// if present, the header is where you move the DIV from:
+			// 	document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+			// 	} else {
+			// 	// otherwise, move the DIV from anywhere inside the DIV:
+			// 	elmnt.onmousedown = dragMouseDown;
+			// 	}
+
+			// 	function dragMouseDown(e) {
+			// 	e = e || window.event;
+			// 	e.preventDefault();
+			// 	// get the mouse cursor position at startup:
+			// 	pos3 = e.clientX;
+			// 	pos4 = e.clientY;
+			// 	document.onmouseup = closeDragElement;
+			// 	// call a function whenever the cursor moves:
+			// 	document.onmousemove = elementDrag;
+			// 	}
+
+			// 	function elementDrag(e) {
+			// 	e = e || window.event;
+			// 	e.preventDefault();
+			// 	// calculate the new cursor position:
+			// 	pos1 = pos3 - e.clientX;
+			// 	pos2 = pos4 - e.clientY;
+			// 	pos3 = e.clientX;
+			// 	pos4 = e.clientY;
+			// 	// set the element's new position:
+			// 	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+			// 	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+			// 	console.log(pos1,pos2,"X :"+pos3,"Y :"+pos4);
+			// 	}
+
+			// 	function closeDragElement() {
+			// 	// stop moving when mouse button is released:
+			// 	document.onmouseup = null;
+			// 	document.onmousemove = null;
+			// 	}
+			// };
+
+
+
 			function dragElement(elmnt) {
-				var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-				if (document.getElementById(elmnt.id + "header")) {
-				// if present, the header is where you move the DIV from:
-				document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-				} else {
-				// otherwise, move the DIV from anywhere inside the DIV:
-				elmnt.onmousedown = dragMouseDown;
-				}
+                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                if (document.getElementById(elmnt.id + "header")) {
+                    // Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
+                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                } else {
+                    // Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
+                    elmnt.onmousedown = dragMouseDown;
+                }
 
-				function dragMouseDown(e) {
-				e = e || window.event;
-				e.preventDefault();
-				// get the mouse cursor position at startup:
-				pos3 = e.clientX;
-				pos4 = e.clientY;
-				document.onmouseup = closeDragElement;
-				// call a function whenever the cursor moves:
-				document.onmousemove = elementDrag;
-				}
+                function dragMouseDown(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // Dapatkan posisi kursor mouse saat memulai:
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    document.onmouseup = closeDragElement;
+                    // Panggil fungsi setiap kali kursor bergerak:
+                    document.onmousemove = elementDrag;
+                }
 
-				function elementDrag(e) {
-				e = e || window.event;
-				e.preventDefault();
-				// calculate the new cursor position:
-				pos1 = pos3 - e.clientX;
-				pos2 = pos4 - e.clientY;
-				pos3 = e.clientX;
-				pos4 = e.clientY;
-				// set the element's new position:
-				elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-				elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-				console.log(pos1,pos2,"X :"+pos3,"Y :"+pos4);
-				}
+                function elementDrag(e) {
+                    e = e || window.event;
+                    e.preventDefault();
+                    // Hitung posisi kursor baru:
+                    pos1 = pos3 - e.clientX;
+                    pos2 = pos4 - e.clientY;
+                    pos3 = e.clientX;
+                    pos4 = e.clientY;
+                    // Tetapkan posisi baru elemen:
+                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
 
-				function closeDragElement() {
-				// stop moving when mouse button is released:
-				document.onmouseup = null;
-				document.onmousemove = null;
-				}
-			};
-		
-			
+                    // Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
+                    drawBarcodeOnCanvas(elmnt, pos3, pos4);
+                }
 
-			function dragElement(elmnt) {
-			var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-			if (document.getElementById(elmnt.id + "header")) {
-				// Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
-				document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-			} else {
-				// Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
-				elmnt.onmousedown = dragMouseDown;
-			}
-
-			function dragMouseDown(e) {
-				e = e || window.event;
-				e.preventDefault();
-				// Dapatkan posisi kursor mouse saat memulai:
-				pos3 = e.clientX;
-				pos4 = e.clientY;
-				document.onmouseup = closeDragElement;
-				// Panggil fungsi setiap kali kursor bergerak:
-				document.onmousemove = elementDrag;
-			}
-
-			function elementDrag(e) {
-				e = e || window.event;
-				e.preventDefault();
-				// Hitung posisi kursor baru:
-				pos1 = pos3 - e.clientX;
-				pos2 = pos4 - e.clientY;
-				pos3 = e.clientX;
-				pos4 = e.clientY;
-				// Tetapkan posisi baru elemen:
-				elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-				elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-
-				// Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
-				drawBarcodeOnCanvas(elmnt, pos3, pos4);
-			}
-
-			function closeDragElement() {
-				// Berhenti menggeser ketika tombol mouse dilepas:
-				document.onmouseup = null;
-				document.onmousemove = null;
-			}
+                function closeDragElement() {
+                    // Berhenti menggeser ketika tombol mouse dilepas:
+                    document.onmouseup = null;
+                    document.onmousemove = null;
+                }
 			}
 
 			function drawBarcodeOnCanvas(elmnt, posX, posY) {
-			console.log(posX, posY);
-			const canvas = document.getElementById('pdfCanvas');
-			const ctx = canvas.getContext('2d');
-			const penandaTangan = $('#pilihanGambar').val();
+                console.log(posX, posY);
+                const canvas = document.getElementById('pdfCanvas');
+                const ctx = canvas.getContext('2d');
+                const penandaTangan = $('#pilihanGambar').val();
 
-			// Ambil posisi elemen "mydiv" dan gambar barcode
-			var qrcode = document.getElementById('mydivheader');
-			var optik = document.getElementById('mydivheader2');
+                // Ambil posisi elemen "mydiv" dan gambar barcode
+                var qrcode = document.getElementById('mydivheader');
+                var optik = document.getElementById('mydivheader2');
 
-			// penandaTangan===0 {qrcode} start
-			var image = qrcode;
-			var divX = parseInt(posX);
-			var divY = parseInt(posY);
-			// penandaTangan===0 {qrcode} end
+                // penandaTangan===0 {qrcode} start
+                var image = qrcode;
+                var divX = parseInt(posX);
+                var divY = parseInt(posY);
+                // penandaTangan===0 {qrcode} end
 
-			if (penandaTangan === '52') { // penandaTangan === 52 {optik}
-				image = optik;
-				divX = parseInt(posX);
-				divY = parseInt(posY);
-			}
+                if (penandaTangan === '52') { // penandaTangan === 52 {optik}
+                    image = optik;
+                    divX = parseInt(posX);
+                    divY = parseInt(posY);
+                }
 
-			const width = 90;
-			const height = 90;
+                const width = 90;
+                const height = 90;
 
-			ctx.drawImage(image, divX, divY, width, height);
+                ctx.drawImage(image, divX, divY, width, height);
 			}
 
 
@@ -497,8 +651,8 @@
 
 
 
-			
-			
+
+
 
 		// // Fungsi untuk menggambar elemen footer pada elemen canvas
 		function drawFooterOnCanvas() {

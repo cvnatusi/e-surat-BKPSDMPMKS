@@ -90,8 +90,8 @@ class TteController extends Controller
 	}
 
 	public function savePDF(Request $request){
-		return $request->all();
-		// return 'test';
+		// return $request->all();
+		return;
 		try {
 				DB::beginTransaction();
 				// $data = MasterASN::get()->pluck('id_mst_asn');
@@ -158,6 +158,7 @@ class TteController extends Controller
 	// }
 	public function form(Request $request)
 	{
+        // return 'asdasd';
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratKeluar::find($request->id) : "";
 			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();

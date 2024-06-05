@@ -19,8 +19,9 @@ class ProfileController extends Controller
 		$this->data['menuActive'] = $this->menuActive;
 		$this->data['submnActive'] = $this->submnActive;
 		$this->data['smallTitle'] = "";
-			
-		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
+
+		// return view($this->menuActive.'.'.$this->submnActive.'main')->with('data',$this->data);
+		return view('profile.main')->with('data',$this->data);
     }
 
     /**
@@ -75,6 +76,7 @@ class ProfileController extends Controller
      */
     public function update(Request $request, Profile $profile)
     {
+        return $request->all();
         $validator = Validator::make(
 			$request->all(),
 			[
@@ -94,7 +96,7 @@ class ProfileController extends Controller
 		DB::beginTransaction();
 
 		try{
-			
+
 			$newdata = (!empty($request->id)) ? Users::find($request->id) : new Users;
 
             if(!empty($request->password)){
@@ -107,7 +109,7 @@ class ProfileController extends Controller
                 if($img && file_exists($checkfile)){
                     unlink(public_path('foto/'.$img));
                 }
-                
+
                 $file_name = $file->getClientOriginalName();
                 $request->foto->move(public_path('foto/'), $file_name);
                 $newdata->foto = $file_name;

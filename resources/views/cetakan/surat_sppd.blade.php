@@ -59,12 +59,12 @@
         <tr>
           <td style="text-align:center">1.</td>
           <td>&nbsp;Pejabat berwenang yang memberi perintah</td>
-          <td>Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</td>
+          <td style="margin-left: 1em;">Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</td>
         </tr>
         <tr>
           <td style="text-align:center">2.</td>
           <td>&nbsp;Nama/NIP Pegawai yang diperintahkan</td>
-          <td>
+          <td style="margin-left: 1em;">
             {{$pegawai->nama_asn}}
             <br>
             NIP. {{$pegawai->nip}}
@@ -90,12 +90,12 @@
         <tr>
           <td style="text-align:center">4.</td>
           <td>&nbsp;Maksud Perjalanan Dinas</td>
-          <td>{{$data->isi_ringkas_surat}}</td>
+          <td style="margin-left: 1em;">{{$data->isi_ringkas_surat}}</td>
         </tr>
         <tr>
           <td style="text-align:center">5.</td>
           <td>&nbsp;Alat angkut yang dipergunakan</td>
-          <td>{{$data->alat_angkut}}</td>
+          <td style="margin-left: 1em;">{{$data->alat_angkut}}</td>
         </tr>
         <tr>
           <td style="text-align:center">6.</td>
@@ -154,7 +154,7 @@
         <tr>
           <td style="text-align:center">8.</td>
           <td>&nbsp;Pengikut : N a m a</td>
-          <td>Tanggal Lahir Keterangan</td>
+          <td style="margin-left: 1em;">Tanggal Lahir Keterangan</td>
         </tr>
         <tr>
           <td></td>
