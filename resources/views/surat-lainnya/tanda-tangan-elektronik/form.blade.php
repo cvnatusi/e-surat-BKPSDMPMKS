@@ -213,8 +213,9 @@
 		const checkboxFooter = document.getElementById('footerTTE');
 		const suratPendukung = document.getElementById('surat_pendukung');
 
+      // <==== function Draggable using Interact.js
       let imgWidth, imgHeight;
-      let xDrag, yDrag;
+      let xDrag = 0, yDrag = 0;
         interact('.draggable')
             .resizable({
                 edges: { left: true, right: true, bottom: true, top: true },
@@ -237,6 +238,14 @@
 
                         target.setAttribute('data-x', x);
                         target.setAttribute('data-y', y);
+
+                        // Update global width and height
+                        imgWidth = event.rect.width;
+                        imgHeight = event.rect.height;
+
+                        // Update global coordinates
+                        xDrag = x;
+                        yDrag = y;
 
                         // console.log('width: ' + event.rect.width + 'px, height: ' + event.rect.height + 'px');
                     }
@@ -286,14 +295,14 @@
             let img = document.querySelector("#mydiv img");
             console.log(imgHeight, imgWidth);
             if (imgWidth > 0 && imgHeight > 0) {
-                console.log('sini1',x,y);
+                console.log('sini1',xDrag,yDrag);
                 ctx.drawImage(img, xDrag, yDrag, imgWidth, imgHeight);
             } else {
                 console.log('sini2');
                 ctx.drawImage(img, xDrag, yDrag);
             }
-
         }
+        // End =====>
 
         // function drawBarcode(x, y) {
         //     let canvas = document.getElementById("pdfCanvas");
@@ -313,105 +322,6 @@
 
       //   setTimeout(() => drawBarcode(10, 10), 1000);
       //   drawBarcode(10, 10);
-		// <==== function Draggable using Interact.js
-		// interact('.draggable')
-		// .draggable({
-		// 	// enable inertial throwing
-		// 	inertia: true,
-		// 	// keep the element within the area of its parent
-		// 	modifiers: [
-		// 	interact.modifiers.restrictRect({
-		// 		restriction: 'parent',
-		// 		endOnly: true
-		// 	})
-		// 	],
-		// 	// enable autoScroll
-		// 	autoScroll: true,
-
-		// 	listeners: {
-		// 	// call this function on every dragmove event
-		// 	move: dragMoveListener,
-
-		// 	// call this function on every dragend event
-		// 	end(event) {
-		// 		var textEl = event.target.querySelector('p');
-
-		// 		textEl && (textEl.textContent =
-		// 		'moved a distance of ' +
-		// 		(Math.sqrt(Math.pow(event.pageX - event.x0, 2) +
-		// 			Math.pow(event.pageY - event.y0, 2) | 0))
-		// 		.toFixed(2) + 'px');
-		// 	}
-		// 	}
-		// });
-
-		// function dragMoveListener(event) {
-		// 	var target = event.target;
-		// 	// keep the dragged position in the data-x/data-y attributes
-		// 	var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-		// 	var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-		// 	// translate the element
-		// 	target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-		// 	// console.log('translate x: (' + x + 'px, ' + y + 'px)');
-		// 	console.log('translate x: ' + x + 'px, translate y: ' + y + 'px');
-
-		// 	// update the position attributes
-		// 	target.setAttribute('data-x', x);
-		// 	target.setAttribute('data-y', y);
-		// }
-		// End =====>
-
-        // interact('.draggable')
-        // .resizable({
-        //     // resize from all edges and corners
-        //     edges: { left: true, right: true, bottom: true, top: true },
-
-        //     listeners: {
-        //     move (event) {
-        //         var target = event.target
-        //         var x = (parseFloat(target.getAttribute('data-x')) || 0)
-        //         var y = (parseFloat(target.getAttribute('data-y')) || 0)
-
-        //         // update the element's style
-        //         target.style.width = event.rect.width + 'px'
-        //         target.style.height = event.rect.height + 'px'
-
-        //         // translate when resizing from top or left edges
-        //         x += event.deltaRect.left
-        //         y += event.deltaRect.top
-
-        //         target.style.transform = 'translate(' + x + 'px,' + y + 'px)'
-
-        //         target.setAttribute('data-x', x)
-        //         target.setAttribute('data-y', y)
-        //         target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
-        //     }
-        //     },
-        //     modifiers: [
-        //     // keep the edges inside the parent
-        //     interact.modifiers.restrictEdges({
-        //         outer: 'parent'
-        //     }),
-
-        //     // minimum size
-        //     interact.modifiers.restrictSize({
-        //         min: { width: 100, height: 50 }
-        //     })
-        //     ],
-
-        //     inertia: true
-        // })
-        // .draggable({
-        //     listeners: { move: window.dragMoveListener },
-        //     inertia: true,
-        //     modifiers: [
-        //     interact.modifiers.restrictRect({
-        //         restriction: 'parent',
-        //         endOnly: true
-        //     })
-        //     ]
-        // })
 
 
 		// Event listener untuk elemen <select>
@@ -494,52 +404,6 @@
 				});
 			});
 
-			// draggable footer
-			// dragElement(document.getElementById("footer"));
-			// function dragElement(elmnt) {
-			// 	var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-			// 	if (document.getElementById(elmnt.id + "header")) {
-			// 	// if present, the header is where you move the DIV from:
-			// 	document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-			// 	} else {
-			// 	// otherwise, move the DIV from anywhere inside the DIV:
-			// 	elmnt.onmousedown = dragMouseDown;
-			// 	}
-
-			// 	function dragMouseDown(e) {
-			// 	e = e || window.event;
-			// 	e.preventDefault();
-			// 	// get the mouse cursor position at startup:
-			// 	pos3 = e.clientX;
-			// 	pos4 = e.clientY;
-			// 	document.onmouseup = closeDragElement;
-			// 	// call a function whenever the cursor moves:
-			// 	document.onmousemove = elementDrag;
-			// 	}
-
-			// 	function elementDrag(e) {
-			// 	e = e || window.event;
-			// 	e.preventDefault();
-			// 	// calculate the new cursor position:
-			// 	pos1 = pos3 - e.clientX;
-			// 	pos2 = pos4 - e.clientY;
-			// 	pos3 = e.clientX;
-			// 	pos4 = e.clientY;
-			// 	// set the element's new position:
-			// 	elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-			// 	elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-			// 	console.log(pos1,pos2,"X :"+pos3,"Y :"+pos4);
-			// 	}
-
-			// 	function closeDragElement() {
-			// 	// stop moving when mouse button is released:
-			// 	document.onmouseup = null;
-			// 	document.onmousemove = null;
-			// 	}
-			// };
-
-
-
 			function dragElement(elmnt) {
                 var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
                 if (document.getElementById(elmnt.id + "header")) {
@@ -613,8 +477,6 @@
 			}
 
 
-
-
 			// Inisialisasi variabel global untuk menyimpan posisi elemen yang digerakkan
 			var divX
 			var divY
@@ -670,9 +532,6 @@
 
 
 
-
-
-
 		// // Fungsi untuk menggambar elemen footer pada elemen canvas
 		function drawFooterOnCanvas() {
 			const canvas = document.getElementById('pdfCanvas');
@@ -698,7 +557,7 @@
 
 
 
-		// SECTION SAVE FILE
+		// AMBIL NAMA ASLI FILE YANG DI UPLOAD
 		var resfile = ""
 		document.getElementById('myPdf').addEventListener('change', function () {
 			var file_ = this.files[0]; // Ambil file yang dipilih oleh pengguna
@@ -967,7 +826,7 @@
 					$('.main-page').show();
 				}
 			});
-		}
+  }
 </script>
 </body>
 </html>

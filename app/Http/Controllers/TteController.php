@@ -89,75 +89,140 @@ class TteController extends Controller
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
 
-	public function savePDF(Request $request){
-		return $request->all();
-		// return;
-		try {
-				DB::beginTransaction();
-				// $data = MasterASN::get()->pluck('id_mst_asn');
-				$data = MasterASN::get();
+    public function savePDF(Request $request) {
+        // return $request->all();
+        return;
+        try {
+            DB::beginTransaction();
+            $data = MasterASN::get();
 
-				$nama_surat = $request->namaSurat;
-				$penanda_tangan_id = $request->penandaTangan;
-				$file_surat = str_replace(' ', '_', $request->namaSurat);
-				$file_surat_salinan = str_replace(' ', '_', $request->namaSurat);
-				$random = rand(100, 999);
-				$prefix = date('ymdHis').$random;
-				$file_surat = $prefix.'-'.$file_surat;
-				$data = [
-					'nama_surat' => $nama_surat,
-					'tanggal_surat' => Carbon::now(),
-					'penanda_tangan_id' => $penanda_tangan_id,
-					'file_surat' => $file_surat,
-					'file_surat_salinan' => $file_surat,
-					'created_at' => Carbon::now(),
-					'updated_at' => Carbon::now(),
-				];
-				DB::table('tr_file_tte')->insert($data);
-				$pdfData = base64_decode(explode('base64,', $request->pdf)[1]);
-				// $nama_file_tte = str_replace(' ', '_', $file_surat) . '.pdf';
-				$nama_file_tte = str_replace(' ', '_', $file_surat);
-				// file_put_contents(public_path('/gambar/file_tte/') . $nama_file_tte, $pdfData);
-				file_put_contents(public_path('/storage/surat-tte/') . $nama_file_tte, $pdfData);
-				file_put_contents(public_path('/storage/surat-tte-salinan/') . $nama_file_tte, $pdfData);
+            $nama_surat = $request->namaSurat;
+            $penanda_tangan_id = $request->penandaTangan;
+            $file_surat = str_replace(' ', '_', $request->namaSurat);
+            $file_surat_salinan = str_replace(' ', '_', $request->namaSurat);
+            $random = rand(100, 999);
+            $prefix = date('ymdHis') . $random;
+            $file_surat = $prefix . '-' . $file_surat;
 
-				// $request->request->add([
-				// 	'pdfs' => base64_decode(explode('base64,',$request->pdf)[1])
-				// 	// 'pdfs' => explode(',',$request->pdf)[1]
-				// 	// 'pdfs' => base64_decode($request->pdf)
-				// ]);
-				// // return $request->pdfs;
-				// file_put_contents(public_path().'/gambar/file.pdf', $request->pdfs);
-				// file_put_contents(public_path().'/gambar/' .$request->file_name. '.pdf', $request->pdfs);
-				// // return $request->pdf;
-				DB::commit();
-			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
-			return response()->json($return);
-		} catch(\Exception $e) {
-			DB::rollback();
-			// throw($e);
-			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
-			return response()->json($return);
-		}
+            $data = [
+                'nama_surat' => $nama_surat,
+                'tanggal_surat' => Carbon::now(),
+                'penanda_tangan_id' => $penanda_tangan_id,
+                'file_surat' => $file_surat,
+                'file_surat_salinan' => $file_surat,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
 
-	}
+            DB::table('tr_file_tte')->insert($data);
+
+            // Decode PDF data
+            $pdfData = base64_decode(explode('base64,', $request->pdf)[1]);
+
+            // Save original PDF temporarily
+            $tempPdfPath = public_path('/storage/surat-tte-temp/') . $file_surat;
+            file_put_contents($tempPdfPath, $pdfData);
+
+            // Extract dimensions and position from the request
+            $canvasWidth = $request->canvasWidth;
+            $canvasHeight = $request->canvasHeight;
+            $xDrag = $request->xDrag;
+            $yDrag = $request->yDrag;
+            $imgWidth = $request->imgWidth;
+            $imgHeight = $request->imgHeight;
+
+            // Create TCPDF instance and add a page
+            $pdf = new \TCPDF();
+            $pdf->AddPage();
+
+            // Calculate dimensions and positions in PDF units
+            $pdfWidth = $pdf->getPageWidth();
+            $pdfHeight = $pdf->getPageHeight();
+
+            $xPDF = ($xDrag / $canvasWidth) * $pdfWidth;
+            $yPDF = ($yDrag / $canvasHeight) * $pdfHeight;
+            $imgWidthPDF = ($imgWidth / $canvasWidth) * $pdfWidth;
+            $imgHeightPDF = ($imgHeight / $canvasHeight) * $pdfHeight;
+
+            // Add the QR code image to the PDF
+            $qrImagePath = public_path('gambar/QR.png');
+            $pdf->Image($qrImagePath, $xPDF, $yPDF, $imgWidthPDF, $imgHeightPDF);
+
+            // Save the final PDF
+            $finalPdfPath = public_path('/storage/surat-tte/') . $file_surat;
+            $pdf->Output($finalPdfPath, 'F');
+
+            // Save a copy of the final PDF
+            $copyPdfPath = public_path('/storage/surat-tte-salinan/') . $file_surat;
+            copy($finalPdfPath, $copyPdfPath);
+
+            // Remove the temporary PDF file
+            unlink($tempPdfPath);
+
+            DB::commit();
+            $return = ['status' => 'success', 'code' => '200', 'message' => 'Data Berhasil Disimpan !!'];
+            return response()->json($return);
+        } catch (\Exception $e) {
+            DB::rollback();
+            $return = ['status' => 'error', 'code' => '201', 'message' => 'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!', 'errMsg' => $e];
+            return response()->json($return);
+        }
+    }
 
 
-	// private $title = "Tanda Tangan Elektronik";
-	// private $menuActive = "tandatangan-e";
-	// private $submnActive = "";
+	// public function savePDF(Request $request){
+	// 	return $request->all();
+	// 	// return;
+	// 	try {
+	// 			DB::beginTransaction();
+	// 			// $data = MasterASN::get()->pluck('id_mst_asn');
+	// 			$data = MasterASN::get();
 
-	// public function index(Request $request)
-	// {
-	// 	$this->data['title'] = $this->title;
-	// 	$this->data['menuActive'] = $this->menuActive;
-	// 	$this->data['submnActive'] = $this->submnActive;
-	// 	$this->data['smallTitle'] = "";
-	// 	$this->data['tanda_tangan'] = TandaTanganElektronik::get();
-	// 	return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
+	// 			$nama_surat = $request->namaSurat;
+	// 			$penanda_tangan_id = $request->penandaTangan;
+	// 			$file_surat = str_replace(' ', '_', $request->namaSurat);
+	// 			$file_surat_salinan = str_replace(' ', '_', $request->namaSurat);
+	// 			$random = rand(100, 999);
+	// 			$prefix = date('ymdHis').$random;
+	// 			$file_surat = $prefix.'-'.$file_surat;
+	// 			$data = [
+	// 				'nama_surat' => $nama_surat,
+	// 				'tanggal_surat' => Carbon::now(),
+	// 				'penanda_tangan_id' => $penanda_tangan_id,
+	// 				'file_surat' => $file_surat,
+	// 				'file_surat_salinan' => $file_surat,
+	// 				'created_at' => Carbon::now(),
+	// 				'updated_at' => Carbon::now(),
+	// 			];
+	// 			DB::table('tr_file_tte')->insert($data);
+	// 			$pdfData = base64_decode(explode('base64,', $request->pdf)[1]);
+	// 			// $nama_file_tte = str_replace(' ', '_', $file_surat) . '.pdf';
+	// 			$nama_file_tte = str_replace(' ', '_', $file_surat);
+	// 			// file_put_contents(public_path('/gambar/file_tte/') . $nama_file_tte, $pdfData);
+	// 			file_put_contents(public_path('/storage/surat-tte/') . $nama_file_tte, $pdfData);
+	// 			file_put_contents(public_path('/storage/surat-tte-salinan/') . $nama_file_tte, $pdfData);
+
+	// 			// $request->request->add([
+	// 			// 	'pdfs' => base64_decode(explode('base64,',$request->pdf)[1])
+	// 			// 	// 'pdfs' => explode(',',$request->pdf)[1]
+	// 			// 	// 'pdfs' => base64_decode($request->pdf)
+	// 			// ]);
+	// 			// // return $request->pdfs;
+	// 			// file_put_contents(public_path().'/gambar/file.pdf', $request->pdfs);
+	// 			// file_put_contents(public_path().'/gambar/' .$request->file_name. '.pdf', $request->pdfs);
+	// 			// // return $request->pdf;
+	// 			DB::commit();
+	// 		$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
+	// 		return response()->json($return);
+	// 	} catch(\Exception $e) {
+	// 		DB::rollback();
+	// 		// throw($e);
+	// 		$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+	// 		return response()->json($return);
+	// 	}
 	// }
-	public function form(Request $request)
-	{
+
+	public function form(Request $request) {
         // return 'asdasd';
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratKeluar::find($request->id) : "";
@@ -175,15 +240,16 @@ class TteController extends Controller
 			// 	}
 			// }
 
-			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render(); # Default
+			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'new-form3', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			throw($e);
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
-	public function destroy(Request $request)
-	{
+
+	public function destroy(Request $request) {
 		$do_delete = FileTte::find($request->id);
 		if(!empty($do_delete)){
 			$do_delete->delete();
@@ -192,8 +258,8 @@ class TteController extends Controller
 			return ['status'=>'error','message' => 'Data Gagal Dihapus','title' => 'Whoops'];
 		}
 	}
-	public function show(Request $request)
-	{
+
+	public function show(Request $request) {
 		// return $request->all();
 		try {
 			$data['data'] = (!empty($request->id)) ? FileTte::find($request->id) : "";
@@ -209,8 +275,7 @@ class TteController extends Controller
 		}
 	}
 
-	public function verifSurat(Request $request)
-	{
+	public function verifSurat(Request $request) {
 		// return $request->id;
 		try {
 			DB::beginTransaction();
