@@ -214,6 +214,7 @@
 		const suratPendukung = document.getElementById('surat_pendukung');
 
       let imgWidth, imgHeight;
+      let xDrag, yDrag;
         interact('.draggable')
             .resizable({
                 edges: { left: true, right: true, bottom: true, top: true },
@@ -254,14 +255,14 @@
                 listeners: {
                     move(event) {
                         var target = event.target;
-                        var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
-                        var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+                        xDrag = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                        yDrag = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
 
-                        target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-                        // console.log('translate x: ' + x + 'px, translate y: ' + y + 'px');
+                        target.style.transform = 'translate(' + xDrag + 'px, ' + yDrag + 'px)';
+                        console.log('translate x: ' + xDrag + 'px, translate y: ' + yDrag + 'px');
 
-                        target.setAttribute('data-x', x);
-                        target.setAttribute('data-y', y);
+                        target.setAttribute('data-x', xDrag);
+                        target.setAttribute('data-y', yDrag);
 
                         // ukuran barcode sebelum dan setelah di resizable
                         imgWidth = Math.floor(event.rect.width);
@@ -279,18 +280,36 @@
                 ]
             });
 
-        function drawBarcode(x, y) {
+        function drawBarcode(xDrag, yDrag) {
             let canvas = document.getElementById("pdfCanvas");
             let ctx = canvas.getContext("2d");
             let img = document.querySelector("#mydiv img");
             console.log(imgHeight, imgWidth);
-            // ctx.drawImage(img, x, y, imgHeight, imgWidth);
             if (imgWidth > 0 && imgHeight > 0) {
-                ctx.drawImage(img, x, y, imgWidth, imgHeight);
+                console.log('sini1',x,y);
+                ctx.drawImage(img, xDrag, yDrag, imgWidth, imgHeight);
             } else {
-                ctx.drawImage(img, x, y);
+                console.log('sini2');
+                ctx.drawImage(img, xDrag, yDrag);
             }
+
         }
+
+        // function drawBarcode(x, y) {
+        //     let canvas = document.getElementById("pdfCanvas");
+        //     let ctx = canvas.getContext("2d");
+        //     let img = document.querySelector("#mydiv img");
+        //     console.log(imgHeight, imgWidth);
+        //     if (imgWidth > 0 && imgHeight > 0) {
+        //         console.log('sini1',x,y);
+        //         ctx.drawImage(img, x, y, imgWidth, imgHeight);
+        //     } else {
+        //         console.log('sini2');
+        //         ctx.drawImage(img, x, y);
+        //     }
+        //     console.log(ctx);
+
+        // }
 
       //   setTimeout(() => drawBarcode(10, 10), 1000);
       //   drawBarcode(10, 10);
@@ -747,17 +766,18 @@
 									const checkboxBarcode = document.getElementById('barCode');
 									const checkboxFooter = document.getElementById('footerTTE');
 									if (checkboxBarcode.checked && checkboxFooter.checked) { // Tampilkan elemen barcode dan footer pada elemen canvas
-										drawBarcode();
+										drawBarcode(xDrag+50, yDrag+90);
 										drawFooterOnCanvas();
 									} else if (checkboxBarcode.checked) {  // Tampilkan hanya elemen barcode pada elemen canvas
-										drawBarcode();
+										drawBarcode(xDrag, yDrag);
 									} else if (checkboxFooter.checked) {   // Tampilkan hanya elemen footer pada elemen canvas
 										drawFooterOnCanvas();
 									}
 									// Ubah elemen canvas menjadi URL data
 									const canvas = document.getElementById('pdfCanvas');
 									const imgData = canvas.toDataURL('image/png');
-
+                                    // console.log(imgData);
+                                    // return
 									// Buat objek jsPDF
 									const pdf = new jsPDF({
 										orientation: "portrait",
@@ -767,7 +787,7 @@
 									});
 									const imgWidth = 3508; // Lebar A4 dalam piksel
 									const imgHeight = canvas.height * imgWidth / canvas.width;
-									pdf.addImage(imgData, 'PNG', 0, 0, 210, 330); // Tambahkan gambar ke dokumen PDF
+									pdf.addImage(imgData, 'PNG', 0, 0, 230, 330); // Tambahkan gambar ke dokumen PDF
 
 									/* Simpan dokumen PDF dalam format Base64
 									Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
