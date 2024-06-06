@@ -202,6 +202,14 @@
           }
       }, 1000);
   }
+
+	$(document).on('keypress', function(e) {
+			// Check if the pressed key is Enter key (key code 13)
+			if (e.which === 13) {
+					e.preventDefault();
+					login();
+			}
+	});
   </script>
 </body>
 
