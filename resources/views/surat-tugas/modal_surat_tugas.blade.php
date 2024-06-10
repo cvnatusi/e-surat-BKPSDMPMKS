@@ -20,28 +20,57 @@
           </thead>
           <tbody>
             @foreach ($data as $key => $value)
-            @foreach ($pegawai as $k => $pg)
-            <tr>
-              <td>{{$k+1}}</td>
-              <td>{{$pg->nama_asn}}</td>
-              <td>{{$pg->nip}}</td>
-              <td>{{$value->surattugas->nomor_surat_perjalanan_dinas ?? '-'}}</td>
-              <td>{{$value->file_surat_tugas}}</td>
-              @if (!empty($value->file_surat_tugas))
-                <td><a href="{{asset('storage/surat-tugas/'.$value->file_surat_tugas)}}"
-                  target="_blank" class="btn btn-sm btn-info px-4">Preview</a></td>
-                @else
-                  <td><a href="javascript:void(0)" type="button" onclick="(function(){ swal('Whoops!','Berkas Tidak Ditemukan!','warning');return false;})();return false;" class="btn btn-info px-5"><i class="bx bx-cloud-download me-1"></i>Preview Surat Tugas</a></td>
-              @endif
-              @if (!empty($value->file_surat_sppd))
-                <td><small>Sudah dibuat</small></td>
-                @else
-                  <td><a href="javascript:void(0)" type="button"
-                    onclick="buatSPPD({{$value->asn_id}}, {{$value->surat_tugas_id}})" class="btn btn-sm btn-success px-4"></i>Buat</a></td>
-              @endif
-            </tr>
-            @endforeach
-            @endforeach
+              <tr>
+                  <td>{{$key+1}}</td>
+                  <td>{{$value->pegawai->nama_asn}}</td>
+                  <td>{{$value->pegawai->nip}}</td>
+                  <td>{{$value->surattugas->nomor_surat_perjalanan_dinas ?? '-'}}</td>
+                  <td>{{$value->file_surat_tugas}}</td>
+                  @if (!empty($value->file_surat_tugas))
+                      <td><a href="{{asset('storage/surat-tugas/'.$value->file_surat_tugas)}}"
+                          target="_blank" class="btn btn-sm btn-info px-4">Preview</a></td>
+                  @else
+                      <td><a href="javascript:void(0)" type="button" onclick="(function(){ swal('Whoops!','Berkas Tidak Ditemukan!','warning');return false;})();return false;" class="btn btn-info px-5"><i class="bx bx-cloud-download me-1"></i>Preview Surat Tugas</a></td>
+                  @endif
+
+                  @if (!empty($value->file_surat_sppd))
+                      <td><small>Sudah dibuat</small></td>
+                  @else
+                    <td><a href="javascript:void(0)" type="button"
+                        onclick="buatSPPD({{$value->pegawai->id_mst_asn}}, {{$value->id_file_perjalanan_dinas}}, {{$value->surat_tugas_id}})"
+                        class="btn btn-sm btn-success px-4">Buat</a></td>
+                  @endif
+              </tr>
+              @endforeach
+            {{-- @foreach ($data as $key => $value)
+                @foreach ($pegawai as $k => $pg)
+                  <tr>
+                      <td>{{$k+1}}</td>
+                      <td>{{$pg->nama_asn}}</td>
+                      <td>{{$pg->nip}}</td>
+                      <td>{{$value->surattugas->nomor_surat_perjalanan_dinas ?? '-'}}</td>
+                      <td>{{$value->file_surat_tugas}}</td>
+                      @if (!empty($value->file_surat_tugas))
+                          <td><a href="{{asset('storage/surat-tugas/'.$value->file_surat_tugas)}}"
+                              target="_blank" class="btn btn-sm btn-info px-4">Preview</a></td>
+                      @else
+                          <td><a href="javascript:void(0)" type="button" onclick="(function(){ swal('Whoops!','Berkas Tidak Ditemukan!','warning');return false;})();return false;" class="btn btn-info px-5"><i class="bx bx-cloud-download me-1"></i>Preview Surat Tugas</a></td>
+                      @endif
+
+                      @php
+                        $file_sppd = !empty($value->file_surat_sppd) ? explode('#*#', $value->file_surat_sppd) : [];
+                      @endphp
+
+                      @if (isset($file_sppd[$k]) && !empty($file_sppd[$k]))
+                          <td><small>Sudah dibuat</small></td>
+                      @else
+                          <td><a href="javascript:void(0)" type="button"
+                              onclick="buatSPPD({{$pg->id_mst_asn}}, {{$value->id_file_perjalanan_dinas}}, {{$value->surat_tugas_id}}, {{$k}})"
+                              class="btn btn-sm btn-success px-4">Buat</a></td>
+                      @endif
+                  </tr>
+                @endforeach
+              @endforeach --}}
           </tbody>
         </table>
       </div>
@@ -62,9 +91,10 @@ $('#modal-list-surat-tugas').on('hidden.bs.modal', function() {
   $('.modal-list-surat-tugas').html('');
 });
 
-function buatSPPD(id, surat_tugas_id) {
+function buatSPPD(id_asn, id_file_perjalanan_dinas, surat_tugas_id, index) {
+  console.log(index);
   // console.log(id, surat_tugas_id)
-  $.post("{!! route('buatSPPD') !!}",{id:id, surat_tugas_id:surat_tugas_id}).done(function(data){
+  $.post("{!! route('buatSPPD') !!}",{id_asn:id_asn, id_file_perjalanan_dinas:id_file_perjalanan_dinas, surat_tugas_id:surat_tugas_id, index:index}).done(function(data){
     if(data.status == 'success'){
       Lobibox.notify('success', {
         pauseDelayOnHover: true,

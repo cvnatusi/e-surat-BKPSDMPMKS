@@ -621,7 +621,7 @@
 									// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
 									// drawImagesOnCanvas();
 									var penandaTangan = $('#pilihanGambar').val();
-
+                                    
 									// Cek checkbox yang diceklis
 									const checkboxBarcode = document.getElementById('barCode');
 									const checkboxFooter = document.getElementById('footerTTE');
