@@ -34,7 +34,7 @@ class SuratSPPDController extends Controller
 				->whereNotNull('file_surat_sppd')
 				->orderBy('id_file_perjalanan_dinas','desc')
 				->get();
-			
+
 			// return $data;
 			return Datatables::of($data)
 				->addIndexColumn()

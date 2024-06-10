@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use App\Models\FileSuratTugas;
 use App\Models\TujuanSuratTugas;
 
-use DataTables,Validator,DB,Hash,Auth,File,Storage, PDF, QrCode;
+use DataTables,Validator,DB,Hash,Auth,File,Storage, PDF, QrCode, Log;
 
 class SuratTugasController extends Controller
 {
@@ -271,21 +271,25 @@ class SuratTugasController extends Controller
 
                             file_put_contents(public_path('storage/surat-tugas/' . $file_name_asli_surat_tugas), $pdf->output());
 
+                            FileSuratTugas::where('surat_tugas_id', $data['data']->id_surat_perjalanan_dinas)
+                                          ->whereNotIn('asn_id', $request->tujuan_surat_id)
+                                          ->delete();
 
-							// foreach($request->tujuan_surat_id as $k => $val){
-								// $suratTugas = FileSuratTugas::where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->where('asn_id',$val)->first();
-                                $suratTugas = FileSuratTugas::where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->first();
+							foreach($request->tujuan_surat_id as $k => $val){
+								$suratTugas = FileSuratTugas::where('surat_tugas_id', $data['data']->id_surat_perjalanan_dinas)->where('asn_id',$val)->first();
+								// $suratTugas = FileSuratTugas::where('surat_tugas_id', $data['data']->id_surat_perjalanan_dinas)->whereNotIn('asn_id', $val)->first();
+                                // $suratTugas = FileSuratTugas::where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->first();
 								$updateST = (!empty($request->id) && $suratTugas) ? $suratTugas : new FileSuratTugas;
 								$updateST->surat_tugas_id = !empty($data['data']) ? $data['data']->id_surat_perjalanan_dinas : null;
-								// $updateST->surat_tugas_id = $data['data']->id_surat_perjalanan_dinas;
-								// $updateST->asn_id = $val;
-								$updateST->asn_id = implode($request->tujuan_surat_id,",");
+								$updateST->surat_tugas_id = $data['data']->id_surat_perjalanan_dinas;
+								$updateST->asn_id = $val;
+								// $updateST->asn_id = implode($request->tujuan_surat_id,",");
 								$updateST->file_surat_tugas = $file_name_asli_surat_tugas;
 								$updateST->save();
-							// }
+							}
 							// return 'tes';
-						// }
-					}
+						}
+					// }
 				}
 			}
 
@@ -499,14 +503,16 @@ class SuratTugasController extends Controller
 		try {
 			// $data['data'] = FileSuratTugas::with(['surattugas.pegawai'])->where('surat_tugas_id',$request->id)->get();
 			$data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('surat_tugas_id',$request->id)->get();
-            $allAsnId='';
-			foreach ($data['data'] as $key => $v) {
-				$v->asnId = $v->surattugas->asn_id;
-                $allAsnId .= $key?','.$v->surattugas->asn_id:$v->surattugas->asn_id;
-			}
-			// $asn_id = explode(',', $data['data'][0]->asnId);
-			// $data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', $asn_id)->get();
-            $data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', explode(',',$allAsnId))->get();
+            // return $data;
+			// $data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('id_file_perjalanan_dinas',$request->id_file_perjalanan_dinas)->get();
+      //       $allAsnId='';
+			// foreach ($data['data'] as $key => $v) {
+			// 	$v->asnId = $v->surattugas->asn_id;
+      //           $allAsnId .= $key?','.$v->surattugas->asn_id:$v->surattugas->asn_id;
+			// }
+			$asn_id = explode(',', $data['data'][0]->asn_id);
+			$data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', $asn_id)->get();
+            // $data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn', explode(',',$allAsnId))->get();
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
@@ -521,6 +527,7 @@ class SuratTugasController extends Controller
 	{
 		try {
 			$data['data'] = SuratTugas::with(['suratkeluar','pegawai'])->where('surat_keluar_id',$request->id)->get();
+            // return $data;
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
@@ -562,27 +569,18 @@ class SuratTugasController extends Controller
 		// Output the generated PDF to Browser
 	return  $dompdf->stream();
 	}
-	public function buatSPPD(Request $request)
+    public function buatSPPD(Request $request)
 	{
-        // return $request;
 		try {
 			DB::beginTransaction();
-			// $data['data'] = SuratTugas::find($request->id);
-			// $data['file'] = FileSuratTugas::where([
-			// 	['asn_id',$request->id],
-			// 	['surat_tugas_id',$request->surat_tugas_id]
-			// ])->first();
-            $data['file'] = FileSuratTugas::find($request->id);
-			// return $data;
+
+			$data['file'] = FileSuratTugas::find($request->id_file_perjalanan_dinas);
 			$data['data'] = SuratTugas::find($data['file']->surat_tugas_id);
-			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();
 			$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->yang_bertanda_tangan_asn_id)->first();
-			// $data['asn'] = MasterASN::with('jabatan_asn')->where('jabatan',$request->id)->first();
+            $data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id_asn)->first();
 			$data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
-			// return $data['data']->pegawai->nama_asn;
-			// return $data;
-			// $asn = explode(",",$data['data']->asn_id);
-			// return $asn;
+
+
 			if (!empty($data['file']->file_surat_sppd)) {
 				// if (is_file($data['file']->file_scan)) {
 					Storage::delete($data['file']->file_surat_sppd);
@@ -590,15 +588,16 @@ class SuratTugasController extends Controller
 				// }
 			}
 			$changeSTugas = str_replace("/", "-", strtolower($data['data']->nomor_surat_perjalanan_dinas));
+            $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['pegawai']->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
 			// $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['data']->pegawai->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
-			// $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['file']->file_surat_tugas).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
-			$file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['pegawai']->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
 			$pdf = PDF::loadView('cetakan.surat_sppd', $data)
-			->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+            ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
 			Storage::put('public/surat-sppd/'.$file_name_asli_surat_tugas, $pdf->output());
-			$updateST = $data['file'];
+
+			$updateST = FileSuratTugas::find($request->id_file_perjalanan_dinas);
 			$updateST->file_surat_sppd = $file_name_asli_surat_tugas;
 			$updateST->save();
+            // return 'asdfa';
 			DB::commit();
 			$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
 			return response()->json($return);
@@ -609,6 +608,112 @@ class SuratTugasController extends Controller
 			return response()->json($return);
 		}
 	}
+	// public function buatSPPD(Request $request)
+	// {
+  //       // return $request->all();
+	// 	try {
+	// 		DB::beginTransaction();
+	// 		// $data['data'] = SuratTugas::find($request->id);
+	// 		// $data['file'] = FileSuratTugas::where([
+	// 		// 	['asn_id',$request->id],
+	// 		// 	['surat_tugas_id',$request->surat_tugas_id]
+	// 		// ])->first();
+  //           $file_sppd = FileSuratTugas::find($request->id_file_perjalanan_dinas);
+  //           $data['file'] = $file_sppd;
+	// 		// return $data['file'];
+	// 		$data['data'] = SuratTugas::find($data['file']->surat_tugas_id);
+	// 		$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id_asn)->first();
+	// 		// return $data['pegawai'];
+	// 		$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->yang_bertanda_tangan_asn_id)->first();
+	// 		// $data['asn'] = MasterASN::with('jabatan_asn')->where('jabatan',$request->id)->first();
+	// 		$data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
+	// 		// return $data['data']->pegawai->nama_asn;
+	// 		// $asn = explode(",",$data['data']->asn_id);
+	// 		// return $asn;
+  //           // return $data;
+	// 		if (empty($data['file']->file_surat_sppd)) {
+	// 			if (is_file($data['file']->file_scan)) {
+	// 				Storage::delete($data['file']->file_surat_sppd);
+	// 				unlink(storage_path('app/public/surat-sppd/'.$data['file']->file_surat_sppd));
+	// 				// unlink(storage_path('app/public/storage/surat-sppd/'.$data['file']->file_surat_sppd));
+	// 			}
+	// 		}
+	// 		$changeSTugas = str_replace("/", "-", strtolower($data['data']->nomor_surat_perjalanan_dinas));
+	// 		// $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['data']->pegawai->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
+	// 		// $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['file']->file_surat_tugas).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
+	// 		$file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['pegawai']->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
+
+  //           $file_surat_sppd_array = [];
+  //           $nama_file_sppd = '';
+  //           if(!empty($file_sppd)) {
+  //             $existing_surat_sppd = $file_sppd->file_surat_sppd;
+  //             $get_asn = explode(',',$file_sppd->asn_id);
+  //             if ($existing_surat_sppd) {
+  //                 $file_surat_sppd_array = explode('#*#', $existing_surat_sppd);
+
+  //                 // array_push($file_surat_sppd_array,$file_name_asli_surat_tugas);
+  //                 // $nama_file_sppd = implode('#*#', $file_surat_sppd_array);
+  //                 // $nama_file_sppd = explode('#*#', $existing_surat_sppd);
+  //                 // return $file_surat_sppd_array;
+  //             } else {
+  //                 $nama_file_sppd = $file_name_asli_surat_tugas;
+  //             }
+  //             $sppd = [];
+  //             foreach ($get_asn as $key => $val) {
+  //               // if($existing_surat_sppd){
+  //               // }else{
+  //               // }
+  //               // array_push($sppd,$key==$request->index?$file_name_asli_surat_tugas:'');
+  //             }
+  //             // if ($existing_surat_sppd != null) {
+  //             //     $file_surat_sppd_array = explode('#*#', $existing_surat_sppd);
+  //             //     array_push($file_surat_sppd_array,$file_name_asli_surat_tugas);
+  //             //     $nama_file_sppd = implode('#*#', $file_surat_sppd_array);
+  //             //     // return $file_surat_sppd_array;
+  //             // } else {
+  //             //     $nama_file_sppd = $file_name_asli_surat_tugas;
+  //             // }
+  //             // return $nama_file_sppd;
+  //             // $file_surat_sppd_array = explode('#*#', $file_sppd->file_surat_sppd);
+  //             // $file_surat_sppd_array[] = $file_name_asli_surat_tugas;
+  //             $file_sppd->file_surat_sppd = $nama_file_sppd;
+  //             $file_sppd->save();
+  //           }
+
+  //           Log::info('Generated file name: ' . $file_name_asli_surat_tugas);
+
+	// 		$pdf = PDF::loadView('cetakan.surat_sppd', $data)
+	// 		->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+  //           if (!$pdf) {
+  //               Log::error('PDF generation failed');
+  //           } else {
+  //               Log::info('PDF generated successfully');
+  //           }
+
+  //           $result = Storage::put('public/surat-sppd/'.$file_name_asli_surat_tugas, $pdf->output());
+  //           file_put_contents(public_path('storage/surat-sppd/' . $file_name_asli_surat_tugas), $pdf->output());
+
+  //           // $suratSppd =
+
+  //           // Debugging point
+  //           if (!$result) {
+  //               Log::error('Failed to store the PDF file');
+  //           } else {
+  //               Log::info('PDF stored successfully');
+  //           }
+	// 		// $updateST = $data['file'];
+	// 		// $updateST->file_surat_sppd = $file_name_asli_surat_tugas;
+	// 		// $updateST->save();
+	// 		DB::commit();
+	// 		$return = ['status'=>'success', 'code'=>'200', 'message'=>'Data Berhasil Disimpan !!'];
+	// 		return response()->json($return);
+	// 	} catch (\Exception $e) {
+	// 		DB::rollback();
+	// 		throw($e);
+	// 		$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+	// 		return response()->json($return);
+	// 	}
+	// }
 	public function previewST(Request $request)
 	{
 		// return $request->all();
