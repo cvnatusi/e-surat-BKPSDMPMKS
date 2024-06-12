@@ -133,21 +133,20 @@
 								<button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
 						</div>
 					</div>
-				</form>
-			</div>
+            </form>
+        </div>
 			{{-- Preview Surat --}}
+            {{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
+            {{-- <div class="col ms-2">
+                <button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
+                <iframe id="pdfViewer" frameborder="0" scrolling="no" width="700" height="750"></iframe>
+            </div> --}}
 			<div class="col ms-2">
 				<div>
 					<button type="button" class="btn btn-secondary" id="prev">Previous</button>
 					<button type="button" class="btn btn-secondary" id="next">Next</button>
 					&nbsp; &nbsp;
 					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-
-					{{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
-					{{-- <div class="col ms-2">
-						<button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
-						<iframe id="pdfViewer" frameborder="0" scrolling="no" width="700" height="750"></iframe>
-					</div> --}}
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
 					<div class="previewFile">
@@ -162,8 +161,6 @@
 					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; cursor: pointer;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
-
-
 				</div>
 			</div>
 			{{-- Akhir Preview Surat --}}
@@ -215,7 +212,7 @@
 
       // <==== function Draggable using Interact.js
       let imgWidth, imgHeight;
-      let xDrag = 0, yDrag = 0;
+    //   let xDrag = 0, yDrag = 0;
         interact('.draggable')
             .resizable({
                 edges: { left: true, right: true, bottom: true, top: true },
@@ -235,6 +232,7 @@
                         y += event.deltaRect.top;
 
                         target.parentElement.style.transform = 'translate(' + x + 'px,' + y + 'px)'; // move the parent element
+                        console.log(' x: ' + x + 'px, y: ' + y + 'px)');
 
                         target.setAttribute('data-x', x);
                         target.setAttribute('data-y', y);
@@ -404,103 +402,103 @@
 				});
 			});
 
-			function dragElement(elmnt) {
-                var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-                if (document.getElementById(elmnt.id + "header")) {
-                    // Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
-                    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-                } else {
-                    // Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
-                    elmnt.onmousedown = dragMouseDown;
-                }
+			// function dragElement(elmnt) {
+            //     var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            //     if (document.getElementById(elmnt.id + "header")) {
+            //         // Jika elemen header ada, inilah tempat Anda menggeser DIV dari sana:
+            //         document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+            //     } else {
+            //         // Jika tidak, maka Anda dapat menggeser DIV dari mana saja di dalam DIV:
+            //         elmnt.onmousedown = dragMouseDown;
+            //     }
 
-                function dragMouseDown(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // Dapatkan posisi kursor mouse saat memulai:
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    document.onmouseup = closeDragElement;
-                    // Panggil fungsi setiap kali kursor bergerak:
-                    document.onmousemove = elementDrag;
-                }
+            //     function dragMouseDown(e) {
+            //         e = e || window.event;
+            //         e.preventDefault();
+            //         // Dapatkan posisi kursor mouse saat memulai:
+            //         pos3 = e.clientX;
+            //         pos4 = e.clientY;
+            //         document.onmouseup = closeDragElement;
+            //         // Panggil fungsi setiap kali kursor bergerak:
+            //         document.onmousemove = elementDrag;
+            //     }
 
-                function elementDrag(e) {
-                    e = e || window.event;
-                    e.preventDefault();
-                    // Hitung posisi kursor baru:
-                    pos1 = pos3 - e.clientX;
-                    pos2 = pos4 - e.clientY;
-                    pos3 = e.clientX;
-                    pos4 = e.clientY;
-                    // Tetapkan posisi baru elemen:
-                    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-                    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            //     function elementDrag(e) {
+            //         e = e || window.event;
+            //         e.preventDefault();
+            //         // Hitung posisi kursor baru:
+            //         pos1 = pos3 - e.clientX;
+            //         pos2 = pos4 - e.clientY;
+            //         pos3 = e.clientX;
+            //         pos4 = e.clientY;
+            //         // Tetapkan posisi baru elemen:
+            //         elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+            //         elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
 
-                    // Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
-                    drawBarcodeOnCanvas(elmnt, pos3, pos4);
-                }
+            //         // Panggil fungsi drawBarcodeOnCanvas untuk menggambar elemen
+            //         drawBarcodeOnCanvas(elmnt, pos3, pos4);
+            //     }
 
-                function closeDragElement() {
-                    // Berhenti menggeser ketika tombol mouse dilepas:
-                    document.onmouseup = null;
-                    document.onmousemove = null;
-                }
-			}
+            //     function closeDragElement() {
+            //         // Berhenti menggeser ketika tombol mouse dilepas:
+            //         document.onmouseup = null;
+            //         document.onmousemove = null;
+            //     }
+			// }
 
-			function drawBarcodeOnCanvas(elmnt, posX, posY) {
-                console.log(posX, posY);
-                const canvas = document.getElementById('pdfCanvas');
-                const ctx = canvas.getContext('2d');
-                const penandaTangan = $('#pilihanGambar').val();
+			// function drawBarcodeOnCanvas(elmnt, posX, posY) {
+            //     console.log(posX, posY);
+            //     const canvas = document.getElementById('pdfCanvas');
+            //     const ctx = canvas.getContext('2d');
+            //     const penandaTangan = $('#pilihanGambar').val();
 
-                // Ambil posisi elemen "mydiv" dan gambar barcode
-                var qrcode = document.getElementById('mydivheader');
-                var optik = document.getElementById('mydivheader2');
+            //     // Ambil posisi elemen "mydiv" dan gambar barcode
+            //     var qrcode = document.getElementById('mydivheader');
+            //     var optik = document.getElementById('mydivheader2');
 
-                // penandaTangan===0 {qrcode} start
-                var image = qrcode;
-                var divX = parseInt(posX);
-                var divY = parseInt(posY);
-                // penandaTangan===0 {qrcode} end
+            //     // penandaTangan===0 {qrcode} start
+            //     var image = qrcode;
+            //     var divX = parseInt(posX);
+            //     var divY = parseInt(posY);
+            //     // penandaTangan===0 {qrcode} end
 
-                if (penandaTangan === '52') { // penandaTangan === 52 {optik}
-                    image = optik;
-                    divX = parseInt(posX);
-                    divY = parseInt(posY);
-                }
+            //     if (penandaTangan === '52') { // penandaTangan === 52 {optik}
+            //         image = optik;
+            //         divX = parseInt(posX);
+            //         divY = parseInt(posY);
+            //     }
 
-                const width = 90;
-                const height = 90;
+            //     const width = 90;
+            //     const height = 90;
 
-                ctx.drawImage(image, divX, divY, width, height);
-			}
+            //     ctx.drawImage(image, divX, divY, width, height);
+			// }
 
 
 			// Inisialisasi variabel global untuk menyimpan posisi elemen yang digerakkan
-			var divX
-			var divY
+			// var divX
+			// var divY
 
-			function elementDrag(e) {
-				e = e || window.event;
-				e.preventDefault();
+			// function elementDrag(e) {
+			// 	e = e || window.event;
+			// 	e.preventDefault();
 
-				// Hitung posisi kursor baru relatif terhadap posisi elemen:
-				var clientX = e.clientX;
-				var clientY = e.clientY;
-				divX = divX + pos1;
-				divY = divY + pos2;
+			// 	// Hitung posisi kursor baru relatif terhadap posisi elemen:
+			// 	var clientX = e.clientX;
+			// 	var clientY = e.clientY;
+			// 	divX = divX + pos1;
+			// 	divY = divY + pos2;
 
-				// Atur posisi baru elemen:
-				elmnt.style.top = divY + "px";
-				elmnt.style.left = divX + "px";
+			// 	// Atur posisi baru elemen:
+			// 	elmnt.style.top = divY + "px";
+			// 	elmnt.style.left = divX + "px";
 
-				// Log posisi yang diperbarui untuk tujuan debugging:
-				console.log("X: " + divX, "Y: " + divY);
+			// 	// Log posisi yang diperbarui untuk tujuan debugging:
+			// 	console.log("X: " + divX, "Y: " + divY);
 
-				// Panggil fungsi untuk menggambar ulang gambar pada canvas
-				drawBarcodeOnCanvas();
-			}
+			// 	// Panggil fungsi untuk menggambar ulang gambar pada canvas
+			// 	drawBarcodeOnCanvas();
+			// }
 
 			// //  Function untuk menggambar elemen barcode
 			// function drawBarcodeOnCanvas() {
@@ -620,7 +618,7 @@
 									// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
 									// drawImagesOnCanvas();
 									var penandaTangan = $('#pilihanGambar').val();
-                                    
+
 									// Cek checkbox yang diceklis
 									const checkboxBarcode = document.getElementById('barCode');
 									const checkboxFooter = document.getElementById('footerTTE');

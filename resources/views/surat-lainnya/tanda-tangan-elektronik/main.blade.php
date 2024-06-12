@@ -58,10 +58,10 @@
   <div class="other-page"></div>
 @endsection
 @section('js')
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script> 
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
   <script type="text/javascript">
   $(function() {
-    load_data('tanggal',"{{date('Y-m-d')}}"); 
+    load_data('tanggal',"{{date('Y-m-d')}}");
   });
   $(".datepickerbulan").flatpickr(
     {
@@ -78,7 +78,7 @@
     }
   );
 
-  function load_data(rangeBy, date) { 
+  function load_data(rangeBy, date) {
     var table = $('#datagrid').DataTable({
       processing: true,
       serverSide: true,
@@ -256,10 +256,10 @@
      });
    }
    // Using the on() method
-  function change(params) { 
+  function change(params) {
     var rangeBy = $('#rangeBy').val();
     if (rangeBy == 'tanggal') {
-      
+
       $('.panelTanggal').show();
       $('.panelBulan').hide();
       $('.panelTahun').hide();
