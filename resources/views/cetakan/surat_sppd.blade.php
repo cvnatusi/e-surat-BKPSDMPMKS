@@ -17,11 +17,16 @@
 </head>
 
 <body>
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $logo_bsre = public_path('assets/images/logo-bsre.png');
+    @endphp
     <table width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;">
+                    {{-- <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;"> --}}
+                    <img src="{{$logo}}" style="width: 2.56cm !important; height: 2.67cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>

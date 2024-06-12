@@ -74,7 +74,7 @@
     </div>
     {{-- END HEADER TULISAN SURAT TUGAS --}}
     {{-- START CONTENT --}}
-    <div class="" >
+    <div class="" style="font-size: 12px;">
         <p>Yang bertanda tangan dibawah ini :</p>
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10px;">
             <thead>
@@ -106,7 +106,7 @@
         <p>Menugaskan Saudara,</p>
         {{-- @if (count($pegawai) > 1) --}}
         @if (count($pegawai) > 1)
-        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 15px; width: 100%;">
+        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 12px; width: 100%;">
             <thead style="font-weight: 600; text-align: center;">
                 <tr>
                     <td>No</td>
@@ -214,7 +214,7 @@
           {{-- <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt=""> --}}
           @if ($data->verifikasi_kaban == 'Y')
           <div class="square" style="width: 100px;height: 120px;">
-            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="90">
+            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="72">
           </div>
             @else
               <div class="square" style="width: 100px;height: 100px;"></div>

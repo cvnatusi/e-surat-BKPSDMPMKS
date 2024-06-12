@@ -502,7 +502,7 @@ class SuratTugasController extends Controller
         // return $request->all();
 		try {
 			// $data['data'] = FileSuratTugas::with(['surattugas.pegawai'])->where('surat_tugas_id',$request->id)->get();
-			$data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('surat_tugas_id',$request->id)->get();
+			$data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('surat_tugas_id',$request->id)->orderBy('id_file_perjalanan_dinas', 'asc')->get();
             // return $data;
 			// $data['data'] = FileSuratTugas::with(['surattugas','pegawai.jabatan_asn'])->where('id_file_perjalanan_dinas',$request->id_file_perjalanan_dinas)->get();
       //       $allAsnId='';
@@ -592,7 +592,9 @@ class SuratTugasController extends Controller
 			// $file_name_asli_surat_tugas = str_replace(" ", "-", strtolower($data['data']->pegawai->nama_asn).'-'.$changeSTugas.'-'.date('Ymd His').'-surat_sppd.pdf');
 			$pdf = PDF::loadView('cetakan.surat_sppd', $data)
             ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+
 			Storage::put('public/surat-sppd/'.$file_name_asli_surat_tugas, $pdf->output());
+            file_put_contents(public_path('storage/surat-sppd/' . $file_name_asli_surat_tugas), $pdf->output());
 
 			$updateST = FileSuratTugas::find($request->id_file_perjalanan_dinas);
 			$updateST->file_surat_sppd = $file_name_asli_surat_tugas;
