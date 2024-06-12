@@ -133,21 +133,20 @@
 								<button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
 						</div>
 					</div>
-				</form>
-			</div>
+            </form>
+        </div>
 			{{-- Preview Surat --}}
+            {{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
+            {{-- <div class="col ms-2">
+                <button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
+                <iframe id="pdfViewer" frameborder="0" scrolling="no" width="700" height="750"></iframe>
+            </div> --}}
 			<div class="col ms-2">
 				<div>
 					<button type="button" class="btn btn-secondary" id="prev">Previous</button>
 					<button type="button" class="btn btn-secondary" id="next">Next</button>
 					&nbsp; &nbsp;
 					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-
-					{{-- <button type="button" id="remove_file" class="btn btn-secondary float-end">Cancel</button> --}}
-					{{-- <div class="col ms-2">
-						<button type="button" id="remove_files" onclick="PreviewImage()" class="btn btn-secondary float-end">Show Preview</button>
-						<iframe id="pdfViewer" frameborder="0" scrolling="no" width="700" height="750"></iframe>
-					</div> --}}
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
 					<div class="previewFile">
@@ -162,8 +161,6 @@
 					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; cursor: pointer;" >
 						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
 					</div>
-
-
 				</div>
 			</div>
 			{{-- Akhir Preview Surat --}}
@@ -621,7 +618,7 @@
 									// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
 									// drawImagesOnCanvas();
 									var penandaTangan = $('#pilihanGambar').val();
-                                    
+
 									// Cek checkbox yang diceklis
 									const checkboxBarcode = document.getElementById('barCode');
 									const checkboxFooter = document.getElementById('footerTTE');
