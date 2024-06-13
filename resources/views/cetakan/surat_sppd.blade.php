@@ -17,11 +17,16 @@
 </head>
 
 <body>
-    <table width="100%" cellpadding="0" cellspacing="0">
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $logo_bsre = public_path('assets/images/logo-bsre.png');
+    @endphp
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: -15px;">
         <thead>
             <tr>
-                <td rowspan="5">
-                    <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;">
+                <td rowspan="6">
+                    {{-- <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;"> --}}
+                    <img src="{{$logo}}" style="width: 3.10cm !important; height: 2.90cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -59,12 +64,13 @@
         <tr>
           <td style="text-align:center">1.</td>
           <td>&nbsp;Pejabat berwenang yang memberi perintah</td>
-          <td style="margin-left: 1em;">Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</td>
+          {{-- <td style="margin-left: 1em;">Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</td> --}}
+          <td style="padding: 5px;">Kepala Badan Kepegawaian dan Pengembangan Sumber Daya Manusia</td>
         </tr>
         <tr>
           <td style="text-align:center">2.</td>
           <td>&nbsp;Nama/NIP Pegawai yang diperintahkan</td>
-          <td style="margin-left: 1em;">
+          <td style="padding: 5px;">
             {{$pegawai->nama_asn}}
             <br>
             NIP. {{$pegawai->nip}}
@@ -89,13 +95,13 @@
         </tr>
         <tr>
           <td style="text-align:center">4.</td>
-          <td>&nbsp;Maksud Perjalanan Dinas</td>
-          <td style="margin-left: 1em;">{{$data->isi_ringkas_surat}}</td>
+          <td style="padding: 5px;">&nbsp;Maksud Perjalanan Dinas</td>
+          <td style="padding: 5px;">{{$data->isi_ringkas_surat}}</td>
         </tr>
         <tr>
           <td style="text-align:center">5.</td>
-          <td>&nbsp;Alat angkut yang dipergunakan</td>
-          <td style="margin-left: 1em;">{{$data->alat_angkut}}</td>
+          <td style="padding: 5px;">&nbsp;Alat angkut yang dipergunakan</td>
+          <td style="padding: 5px;">{{$data->alat_angkut}}</td>
         </tr>
         <tr>
           <td style="text-align:center">6.</td>
@@ -108,8 +114,8 @@
           <td>
             <ol type="a">
               <li>Pamekasan</li>
-              {{-- <li>{{$surat_tugas[0]->provinsi_tujuan_bertugas}}</li> --}}
-              <li>@foreach ($surat_tugas as $key){{$key->provinsi_tujuan_bertugas}},@endforeach</li>
+              <li>{{$surat_tugas[0]->provinsi_tujuan_bertugas}}</li>
+              {{-- <li>@foreach ($surat_tugas as $key){{$key->provinsi_tujuan_bertugas}}@endforeach</li> --}}
             </ol>
           </td>
         </tr>
@@ -152,13 +158,13 @@
           </td>
         </tr>
         <tr>
-          <td style="text-align:center">8.</td>
-          <td>&nbsp;Pengikut : N a m a</td>
-          <td style="margin-left: 1em;">Tanggal Lahir Keterangan</td>
+          <td style="text-align:center;">8.</td>
+          <td style="padding: 5px;">&nbsp;Pengikut : N a m a</td>
+          <td style="padding: 5px;">Tanggal Lahir Keterangan</td>
         </tr>
         <tr>
           <td></td>
-          <td>1</td>
+          <td style="padding: 5px;">1. -</td>
           <td></td>
         </tr>
         <tr>
@@ -178,7 +184,7 @@
         </tr>
         <tr>
           <td style="text-align:center">10.</td>
-          <td>&nbsp;Keterangan Lain lain</td>
+          <td style="padding: 5px;">&nbsp;Keterangan Lain lain</td>
           <td></td>
         </tr>
       </table>
@@ -189,8 +195,8 @@
                 <tr>
                     <th rowspan="4"></th>
                     <td>
-                      <p style="text-align:left; margin:0 !important;margin-left:15em !important">Dikeluarkan di : Pamekasan</p>
-                      <p style="text-align:left; margin:0 !important;margin-left:15em !important">Pada Tanggal : {{Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</p>
+                      <p style="text-align:left; margin:0 !important;margin-left:17em !important">Dikeluarkan di : Pamekasan</p>
+                      <p style="text-align:left; margin:0 !important;margin-left:17em !important">Pada Tanggal : {{Carbon\Carbon::parse($data->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</p>
                     </td>
                 </tr>
                 <tr>
@@ -243,18 +249,21 @@
             <br><br>
             <br><br>
             <p style="text-align:center;margin:0 !important;margin-left:1em !important"><b><u>{{$asn->nama_asn}}</u></b></p>
-            <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p>
+            <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan . ', ' . $asn->jabatan_asn->nama_jabatan}} <br />NIP. {{$asn->nip}}</p>
           </td>
         </tr>
         <tr>
           <td>
-            <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
-            <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[1])) {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
+            {{-- <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p> --}}
+            <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[0]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
+            {{-- <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[1])) {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p> --}}
+            <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[0])) {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Kepala :</p>
             <br><br><br><br><br>
           </td>
           <td>
-            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
+            {{-- <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p> --}}
+            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[0]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : @if (!empty($surat_tugas[1])){{Carbon\Carbon::parse($surat_tugas[1]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Kepala :</p>
             <br><br><br><br><br>
@@ -265,13 +274,13 @@
             <p style="text-align:left; margin:0 !important;"><b> III.</b> Tiba di : {{$surat_tugas[2]->provinsi_tujuan_bertugas ?? ''}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Pada Tanggal : @if (!empty($surat_tugas[2])){{Carbon\Carbon::parse($surat_tugas[2]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Kepala :</p>
-            <br><br><br><br><br>
+            <br><br><br><br>
           </td>
           <td>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari : {{$surat_tugas[2]->provinsi_tujuan_bertugas ?? ''}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : @if (!empty($surat_tugas[2])){{Carbon\Carbon::parse($surat_tugas[2]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Kepala :</p>
-            <br><br><br><br><br>
+            <br><br><br><br>
           </td>
         </tr>
         <tr>
@@ -279,13 +288,13 @@
             <p style="text-align:left; margin:0 !important;"><b> IV.</b> Tiba di : {{$surat_tugas[3]->provinsi_tujuan_bertugas ?? ''}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Pada Tanggal : @if (!empty($surat_tugas[3])){{Carbon\Carbon::parse($surat_tugas[2]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Kepala :</p>
-            <br><br><br><br><br>
+            <br><br><br><br>
           </td>
           <td>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari : {{$surat_tugas[3]->provinsi_tujuan_bertugas ?? ''}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : </p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Kepala :</p>
-            <br><br><br><br><br>
+            <br><br><br><br>
           </td>
         </tr>
         <tr>
@@ -302,8 +311,8 @@
             <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p>
           </td>
           <td>
-            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Telah diperiksa dengan keterangan bahwa perjalanan tersebut atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.</p>
-            <br>
+            <p style="text-align:justify; text-justify: inter-word; margin-top: 0em; padding: 0.5em !important">Telah diperiksa dengan keterangan bahwa perjalanan tersebut atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.</p>
+            {{-- <br>    --}}
             <p style="text-align:center;margin:0 !important;margin-left:1em !important"><b>KEPALA BADAN KEPEGAWAIAN DAN <br> PENGEMBANGAN SUMBER DAYA MANUSIA</b></p>
             <br><br>
             <br><br>
@@ -319,7 +328,7 @@
         </tr>
       </table>
       <p style="text-align:left;margin:0 !important">Perhatian :</p>
-      <p style="text-align:left;margin:0 !important; text-size:11px">Pejabat yang berwenang menerbitkan SPD, pegawai yang melakukan perjalanan dinas, para pejabat yang mengesahkan tanggal berangkat/tiba, serta bendaharawan bertanggung jawab berdasarkan peraturan-peraturan keuangan Negara apabila Negara menderita rugi akibat kesalahan, kelalaian dan kesengajaan.</p>
+      <p style="text-align:justify; text-justify: inter-word; margin:0 !important; text-size:11px">Pejabat yang berwenang menerbitkan SPD, pegawai yang melakukan perjalanan dinas, para pejabat yang mengesahkan tanggal berangkat/tiba, serta bendaharawan bertanggung jawab berdasarkan peraturan-peraturan keuangan Negara apabila Negara menderita rugi akibat kesalahan, kelalaian dan kesengajaan.</p>
     </div>
     {{-- END CONTENT --}}
 </body>

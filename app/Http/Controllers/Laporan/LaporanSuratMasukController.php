@@ -74,7 +74,7 @@ class LaporanSuratMasukController extends Controller
         // $date = date('Y-m-d');
         $data['judul'] = 'LAPORAN SURAT MASUK';
         $data['lap'] = $query->get();
-			return count($data['lap']);
+			// return count($data['lap']);
 		// if (!empty($request->rangeAwal)) {
 		// 			$data['tanggalAwal']  = date('Y-m-d', strtotime($request->rangeAwal));
 		// 	}

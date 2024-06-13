@@ -6,28 +6,28 @@ h6 {
     position: relative;
     padding: 10px;
 }
-.box {
+/* .box {
     height: 37px;
     width: 450px;
     border-radius: 5px;
-    /* background-color: rgb(139, 67, 67); */
+    background-color: rgb(139, 67, 67);
     outline-width: 1px;
     outline-style: solid;
     outline-color: #33333341;
     text-align: center;
-}
+} */
 .customfile::-webkit-file-upload-button {
     background: #878b91;
     border-radius: 10px;
     border: none;
-    padding: 8px 16px; 
+    padding: 8px 16px;
     color: #fff;
     cursor: pointer;
     text-align: right;
     /* margin-top: 14px;
     margin-left: 3px; */
 }
-.simpan, 
+.simpan,
 .kembali button {
     position: absolute;
     bottom: 0;
@@ -57,7 +57,7 @@ h6 {
     padding: 10px;
     border: 1px solid rgba(51, 51, 51, 0.253);
 }
-.inputBox option:valid, 
+.inputBox option:valid,
 .inputBox option:focus {
     color: #371bd4;
     transform: translateX(10px) translateY(-7px);
