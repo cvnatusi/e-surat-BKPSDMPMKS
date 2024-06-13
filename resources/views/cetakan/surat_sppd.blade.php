@@ -17,11 +17,16 @@
 </head>
 
 <body>
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $logo_bsre = public_path('assets/images/logo-bsre.png');
+    @endphp
     <table width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;">
+                    {{-- <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;"> --}}
+                    <img src="{{$logo}}" style="width: 2.56cm !important; height: 2.67cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -157,8 +162,8 @@
           <td style="margin-left: 1em;">Tanggal Lahir Keterangan</td>
         </tr>
         <tr>
-          <td></td>
-          <td>1</td>
+          <td></td> 
+          <td>1. -</td>
           <td></td>
         </tr>
         <tr>
@@ -248,13 +253,16 @@
         </tr>
         <tr>
           <td>
-            <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
-            <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[1])) {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
+            {{-- <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p> --}}
+            <p style="text-align:left; margin:0 !important;"><b> II.</b> Tiba di : {{$surat_tugas[0]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
+            {{-- <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[1])) {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p> --}}
+            <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Pada Tanggal : @if (!empty($surat_tugas[0])) {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.4em !important">Kepala :</p>
             <br><br><br><br><br>
           </td>
           <td>
-            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
+            {{-- <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[1]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p> --}}
+            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari :{{$surat_tugas[0]->provinsi_tujuan_bertugas ?? $surat_tugas[0]->provinsi_tujuan_bertugas}}</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : @if (!empty($surat_tugas[1])){{Carbon\Carbon::parse($surat_tugas[1]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @else {{Carbon\Carbon::parse($surat_tugas[0]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}} @endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Kepala :</p>
             <br><br><br><br><br>

@@ -240,8 +240,8 @@ class TteController extends Controller
 			// 	}
 			// }
 
-			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render(); # Default
-			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'new-form3', $data)->render();
+			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render(); # Default
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'new-form3', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			throw($e);
@@ -267,8 +267,8 @@ class TteController extends Controller
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
-			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data)->render();
-			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data, $file)->render();
+			// $content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data)->render();
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data, $file)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];

@@ -41,7 +41,7 @@
             <tr>
                 <td rowspan="5">
                     {{-- <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.67cm !important;" alt="logo-bkpsdm"> --}}
-                    <img src="{{$logo}}" style="width: 2.56cm !important; height: 2.67cm !important;" alt="logo-bkpsdm">
+                    <img src="{{$logo}}" style="width: 2.79cm !important; height: 2.70cm !important;" alt="logo-bkpsdm">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -74,7 +74,7 @@
     </div>
     {{-- END HEADER TULISAN SURAT TUGAS --}}
     {{-- START CONTENT --}}
-    <div class="" >
+    <div class="" style="font-size: 14px;">
         <p>Yang bertanda tangan dibawah ini :</p>
         <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10px;">
             <thead>
@@ -106,7 +106,7 @@
         <p>Menugaskan Saudara,</p>
         {{-- @if (count($pegawai) > 1) --}}
         @if (count($pegawai) > 1)
-        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 15px; width: 100%;">
+        <table class="table" border="1" cellspacing="0" cellpadding="3" style="margin-left: 10px; font-size: 14px; width: 100%;">
             <thead style="font-weight: 600; text-align: center;">
                 <tr>
                     <td>No</td>
@@ -163,7 +163,7 @@
                 <tr>
                     <td width="20%">Hari</td>
                     <td width="2%">:</td>
-                    <td width="78%">@if ($data->tanggal_mulai == $data->tanggal_akhir){{Carbon\Carbon::parse($data->tanggal_mulai)->locale('id')->formatLocalized('%A')}}@else{{Carbon\Carbon::parse($data->tanggal_mulai)->locale('id')->formatLocalized('%A')}} - {{Carbon\Carbon::parse($data->tanggal_akhir)->locale('id')->formatLocalized('%A')}}@endif</td>
+                    <td width="78%">@if ($data->tanggal_mulai == $data->tanggal_akhir){{Carbon\Carbon::parse($data->tanggal_mulai)->locale('id')->translatedFormat('l')}}@else{{Carbon\Carbon::parse($data->tanggal_mulai)->locale('id')->translatedFormat('l')}} - {{Carbon\Carbon::parse($data->tanggal_akhir)->locale('id')->translatedFormat('l')}}@endif</td>
                 </tr>
             </thead>
             <tbody>
@@ -176,20 +176,23 @@
                     <td style="vertical-align:top">Tempat</td>
                     <td style="vertical-align:top">:</td>
                     <td width="78%" >
-                        @foreach ($surat_tugas as $suratTugas)
+                        {{-- @foreach ($surat_tugas as $suratTugas)
                           {{$suratTugas->tempat_tujuan_bertugas}} ({{$suratTugas->alamat_tujuan_bertugas}}) <br>
+                        @endforeach --}}
+                        @foreach ($surat_tugas as $suratTugas)
+                          {{$suratTugas->tempat_tujuan_bertugas}} ({{$suratTugas->provinsi_tujuan_bertugas}}) <br>
                         @endforeach
                     </td>
                     {{-- <td>{{$surat_tugas->tempat_tujuan_bertugas}} <br>{{$surat_tugas->alamat_tujuan_bertugas}}</td> --}}
                 </tr>
             </tbody>
         </table>
-        <br><br>
+        <br>
         <p>Demikian Surat tugas ini dibuat, untuk dipergunakan sebagaimana mestinya.</p>
         <br><br>
         <br>
-        <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 10em; vertical-align: middle">
-        {{-- <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 13em; vertical-align: middle"> --}}
+        {{-- <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 10em; vertical-align: middle"> --}}
+        <table  width="100%" cellpadding="0" cellspacing="0" style="margin-left: 13.7em; vertical-align: middle">
             <thead>
                 <tr>
                     <th rowspan="4"></th>
@@ -214,14 +217,14 @@
           {{-- <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt=""> --}}
           @if ($data->verifikasi_kaban == 'Y')
           <div class="square" style="width: 100px;height: 120px;">
-            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="90">
+            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="72">
           </div>
             @else
               <div class="square" style="width: 100px;height: 100px;"></div>
           @endif
         </div>
-        {{-- <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:25.5em; vertical-align:middle; text-align: center;"> --}}
-        <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10rem; margin-top: -10px; vertical-align:middle; text-align: center; ">
+        <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:13.5em; vertical-align:middle; text-align: center;">
+        {{-- <table width="100%" cellpadding="0" cellspacing="0" style="margin-left:10rem; margin-top: -10px; vertical-align:middle; text-align: center; "> --}}
           <tbody>
               <tr>
                   <td rowspan="3"></td>
