@@ -53,10 +53,22 @@
 			cursor: move;
 		}
 		.card {
-			height: 50rem;
+            display: flex;
+            flex-direction: column;
+			height: 95rem;
 			border-radius: 10px;
 			margin: 3px px;
 		}
+
+        .form-save {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .mt-auto {
+            margin-top: auto;
+        }
 
 		#draggable-div, #mydiv2 {
 			position: absolute;
@@ -85,25 +97,27 @@
 		}
 
         .draggable {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             /* background: rgba(0, 255, 0, 0.5);  */
             position: absolute;
             cursor: move;
         }
 
         #pdf-canvas {
-            border: 1px solid black;
+            /* border: 0.5px solid grey; */
             display: block;
+            /* width: 50%; */
             margin: 0 auto;
+            /* height: auto; */
         }
 
 	</style>
 </head>
 <body>
 	<div class="row content">
-		<div class="card col-md-5 p-4 me-3">
-			<form class="form-save">
+		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 97rem;">
+			<form class="form-save d-flex flex-column flex-grow-1">
 				<h6><b><i>e</i> -Tanda Tangan</b></h6>
 				<hr>
 				<label for="inputBox yang_bertanda_tangan" id="label_tujuan_surat" class="form-label">Penanda Tangan Surat Tugas <span>*</span></label>
@@ -133,18 +147,18 @@
 							<p>Tampilkan Footer Tanda Tangan Elektronik</p>
 						</div>
 					</div>
-					<div class="row" style="margin-top: 26rem;">
+					<div class="row mt-auto">
 						<div class="col-md-6">
-								<button id="submit" class="btn btn-primary col-md-11">SIMPAN</button>
+							<button type="button" id="submit" class="btn btn-primary col-md-11">SIMPAN</button>
 						</div>
 						<div class="col-md-6">
-								<button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
+							<button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
 						</div>
 					</div>
             </form>
         </div>
 			{{-- Preview Surat --}}
-			<div class="col ms-2">
+			<div class="col ms-2" style="height: 90rem;">
 				<div>
 					<button type="button" class="btn btn-secondary" id="prev">Previous</button>
 					<button type="button" class="btn btn-secondary" id="next">Next</button>
@@ -153,22 +167,26 @@
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
                     <canvas id="pdf-canvas"></canvas>
-                    <img src="{{asset('gambar/QR.png')}}" id="draggable-div" class="draggable" draggable="true">
+                    <div class="draggable" id="draggable-div" style="display: none">
+                        <img src="{{asset('gambar/QR.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true">
+                    </div>
 					<div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
-						<img src="{{asset('assets/images/qr-code.png')}}" id="mydivheader2" style="height: 100px; width: 100px;">
+						<img src="{{asset('assets/images/qr-code.png')}}" id="draggable-div" style="height: 100px; width: 100px;">
 					</div>
-					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; cursor: pointer;" >
-						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 28rem;">
+					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
+						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 45rem;">
 					</div>
 				</div>
 			</div>
 			{{-- Akhir Preview Surat --}}
-		</div>
+	</div>
 
-        {{-- <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script> --}}
-        <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-        <script src="{{ asset('js/dist/interact.min.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script src="{{ asset('js/dist/interact.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
+		<script src="{{asset('js/konva/konva.js')}}"></script>
+		<script src="{{asset('js/konva/konva.min.js')}}"></script>
+
 
 <script>
     $('.select2').select2({
@@ -184,8 +202,11 @@
     const draggableDiv = document.getElementById('draggable-div');
     const uploadPdf = document.getElementById('upload-pdf');
     const submitButton = document.getElementById('submit');
-    const checkboxBarcode = document.getElementById('draggable-div');
+    const checkboxBarcode = document.getElementById('barCode');
     const checkboxFooter = document.getElementById('footerTTE');
+    const gambar = document.getElementById('draggable-div');
+    const gambar2 = document.getElementById('mydiv2');
+    const suratPendukung = document.getElementById('surat_pendukung');
 
     let pdfDoc = null;
     let pageNum = 1;
@@ -238,7 +259,10 @@
             }
         })
         .resizable({
-            edges: { left: true, right: true, bottom: true, top: true }
+            // edges: { left: true, right: true, bottom: true, top: true},
+            // edges: { left: false, right: false, bottom: false, top: false},
+            edges: { top: false, left: false, bottom: false, right: false, topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+            preserveAspectRatio: true
         })
         .on('resizemove', event => {
             const target = event.target;
@@ -261,7 +285,7 @@
             target.setAttribute('data-x-image', x);
             target.setAttribute('data-y-image', y);
 
-            // console.log(`height: ${height} | width: ${width} `);
+            console.log(`height: ${height} | width: ${width} `);
         });
 
         function drawBarcode(x, y) {
@@ -269,8 +293,8 @@
             const img = new Image();
 
 
-            const imgWidth =  100;
-            const imgHeight = 100;
+            const imgWidth =  120;
+            const imgHeight = 120;
             img.width = imgWidth;
             img.height = imgHeight;
 
@@ -293,16 +317,34 @@
                 console.log(`Base64 Image: ${base64Image}`);
             };
             img.setAttribute('crossorigin', 'anonymous');
-            // img.src = './QR.png';
-            img.src = 'https://c8.staticflickr.com/8/7492/15644563231_4d682b3c88_n.jpg';
+            img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
         }
 
-		// const gambar = document.getElementById('draggable-div');
-		// const gambar2 = document.getElementById('mydiv2');
-		// const checkboxBarcode = document.getElementById('barCode');
-		// const footer = document.getElementById('footer');
-		// const checkboxFooter = document.getElementById('footerTTE');
-		// const suratPendukung = document.getElementById('surat_pendukung');
+        $(document).ready(function () {
+            submitButton.addEventListener('click', () => {
+                const rect = canvas.getBoundingClientRect();
+                const draggableRect = draggableDiv.getBoundingClientRect();
+                const position = {
+                    x: draggableRect.left - rect.left,
+                    y: draggableRect.top - rect.top
+                };
+                console.log(`Position of draggable div: x = ${position.x}, y = ${position.y}`);
+                console.log(`Canvas dimensions: width = ${canvas.width}, height = ${canvas.height}`);
+
+
+
+                drawBarcode(position.x, position.y);
+                const penandaTanganSurat = $('#pilihanGambar').val()
+                if(penandaTanganSurat === '5'){
+                    gambar.style.display = 'none'; // qrcode
+                } else{
+                    gambar2.style.display = 'none'; // optik
+                }
+            });
+
+        })
+
+
 
 		// Event listener untuk elemen <select>
 			document.getElementById('pilihanGambar').addEventListener('change', function () {
@@ -357,33 +399,6 @@
 				}
 			});
 
-			$('#simpan').click(function(){
-				window.jsPDF = window.jspdf.jsPDF
-				const canvas = document.getElementById('pdfCanvas'); // Ambil elemen canvas
-
-				// Konversi elemen canvas ke gambar menggunakan html2canvas
-				html2canvas(canvas, {
-					allowTaint: true,
-					useCORS: true,
-					scale: 5 // Skala untuk meningkatkan resolusi gambar
-				}).then(canvasImage => {
-					const imgData = canvasImage.toDataURL('image/png'); // Ubah gambar canvas menjadi URL data
-
-					// Buat objek jsPDF
-					const pdf = new jsPDF({
-						orientation: "portrait",
-						// unit: "in",
-						unit: "mm",
-						// format: [4, 2]
-						format: 'a4'
-					});
-					const imgWidth = 3508; // Lebar A4 dalam piksel
-					const imgHeight = canvasImage.height * imgWidth / canvasImage.width;
-					pdf.addImage(imgData, 'PNG', 0, 0,  450, 670); // Tambahkan gambar ke dokumen PDF
-					pdf.save("canvas_to_pdf.pdf"); // Simpan dokumen PDF dengan nama "canvas_to_pdf.pdf"
-				});
-			});
-
 
 		// // Fungsi untuk menggambar elemen footer pada elemen canvas
 		function drawFooterOnCanvas() {
@@ -415,256 +430,9 @@
 		document.getElementById('upload-pdf').addEventListener('change', function () {
 			var file_ = this.files[0]; // Ambil file yang dipilih oleh pengguna
 			resfile = file_
-			// var namaFile = $('#pload-pdf').files[0].name;
-			// console.log(file_)
-
-			// if (file_) {
-			// 	console.log('Nama file : ' + file_.name);
-			// } else {
-			// 	console.log('Tidak ada file yang dipilih.');
-			// }
 		});
 
 
-			// $('#convertToPDF').on('click', function() {
-				// 	window.jsPDF = window.jspdf.jsPDF;
-				// 	const canvas = document.getElementById('pdfViewer');
-				// 	// e.preventDefault();
-				// 	var penandaTangan = $('#pilihanGambar').val();
-				// 	var tanggalTTD = new Date("31-7-2023");
-				// 	var namaSurat = prompt('Masukkan nama file PDF');
-
-				// 	// Buat objek jsPDF
-				// 	const pdf = new jsPDF({
-					// 		orientation: 'portrait', // Atur orientasi portrait atau landscape
-					// 		unit: 'px', // Atur unit ukuran (piksel)
-					// 		format: 'a4' // Atur format halaman (A4)
-					// 	});
-					// 	// const imgData = canvas.toDataURL('image/png');
-					// 	const imgData = canvas.toDataURL(); // Ubah elemen canvas menjadi gambar data URL (PNG)
-					// 	pdf.addImage(imgData, 'PNG', 0, 0); // Tambahkan gambar ke dokumen PDF
-
-					// 	/* Simpan dokumen PDF dalam format Base64
-					// 	Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
-					// 	const pdfBase64 = pdf.output('dataurlstring');
-					// 	// pdf.save("canvas_to_pdf.pdf") // Download pdf
-					// 	$.ajax({
-						// 		url: '{{route("savePDF")}}',
-						// 		method: 'POST',
-						// 		data: {
-							// 			"_token" : '{{csrf_token()}}',
-							// 			// pdf: btoa(pdf)
-							// 			pdf: pdfBase64,
-							// 			namaSurat: namaSurat, // Ganti namaSurat sesuai dengan nama yang Anda inginkan
-							// 			tanggalTTD: '31-7-2023', // Ganti tanggalTTD sesuai dengan tanggal yang Anda inginkan
-							// 			penandaTangan: penandaTangan
-							// 		},
-							// 		success:function(data){
-								// 			$('#success').html(data);
-								// 		}
-								// 	}).done((res)=>{})
-								// });
-
-								$('#convertToPDF').click(function(e){
-									e.preventDefault();
-									// $('.btn-submit').html('Please wait...').attr('disabled', true);
-									// $('#convertToPDF');
-									window.jsPDF = window.jspdf.jsPDF;
-									// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
-									// drawImagesOnCanvas();
-									var penandaTangan = $('#pilihanGambar').val();
-
-									// Cek checkbox yang diceklis
-									const checkboxBarcode = document.getElementById('barCode');
-									const checkboxFooter = document.getElementById('footerTTE');
-									if (checkboxBarcode.checked && checkboxFooter.checked) { // Tampilkan elemen barcode dan footer pada elemen canvas
-										drawBarcode(xDrag+50, yDrag+90);
-										drawFooterOnCanvas();
-									} else if (checkboxBarcode.checked) {  // Tampilkan hanya elemen barcode pada elemen canvas
-										drawBarcode(xDrag, yDrag);
-									} else if (checkboxFooter.checked) {   // Tampilkan hanya elemen footer pada elemen canvas
-										drawFooterOnCanvas();
-									}
-									// Ubah elemen canvas menjadi URL data
-									const canvas = document.getElementById('pdfCanvas');
-									const imgData = canvas.toDataURL('image/png');
-                                    // console.log(imgData);
-                                    // return
-									// Buat objek jsPDF
-									const pdf = new jsPDF({
-										orientation: "portrait",
-										unit: "mm",
-										// format: [210.00, 330.00]
-										format: [230.00, 330.00]
-									});
-									const imgWidth = 3508; // Lebar A4 dalam piksel
-									const imgHeight = canvas.height * imgWidth / canvas.width;
-									pdf.addImage(imgData, 'PNG', 0, 0, 230, 330); // Tambahkan gambar ke dokumen PDF
-
-									/* Simpan dokumen PDF dalam format Base64
-									Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
-									const pdfBase64 = pdf.output('dataurlstring');
-									var penandaTangan = $('#pilihanGambar').val();
-									// return console.log(resfile)
-
-									$.ajax({
-										url: '{{route("savePDF")}}',
-										method: 'POST',
-										data: {
-											"_token" : '{{csrf_token()}}',
-											// pdf: btoa(pdf)
-											pdf: pdfBase64,
-											namaSurat: resfile.name,
-											penandaTangan: penandaTangan
-										},
-									}).done(function(data){
-										// console.log('tes')
-										// $('.form-save').validate(data, 'has-error');
-										if(data.status == 'success'){
-											Lobibox.notify('success', {
-												pauseDelayOnHover: true,
-												size: 'mini',
-												rounded: true,
-												delayIndicator: false,
-												icon: 'bx bx-check-circle',
-												continueDelayOnInactiveTab: false,
-												position: 'top right',
-												sound:false,
-												msg: data.message
-											});
-											$('.other-page').fadeOut(function(){
-												$('.other-page').empty();
-												$('.card').fadeIn();
-												location.reload();
-												$('#datagrid').DataTable().ajax.reload();
-											});
-										} else if(data.status == 'error') {
-											$('#convertToPDF');
-											Lobibox.notify('error', {
-												pauseDelayOnHover: true,
-												size: 'mini',
-												rounded: true,
-												delayIndicator: false,
-												icon: 'bx bx-x-circle',
-												continueDelayOnInactiveTab: false,
-												position: 'top right',
-												sound:false,
-												msg: data.message
-											});
-											swal('Error :'+data.errMsg.errorInfo[0], data.errMsg.errorInfo[2], 'warning');
-										} else {
-											var n = 0;
-											for(key in data){
-												if (n == 0) {var dt0 = key;}
-												n++;
-											}
-											$('#convertToPDF');
-											Lobibox.notify('warning', {
-												pauseDelayOnHover: true,
-												size: 'mini',
-												rounded: true,
-												delayIndicator: false,
-												icon: 'bx bx-error',
-												continueDelayOnInactiveTab: false,
-												position: 'top right',
-												sound:false,
-												msg: data.message
-											});
-										}
-									}).fail(function() {
-										$('#convertToPDF');
-										Lobibox.notify('warning', {
-											title: 'Maaf!',
-											pauseDelayOnHover: true,
-											size: 'mini',
-											rounded: true,
-											delayIndicator: false,
-											icon: 'bx bx-error',
-											continueDelayOnInactiveTab: false,
-											position: 'top right',
-											sound:false,
-											msg: 'Terjadi Kesalahan, Silahkan Ulangi Kembali atau Hubungi Tim IT !!'
-										});
-									});
-									// .done((res)=>{})
-
-									const penandaTanganSurat = $('#pilihanGambar').val()
-									if(penandaTanganSurat === '5'){
-										gambar.style.display = 'none'; // qrcode
-									} else{
-										gambar2.style.display = 'none'; // optik
-									}
-								});
-
-				// Fungsi untuk melakukan konversi ke PDF
-				// function convertToPDF() {
-					// 	// e.preventDefault();
-					// 	// console.log(resfile)
-					// 	window.jsPDF = window.jspdf.jsPDF;
-					// 	// Gambar elemen barcode dan footer pada elemen canvas terlebih dahulu
-					// 	// drawImagesOnCanvas();
-					// 	var penandaTangan = $('#pilihanGambar').val();
-
-					// 	// Cek checkbox yang diceklis
-					// 	const checkboxBarcode = document.getElementById('barCode');
-					// 	const checkboxFooter = document.getElementById('footerTTE');
-					// 	if (checkboxBarcode.checked && checkboxFooter.checked) {
-						// 		// Tampilkan elemen barcode dan footer pada elemen canvas
-						// 		drawBarcodeOnCanvas();
-						// 		drawFooterOnCanvas();
-						// 	} else if (checkboxBarcode.checked) {
-							// 		// Tampilkan hanya elemen barcode pada elemen canvas
-							// 		drawBarcodeOnCanvas();
-							// 	} else if (checkboxFooter.checked) {
-								// 		// Tampilkan hanya elemen footer pada elemen canvas
-								// 		drawFooterOnCanvas();
-								// 	}
-								// 	// Ubah elemen canvas menjadi URL data
-								// 	const canvas = document.getElementById('pdfViewer');
-								// 	const imgData = canvas.toDataURL('image/png');
-
-								// 	// Buat objek jsPDF
-								// 	const pdf = new jsPDF({
-									// 		orientation: "portrait",
-									// 		unit: "px",
-									// 		format: 'a4'
-									// 	});
-									// 	const imgWidth = 3508; // Lebar A4 dalam piksel
-									// 	const imgHeight = canvas.height * imgWidth / canvas.width;
-									// 	pdf.addImage(imgData, 'PNG', 0, 0, 450, 670); // Tambahkan gambar ke dokumen PDF
-
-									// 	/* Simpan dokumen PDF dalam format Base64
-									// 	Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
-									// 	const pdfBase64 = pdf.output('dataurlstring');
-									// 	// const suratPendukungBase64 = pdf.output('dataurlstring');
-									// 	// console.log	(suratPendukungBase64)
-									// 	// pdf.save("canvas_to_pdf.pdf") // Download pdf
-
-									// 	var penandaTangan = $('#pilihanGambar').val();
-									// 	// var fileSurat = $('#pload-pdf').val();
-
-									// 	// return console.log(resfile)
-
-									// 	$.ajax({
-										// 		url: '{{route("savePDF")}}',
-										// 		method: 'POST',
-										// 		data: {
-											// 			"_token" : '{{csrf_token()}}',
-											// 			// pdf: btoa(pdf)
-											// 			pdf: pdfBase64,
-											// 			// penanda_tangan : penandaTangan,
-											// 			namaSurat: resfile.name,
-											// 			penandaTangan: penandaTangan
-											// 		},
-											// 	}).done((res)=>{})
-
-											// 	const penandaTanganSurat = $('#pilihanGambar').val()
-											// 		if(penandaTanganSurat === '5'){
-												// 			gambar.style.display = 'none'; // qrcode
-												// 		} else{
-													// 			gambar2.style.display = 'none'; // optik
-													// 		}
-													// 	}
 
 		// Event listener untuk tombol "Convert to PDF"
 // 		document.getElementById('convertToPDF').addEventListener('click', convertToPDF);
