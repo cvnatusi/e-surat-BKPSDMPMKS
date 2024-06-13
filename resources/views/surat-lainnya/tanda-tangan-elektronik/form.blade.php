@@ -625,10 +625,10 @@
 									if (checkboxBarcode.checked && checkboxFooter.checked) { // Tampilkan elemen barcode dan footer pada elemen canvas
 										drawBarcode(xDrag+50, yDrag+90);
 										drawFooterOnCanvas();
-									} else if (checkboxBarcode.checked) {  // Tampilkan hanya elemen barcode pada elemen canvas
-										drawBarcode(xDrag, yDrag);
-									} else if (checkboxFooter.checked) {   // Tampilkan hanya elemen footer pada elemen canvas
-										drawFooterOnCanvas();
+                                        } else if (checkboxBarcode.checked) {  // Tampilkan hanya elemen barcode pada elemen canvas
+                                            drawBarcode(xDrag, yDrag);
+                                        } else if (checkboxFooter.checked) {   // Tampilkan hanya elemen footer pada elemen canvas
+                                            drawFooterOnCanvas();
 									}
 									// Ubah elemen canvas menjadi URL data
 									const canvas = document.getElementById('pdfCanvas');
@@ -649,6 +649,7 @@
 									/* Simpan dokumen PDF dalam format Base64
 									Anda dapat menggunakan pdfBase64 untuk tujuan yang diinginkan, seperti menyimpannya ke server atau mengirimkannya melalui AJAX. */
 									const pdfBase64 = pdf.output('dataurlstring');
+                                    console.log(`Base64 PDF: ${pdfBase64}`);
 									var penandaTangan = $('#pilihanGambar').val();
 									// return console.log(resfile)
 

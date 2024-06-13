@@ -184,8 +184,8 @@
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
     <script src="{{ asset('js/dist/interact.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
-		<script src="{{asset('js/konva/konva.js')}}"></script>
-		<script src="{{asset('js/konva/konva.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" type="text/javascript" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
 
 <script>
@@ -292,7 +292,6 @@
             // Buat elemen gambar untuk QR.png
             const img = new Image();
 
-
             const imgWidth =  120;
             const imgHeight = 120;
             img.width = imgWidth;
@@ -328,21 +327,180 @@
                     x: draggableRect.left - rect.left,
                     y: draggableRect.top - rect.top
                 };
-                console.log(`Position of draggable div: x = ${position.x}, y = ${position.y}`);
-                console.log(`Canvas dimensions: width = ${canvas.width}, height = ${canvas.height}`);
 
-
-
+                // Gambar barcode pada canvas
                 drawBarcode(position.x, position.y);
-                const penandaTanganSurat = $('#pilihanGambar').val()
-                if(penandaTanganSurat === '5'){
-                    gambar.style.display = 'none'; // qrcode
-                } else{
-                    gambar2.style.display = 'none'; // optik
-                }
-            });
 
-        })
+                // Tunggu sejenak agar gambar barcode selesai digambar pada canvas
+                setTimeout(() => {
+                    // Convert canvas ke base64 image
+                    const base64Image = canvas.toDataURL('image/png');
+                    // console.log(`Base64 Images: ${base64Image}`);
+
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({
+                        orientation: "portrait",
+                        unit: "mm",
+                        format: [230.00, 330.00]
+                    });
+                    const imgWidthPDF = 210; // Lebar A4 dalam mm
+                    const imgHeightPDF = canvas.height * imgWidthPDF / canvas.width;
+                    pdf.addImage(base64Image, 'PNG', 0, 0, imgWidthPDF, imgHeightPDF);
+
+                    // Simpan dokumen PDF dalam format Base64
+                    const pdfBase64 = pdf.output('dataurlstring');
+                    // console.log(`Base64 PDF: ${pdfBase64}`);
+
+                    // Kirim PDF ke server melalui AJAX
+                    $.ajax({
+                        url: '{{route("savePDF")}}',
+                        method: 'POST',
+                        data: {
+                            "_token" : '{{csrf_token()}}',
+                            pdf: pdfBase64,
+                            namaSurat: resfile.name,
+                            penandaTangan: $('#pilihanGambar').val()
+                        },
+                    }).done(function(data){
+                        if(data.status == 'success'){
+                            Lobibox.notify('success', {
+                                pauseDelayOnHover: true,
+                                size: 'mini',
+                                rounded: true,
+                                delayIndicator: false,
+                                icon: 'bx bx-check-circle',
+                                continueDelayOnInactiveTab: false,
+                                position: 'top right',
+                                sound:false,
+                                msg: data.message
+                            });
+                            $('.other-page').fadeOut(function(){
+                                $('.other-page').empty();
+                                $('.card').fadeIn();
+                                location.reload();
+                                $('#datagrid').DataTable().ajax.reload();
+                            });
+                        } else if(data.status == 'error') {
+                            $('#convertToPDF');
+                            Lobibox.notify('error', {
+                                pauseDelayOnHover: true,
+                                size: 'mini',
+                                rounded: true,
+                                delayIndicator: false,
+                                icon: 'bx bx-x-circle',
+                                continueDelayOnInactiveTab: false,
+                                position: 'top right',
+                                sound:false,
+                                msg: data.message
+                            });
+                            swal('Error :'+data.errMsg.errorInfo[0], data.errMsg.errorInfo[2], 'warning');
+                        } else {
+                            var n = 0;
+                            for(key in data){
+                                if (n == 0) {var dt0 = key;}
+                                n++;
+                            }
+                            $('#convertToPDF');
+                            Lobibox.notify('warning', {
+                                pauseDelayOnHover: true,
+                                size: 'mini',
+                                rounded: true,
+                                delayIndicator: false,
+                                icon: 'bx bx-error',
+                                continueDelayOnInactiveTab: false,
+                                position: 'top right',
+                                sound:false,
+                                msg: data.message
+                            });
+                        }
+                    }).fail(function() {
+                        $('#convertToPDF');
+                        Lobibox.notify('warning', {
+                            title: 'Maaf!',
+                            pauseDelayOnHover: true,
+                            size: 'mini',
+                            rounded: true,
+                            delayIndicator: false,
+                            icon: 'bx bx-error',
+                            continueDelayOnInactiveTab: false,
+                            position: 'top right',
+                            sound:false,
+                            msg: 'Terjadi Kesalahan, Silahkan Ulangi Kembali atau Hubungi Tim IT !!'
+                        });
+                    });
+
+                    const penandaTanganSurat = $('#pilihanGambar').val();
+                    if(penandaTanganSurat === '5'){
+                        gambar.style.display = 'none'; // qrcode
+                    } else{
+                        gambar2.style.display = 'none'; // optik
+                    }
+                }, 100); // Tunggu 100ms untuk memastikan gambar barcode selesai digambar
+            });
+        });
+
+
+        // $(document).ready(function () {
+        //     submitButton.addEventListener('click', () => {
+        //         const rect = canvas.getBoundingClientRect();
+        //         const draggableRect = draggableDiv.getBoundingClientRect();
+        //         const position = {
+        //             x: draggableRect.left - rect.left,
+        //             y: draggableRect.top - rect.top
+        //         };
+
+        //         drawBarcode(position.x, position.y);
+
+        //         console.log(`Position of draggable div: x = ${position.x}, y = ${position.y}`);
+        //         console.log(`Canvas dimensions: width = ${canvas.width}, height = ${canvas.height}`);
+
+        //         const base64Image = canvas.toDataURL('image/png');
+        //         // console.log(`Base64 Images: ${base64Image}`);
+
+        //         const { jsPDF } = window.jspdf;
+        //         const pdf = new jsPDF({
+        //             orientation: "portrait",
+        //             unit: "mm",
+        //             format: [230.00, 330.00]
+        //         });
+        //         const imgWidthPDF = 210; // Lebar A4 dalam mm
+        //         const imgHeightPDF = canvas.height * imgWidthPDF / canvas.width;
+        //         pdf.addImage(base64Image, 'PNG', 0, 0, imgWidthPDF, imgHeightPDF);
+
+        //         // Simpan dokumen PDF dalam format Base64
+        //         const pdfBase64 = pdf.output('dataurlstring');
+        //         // console.log(`Base64 PDF: ${pdfBase64}`);
+
+        //         // Kirim PDF ke server melalui AJAX
+        //         $.ajax({
+        //             url: '{{route("savePDF")}}',
+        //             method: 'POST',
+        //             data: {
+        //                 "_token" : '{{csrf_token()}}',
+        //                 pdf: pdfBase64,
+        //                 namaSurat: 'NamaSurat.pdf',
+        //                 // namaSurat: resfile.name,
+        //                 penandaTangan: $('#pilihanGambar').val()
+        //             },
+        //         }).done(function(data){
+        //             if(data.status == 'success'){
+        //                 alert('PDF berhasil disimpan!');
+        //             } else {
+        //                 alert('Terjadi kesalahan saat menyimpan PDF.');
+        //             }
+        //         }).fail(function() {
+        //             alert('Terjadi kesalahan, silahkan ulangi kembali atau hubungi Tim IT!');
+        //         });
+
+
+        //         const penandaTanganSurat = $('#pilihanGambar').val()
+        //         if(penandaTanganSurat === '5'){
+        //             gambar.style.display = 'none'; // qrcode
+        //         } else{
+        //             gambar2.style.display = 'none'; // optik
+        //         }
+        //     });
+        // })
 
 
 
