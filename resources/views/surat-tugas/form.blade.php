@@ -86,6 +86,19 @@
             <label for="perihal_surat" class="form-label">Tempat Bertugas *</label>
             <input type="text" placeholder="Tempat bertugas" style="" class="form-control"  name="#" id="#" >
           </div>
+          <div class="col-md-12">
+            {{-- BARU 13/06/24 --}}
+            <input class="form-check-input" type="checkbox" value="" {{$data ? 'checked' : ''}} id="keterangan">
+            <label class="form-check-label" for="keterangan">
+                Tambah Keterangan
+            </label>
+          </div>
+          <div class="col-md-12" style="display: none" id="tambah_keterangan">
+            <label for="keterangan" class="form-label">Keterangan *</label>
+            <input type="text" placeholder="Keterangan" style="" class="form-control" @if (!empty($data))
+                value="{{$data->keterangan}}"
+            @endif name="keterangan">
+          </div>
           <div class="col-md-12 panelSuratTugas">
             <div class="row">
               <div class="panelTujuanBertugas">
@@ -123,7 +136,7 @@
               </div>
               <div class="row mt-2">
                 <div class="col-md-12">
-                  <button type="button" class="btn btn-primary btn-sm form-control" data-bs-toggle="modal" 
+                  <button type="button" class="btn btn-primary btn-sm form-control" data-bs-toggle="modal"
                   data-bs-target="#exampleLargeModal">
                   <i class="bx plus-circle me-1"></i>
                   Tambah Detail Perjalanan Bertugas</button>
@@ -212,6 +225,18 @@
   </div>
 </div>
 <script type="text/javascript">
+$(document).ready(function () {
+    if($('#keterangan').is(':checked')) {
+        $('#tambah_keterangan').show();
+    }
+    $('#keterangan').on('change', function () {
+        if ($(this).is(':checked')) {
+            $('#tambah_keterangan').show();
+        } else {
+            $('#tambah_keterangan').hide();
+        }
+    });
+})
 var onLoad = (function() {
   $('.panel-form').animateCss('bounceInUp');
   // $('.panelSuratManual').hide();
@@ -268,7 +293,7 @@ $('#yang_bertanda_tangan').on('change', function() {
   }else{
     $('#content-surat-pendukung').hide();
   }
-  
+
 });
 $('.btn-submit').click(function(e){
  e.preventDefault();
@@ -507,8 +532,8 @@ $(document).on('click', '.btn_remove_tujuan', function(){
      array_tujuan = array_tujuan.filter(x=>x[0]!=button_id);
 
  });
- 
- 
+
+
 
  $('.btn-preview').click(function(){
    kosong();
@@ -571,7 +596,7 @@ function buatSPPD(id, surat_tugas_id) {
       });
         $('#modal-list-surat-tugas').modal('hide');
         $('.modal-list-surat-tugas').html('');
-        
+
     } else if(data.status == 'error') {
         $('.btn-submit').html('Simpan <i class="fa fa-save fs-14 m-l-5"></i>').removeAttr('disabled');
         Lobibox.notify('error', {
@@ -607,5 +632,5 @@ function buatSPPD(id, surat_tugas_id) {
     }
   });
 }
- 
+
 </script>
