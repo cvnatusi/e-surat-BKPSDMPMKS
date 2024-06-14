@@ -160,12 +160,13 @@
         <tr>
           <td style="text-align:center;">8.</td>
           <td style="padding: 5px;">&nbsp;Pengikut : N a m a</td>
-          <td style="padding: 5px;">Tanggal Lahir Keterangan</td>
+          {{-- <td style="padding: 5px;">Tanggal Lahir : 01/04/1997 <span style="display: inline-block; text-align: center; width: 70%;margin-bottom: -0.2em;">Keterangan : {{$data ? $data->keterangan : '-'}}</span></td> --}}
+          <td style="padding: 5px;">Tanggal Lahir <span style="display: inline-block; text-align: center; width: 70%;margin-bottom: -0.2em;">Keterangan </span></td>
         </tr>
         <tr>
           <td></td>
           <td style="padding: 5px;">1. -</td>
-          <td></td>
+          <td style="padding: 5px;"> 01/04/1997 <span style="display: inline-block; text-align: center; width: 70%;margin-bottom: -0.2em;">{{$data ? $data->keterangan : '-'}}</span></td>
         </tr>
         <tr>
           <td style="text-align:center">9.</td>
@@ -227,13 +228,41 @@
                   <td><b><u>{{$asn->nama_asn}}</u></b></td>
               </tr>
               <tr>
-                  <td>{{$asn->pangkat_golongan}}</td>
+                  {{-- <td>{{$asn->pangkat_golongan}}</td> --}}
+                  <td>PEMBINA UTAMA MUDA</td>
               </tr>
               <tr>
                   <td>NIP.{{$asn->nip}}</td>
               </tr>
           </tbody>
         </table>
+        <div class="" style="margin-top:1em">
+        {{-- <footer> --}}
+            <hr>
+            <table width="100%" cellpadding="0" cellspacing="0" style="vertical-align:middle; width:100% !important">
+            {{-- <thead> --}}
+                <tr>
+                <td>
+                    <p style="font-size: 10px;margin:0 !important">- UU ITE No 11 Tahun 2008 Pasal 5 Ayat 1</p>
+                </td>
+                <td rowspan="3">
+                    {{-- <img src="{{asset('assets/images/logo-bsre.png')}}" width="95" alt="logo-bsre"> --}}
+                    <img src="{{$logo_bsre}}" width="95" alt="logo-bsre">
+                </td>
+                </tr>
+                <tr>
+                <td>
+                    <p style="font-size: 10px;margin:0 !important">“Informasi Elektornik dan/atau Dokumen Elektronik dan/atau hasil cetaknya merupakan alat bukti hukum yang sah.”</p>
+                </td>
+                </tr>
+                <tr>
+                <td>
+                    <p style="font-size: 10px;margin:0 !important">- Dokumen ini telah ditandatangani secara elektronik menggunakan sertifikat elektronik yang diterbitkan BSrE</p>
+                </td>
+                </tr>
+            {{-- </thead> --}}
+            </table>
+        </div>
     </div>
     <div class="page-break"></div>
     <div class="">
@@ -249,7 +278,8 @@
             <br><br>
             <br><br>
             <p style="text-align:center;margin:0 !important;margin-left:1em !important"><b><u>{{$asn->nama_asn}}</u></b></p>
-            <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan . ', ' . $asn->jabatan_asn->nama_jabatan}} <br />NIP. {{$asn->nip}}</p>
+            {{-- <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p> --}}
+            <p style="text-align:center;margin:0 !important;margin-left:1em !important">PEMBINA UTAMA MUDA <br />NIP. {{$asn->nip}}</p>
           </td>
         </tr>
         <tr>
@@ -308,7 +338,8 @@
             <br><br>
             <br><br>
             <p style="text-align:center;margin:0 !important;margin-left:1em !important"><b><u>{{$asn->nama_asn}}</u></b></p>
-            <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p>
+            {{-- <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p> --}}
+            <p style="text-align:center;margin:0 !important;margin-left:1em !important">PEMBINA UTAMA MUDA <br />NIP. {{$asn->nip}}</p>
           </td>
           <td>
             <p style="text-align:justify; text-justify: inter-word; margin-top: 0em; padding: 0.5em !important">Telah diperiksa dengan keterangan bahwa perjalanan tersebut atas perintahnya dan semata-mata untuk kepentingan jabatan dalam waktu yang sesingkat-singkatnya.</p>
@@ -317,7 +348,8 @@
             <br><br>
             <br><br>
             <p style="text-align:center;margin:0 !important;margin-left:1em !important"><b><u>{{$asn->nama_asn}}</u></b></p>
-            <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p>
+            {{-- <p style="text-align:center;margin:0 !important;margin-left:1em !important">{{$asn->pangkat_golongan}} <br />NIP. {{$asn->nip}}</p> --}}
+            <p style="text-align:center;margin:0 !important;margin-left:1em !important">PEMBINA UTAMA MUDA <br />NIP. {{$asn->nip}}</p>
           </td>
         </tr>
         <tr>
