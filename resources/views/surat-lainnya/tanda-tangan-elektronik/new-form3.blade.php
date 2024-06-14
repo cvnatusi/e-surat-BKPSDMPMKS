@@ -24,6 +24,8 @@
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <script src="https://cdn.rawgit.com/konvajs/konva/2.0.2/konva.min.js"></script>
+
 	{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script> --}}
 	<title>TTE</title>
@@ -40,9 +42,6 @@
         .draggable {
          position: absolute;
          user-select: none;
-         /* overflow: hidden; */
-         /* will-change: width, height, transform; */
-         /* touch-action: none; */
         }
 
         .draggable img {
@@ -97,8 +96,8 @@
 		}
 
         .draggable {
-            width: 120px;
-            height: 120px;
+            /* width: 120px;
+            height: 120px; */
             /* background: rgba(0, 255, 0, 0.5);  */
             position: absolute;
             cursor: move;
@@ -167,14 +166,14 @@
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
                     <canvas id="pdf-canvas"></canvas>
+                    <img src="{{asset('gambar/QR.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" >
                     <div class="draggable" id="draggable-div" style="display: none">
-                        <img src="{{asset('gambar/QR.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true">
                     </div>
 					<div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
 						<img src="{{asset('assets/images/qr-code.png')}}" id="draggable-div" style="height: 100px; width: 100px;">
 					</div>
+                    <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="gambarFooter" style="width: 45rem;">
 					<div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
-						<img src="{{ asset('assets/images/footer-bsre.png') }}" id="gambarFooter" style="width: 45rem;">
 					</div>
 				</div>
 			</div>
@@ -208,10 +207,16 @@
     const gambar2 = document.getElementById('mydiv2');
     const suratPendukung = document.getElementById('surat_pendukung');
 
+    const MAX_WIDTH = 200;
+    const MIN_WIDTH = 50;
+
     let pdfDoc = null;
     let pageNum = 1;
     let scale = 1.5;
     let viewport = null;
+
+    var barCWidth = 120;
+    var barCHeight = 120;
 
     function renderPage(num) {
         pdfDoc.getPage(num).then(page => {
@@ -245,7 +250,9 @@
         fileReader.readAsArrayBuffer(file);
     });
 
-        interact('.draggable')
+    function applyInteractions(selector) {
+        // interact('.draggable')
+        interact(selector)
         .draggable({
             onmove: event => {
                 const target = event.target;
@@ -259,9 +266,63 @@
                 }
         })
         .resizable({
-            // edges: { left: true, right: true, bottom: true, top: true},
-            // edges: { left: false, right: false, bottom: false, top: false},
-            edges: { top: false, left: false, bottom: false, right: false, topLeft: true, topRight: true, bottomLeft: true, bottomRight: true },
+            edges: { bottom: true, right: true },
+            preserveAspectRatio: true,
+            listeners: {
+                move(event) {
+                    const target = event.target;
+                    let x = (parseFloat(target.getAttribute('data-x')) || 0);
+                    let y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+                    // Calculate the new width and ensure it does not exceed MAX_WIDTH
+                    let newWidth = event.rect.width;
+                    if (newWidth > MAX_WIDTH) {
+                        newWidth = MAX_WIDTH;
+                    } else if (newWidth < MIN_WIDTH) {
+                        newWidth = MIN_WIDTH;
+                    }
+
+                    // Calculate the new height to maintain the aspect ratio
+                    let newHeight = newWidth;
+
+                    // Update the element's style
+                    target.style.width = newWidth + 'px';
+                    target.style.height = newHeight + 'px';
+
+                    // Translate when resizing from the right-bottom edge
+                    x += event.deltaRect.left;
+                    y += event.deltaRect.top;
+
+                    target.style.transform = `translate(${x}px, ${y}px)`;
+
+                    target.setAttribute('data-x', x);
+                    target.setAttribute('data-y', y);
+
+                    barCWidth = newWidth;
+                    barCHeight = newHeight;
+
+                    console.log(`Height: ${newHeight} | Width: ${newWidth}`);
+                }
+            }
+        })
+    }
+        applyInteractions('.draggable');
+
+        interact('.footer')
+        .draggable({
+            onmove: event => {
+                const target = event.target;
+                const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+                const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+                target.style.transform = `translate(${x}px, ${y}px)`;
+
+                target.setAttribute('data-x', x);
+                target.setAttribute('data-y', y);
+                }
+        })
+        .resizable({
+            edges: { left: true, right: true, bottom: true, top: true },
             preserveAspectRatio: true
         })
         .on('resizemove', event => {
@@ -269,31 +330,30 @@
             let x = (parseFloat(target.getAttribute('data-x')) || 0);
             let y = (parseFloat(target.getAttribute('data-y')) || 0);
 
-            // update the element's style
+            // Update the element's style
             target.style.width = event.rect.width + 'px';
             target.style.height = event.rect.height + 'px';
 
-            // translate when resizing from top or left edges
+            // Translate when resizing from any edge
             x += event.deltaRect.left;
             y += event.deltaRect.top;
-
-            var height = event.rect.height
-            var width = event.rect.width
 
             target.style.transform = `translate(${x}px, ${y}px)`;
 
             target.setAttribute('data-x-image', x);
             target.setAttribute('data-y-image', y);
 
-            console.log(`height: ${height} | width: ${width} `);
+            console.log(`height: ${event.rect.height} | width: ${event.rect.width} `);
         });
 
+
         function drawBarcode(x, y) {
             // Buat elemen gambar untuk QR.png
             const img = new Image();
 
-            const imgWidth =  120;
-            const imgHeight = 120;
+            const imgWidth =  barCWidth || 120;
+            const imgHeight = barCHeight || 120;
+
             img.width = imgWidth;
             img.height = imgHeight;
 
@@ -319,36 +379,36 @@
             img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
         }
 
-        function drawBarcode(x, y) {
-            // Buat elemen gambar untuk QR.png
-            const img = new Image();
+        // function drawBarcode(x, y) {
+        //     // Buat elemen gambar untuk QR.png
+        //     const img = new Image();
 
-            const imgWidth =  120;
-            const imgHeight = 120;
-            img.width = imgWidth;
-            img.height = imgHeight;
+        //     const imgWidth =  120;
+        //     const imgHeight = 120;
+        //     img.width = imgWidth;
+        //     img.height = imgHeight;
 
-            // Ketika gambar QR.png dimuat, gambar ke canvas
-            img.onload = function() {
-                // Buat canvas sementara untuk menggambar QR.png
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                tempCanvas.width = imgWidth;
-                tempCanvas.height = imgHeight;
+        //     // Ketika gambar QR.png dimuat, gambar ke canvas
+        //     img.onload = function() {
+        //         // Buat canvas sementara untuk menggambar QR.png
+        //         const tempCanvas = document.createElement('canvas');
+        //         const tempCtx = tempCanvas.getContext('2d');
+        //         tempCanvas.width = imgWidth;
+        //         tempCanvas.height = imgHeight;
 
-                // Gambar QR.png ke canvas sementara
-                tempCtx.drawImage(img, 0, 0, imgWidth, imgHeight);
+        //         // Gambar QR.png ke canvas sementara
+        //         tempCtx.drawImage(img, 0, 0, imgWidth, imgHeight);
 
-                // Gambar canvas sementara ke canvas utama
-                ctx.drawImage(tempCanvas, x, y, imgWidth, imgHeight);
+        //         // Gambar canvas sementara ke canvas utama
+        //         ctx.drawImage(tempCanvas, x, y, imgWidth, imgHeight);
 
-                // Convert canvas ke base64
-                const base64Image = canvas.toDataURL('image/png');
-                console.log(`Base64 Image: ${base64Image}`);
-            };
-            img.setAttribute('crossorigin', 'anonymous');
-            img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
-        }
+        //         // Convert canvas ke base64
+        //         const base64Image = canvas.toDataURL('image/png');
+        //         console.log(`Base64 Image: ${base64Image}`);
+        //     };
+        //     img.setAttribute('crossorigin', 'anonymous');
+        //     img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
+        // }
 
         $(document).ready(function () {
             submitButton.addEventListener('click', () => {
