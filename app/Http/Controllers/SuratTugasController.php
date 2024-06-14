@@ -200,6 +200,9 @@ class SuratTugasController extends Controller
 			$newdata->perihal_surat = $request->perihal_surat;
 			$newdata->isi_ringkas_surat = $request->isi_ringkas_surat;
 			$newdata->alat_angkut = $request->alat_angkut;
+            if(!empty($request->keterangan)) {
+                $newdata->keterangan = $request->keterangan;
+            }
 			if (!empty($request->surat_pendukung)) {
 				if (!empty($newdata->surat_pendukung)) {
 					Storage::delete($newdata->surat_pendukung);

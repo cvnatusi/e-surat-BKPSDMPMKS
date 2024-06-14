@@ -256,7 +256,7 @@
 
                 target.setAttribute('data-x', x);
                 target.setAttribute('data-y', y);
-            }
+                }
         })
         .resizable({
             // edges: { left: true, right: true, bottom: true, top: true},
@@ -287,6 +287,37 @@
 
             console.log(`height: ${height} | width: ${width} `);
         });
+
+        function drawBarcode(x, y) {
+            // Buat elemen gambar untuk QR.png
+            const img = new Image();
+
+            const imgWidth =  120;
+            const imgHeight = 120;
+            img.width = imgWidth;
+            img.height = imgHeight;
+
+            // Ketika gambar QR.png dimuat, gambar ke canvas
+            img.onload = function() {
+                // Buat canvas sementara untuk menggambar QR.png
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                tempCanvas.width = imgWidth;
+                tempCanvas.height = imgHeight;
+
+                // Gambar QR.png ke canvas sementara
+                tempCtx.drawImage(img, 0, 0, imgWidth, imgHeight);
+
+                // Gambar canvas sementara ke canvas utama
+                ctx.drawImage(tempCanvas, x, y, imgWidth, imgHeight);
+
+                // Convert canvas ke base64
+                const base64Image = canvas.toDataURL('image/png');
+                console.log(`Base64 Image: ${base64Image}`);
+            };
+            img.setAttribute('crossorigin', 'anonymous');
+            img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
+        }
 
         function drawBarcode(x, y) {
             // Buat elemen gambar untuk QR.png
