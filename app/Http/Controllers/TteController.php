@@ -172,7 +172,7 @@ class TteController extends Controller
 
 	public function savePDF(Request $request){
 		// return $request->all();
-		// return;
+		return;
 		try {
 				DB::beginTransaction();
 				// $data = MasterASN::get()->pluck('id_mst_asn');
@@ -228,7 +228,7 @@ class TteController extends Controller
 			$data['data'] = (!empty($request->id)) ? SuratKeluar::find($request->id) : "";
 			$data['pegawai'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$request->id)->first();
 			$data['asn'] = MasterASN::whereIn('jabatan', [0,1])->get(); # 0=Sekda, 1=Kepala badan
-
+            // return $data['asn'];
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
