@@ -166,10 +166,12 @@
 				</div>
 				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
                     <canvas id="pdf-canvas"></canvas>
-                    <img src="{{asset('gambar/QR.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                    <img src="{{asset('gambar/qr.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                    <img src="{{asset('gambar/qrs.png')}}" id="qr-2" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
                     {{-- <div class="draggable" id="draggable-div" style="display: none">
                     </div> --}}
-                    <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;">
+                    {{-- <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
+                    {{-- <img src="{{ asset('gambar/qrs.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
 					{{-- <div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
 					</div> --}}
                     <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="footer" style="width: 45rem; display: none;">
@@ -250,7 +252,7 @@
                 pdfDoc = pdf;
                 pageNum = pdf.numPages;
                 renderPage(pageNum);
-            console.log('done');
+            // console.log('done');
             });
         };
 
@@ -315,7 +317,11 @@
         // }
         // applyInteractions('.draggable');
 
+        const urlQr5 = "{{ asset('gambar/qr.png') }}";
+        const urlQr52 = "{{ asset('gambar/qrs.png') }}";
+
         function drawBarcode(x, y) {
+
             // Buat elemen gambar untuk QR.png
             const img = new Image();
 
@@ -325,8 +331,19 @@
             img.width = imgWidth;
             img.height = imgHeight;
 
+            const penandaTanganSurat = $('#pilihanGambar').val();
+
+            if(penandaTanganSurat === '5'){
+                img.src = urlQr5
+                console.log('Drs. Saudi');
+            }else if(penandaTanganSurat === '52') {
+                img.src = urlQr52
+                console.log('Ir. Totok');
+            }
+
             // Ketika gambar QR.png dimuat, gambar ke canvas
             img.onload = function() {
+                console.log("Gambar dimuat:", img.src);
                 // Buat canvas sementara untuk menggambar QR.png
                 const tempCanvas = document.createElement('canvas');
                 const tempCtx = tempCanvas.getContext('2d');
@@ -341,17 +358,15 @@
 
                 // Convert canvas ke base64
                 const base64Image = canvas.toDataURL('image/png');
-                console.log(`Base64 Image: ${base64Image}`);
+                // console.log(`Base64 Image: ${base64Image}`);
+            };
+
+            img.onerror = function() {
+                console.error("Gambar tidak dapat dimuat:", img.src);
             };
 
             img.setAttribute('crossorigin', 'anonymous');
-            // img.src = 'https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg';
-            const penandaTanganSurat = $('#pilihanGambar').val();
-            if(penandaTanganSurat === '52') {
-                img.src = "{{ asset('assets/images/qr.png') }}";
-              } else if(penandaTanganSurat === '5') {
-                img.src = "{{ asset('gambar/QR.png') }}"
-            }
+
         }
 
 
@@ -396,7 +411,7 @@
             barFWidth = newWidth;
             barFHeight = newHeight;
 
-            console.log(`height: ${event.rect.height} | width: ${event.rect.width} `);
+            // console.log(`height: ${event.rect.height} | width: ${event.rect.width} `);
         });
 
         function drawFooter(x, y) {
@@ -425,7 +440,7 @@
 
                 // Convert canvas ke base64
                 const base64Image = canvas.toDataURL('image/png');
-                console.log(`Base64 Image: ${base64Image}`);
+                // console.log(`Base64 Image: ${base64Image}`);
             };
 
             img.setAttribute('crossorigin', 'anonymous');
@@ -443,6 +458,7 @@
 
               // Gambar barcode pada canvas
               drawBarcode(position.x, position.y);
+            //   return
 
               const fotoerRect = footer.getBoundingClientRect();
               const cordinate = {
@@ -568,19 +584,21 @@
                 alert('Silahkan pilih penanda tangan surat tugas!');
                 $('#barCode').prop('checked',false)
             }
+            // gambar.style.display = 'block'
+            // gambar2.style.display = 'block';
             if (this.checked) {
                 if(opsiGambar == '5') {
                     gambar.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
-                    gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                    gambar2.style.display = 'none'; // Sembunyikan gambar ketika checkbox di checklist
                 }else{
-                    gambar.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                    gambar.style.display = 'none'; // Sembunyikan gambar ketika checkbox di checklist
                     gambar2.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
                 }
             } else {
                 if(opsiGambar == '5'){
-                    gambar.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                    gambar.style.display = 'none'; // Sembunyikan gambar ketika checkbox di checklist
                 }else{
-                    gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                    gambar2.style.display = 'none'; // Sembunyikan gambar ketika checkbox di checklist
                 }
             }
         });
@@ -591,14 +609,23 @@
 
           var checkbox = $('#barCode:checkbox:checked').length;
           if (checkbox > 0 ){
-            if (currentValue === '5') {
-                document.getElementById('draggable-div').style.display = 'block';
-                document.getElementById('qr-2').style.display = 'none';
-            } else {
-                document.getElementById('draggable-div').style.display = 'none';
-                document.getElementById('qr-2').style.display = 'block';
-            }
+                // if(currentValue == '5') {
+                //     gambar.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
+                //     gambar2.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                // }else{
+                //     gambar.style.display = 'none'; // Tampilkan gambar ketika checkbox di checklist
+                //     gambar2.style.display = 'block'; // Tampilkan gambar ketika checkbox di checklist
+                // }
+            // if (currentValue === '5') {
+            //     document.getElementById('draggable-div').style.display = 'block';
+            //     document.getElementById('qr-2').style.display = 'none';
+            // } else {
+            //     document.getElementById('draggable-div').style.display = 'none';
+            //     document.getElementById('qr-2').style.display = 'block';
+            // }
           }
+        // console.log("\nQR : "+document.getElementById('draggable-div').style.display)
+        // console.log('QRS : '+document.getElementById('qr-2').style.display)
 
           if (currentValue === '5') {
               document.getElementById('surat_pendukung').style.display = 'none';

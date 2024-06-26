@@ -172,7 +172,7 @@ class TteController extends Controller
 
 	public function savePDF(Request $request){
 		// return $request->all();
-		return;
+		// return;
 		try {
 				DB::beginTransaction();
 				// $data = MasterASN::get()->pluck('id_mst_asn');
