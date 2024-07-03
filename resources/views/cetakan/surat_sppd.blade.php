@@ -161,7 +161,7 @@
           <td style="text-align:center;">8.</td>
           <td style="padding: 5px;">&nbsp;Pengikut : N a m a</td>
           {{-- <td style="padding: 5px;">Tanggal Lahir : 01/04/1997 <span style="display: inline-block; text-align: center; width: 70%;margin-bottom: -0.2em;">Keterangan : {{$data ? $data->keterangan : '-'}}</span></td> --}}
-          <td style="padding: 5px;">Tanggal Lahir <span style="display: inline-block; text-align: center; width: 70%;margin-bottom: -0.2em;">Keterangan </span></td>
+          <td style="padding: 5px;">Tanggal Lahir <span style="display: inline-block; text-align: center; width: 55%;margin-bottom: -0.2em;">Keterangan </span></td>
         </tr>
         <tr>
           <td></td>

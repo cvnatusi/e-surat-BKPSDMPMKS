@@ -12,10 +12,10 @@
       // Configure properties specific to VS Code.
       "vscode": {
          "extensions": [
-            // "streetsidesoftware.code-spell-checker",
             "onecentlin.laravel-extension-pack",
             "ms-azuretools.vscode-docker",
-            "adpyke.codesnap"
+            "adpyke.codesnap",
+            "TGOSystems.togglebracketguides"
          ]
       }
    },
