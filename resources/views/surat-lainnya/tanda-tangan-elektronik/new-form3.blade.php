@@ -115,7 +115,7 @@
 </head>
 <body>
 	<div class="row content">
-		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 97rem;">
+		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 97rem; width: 30rem;">
 			<form class="form-save d-flex flex-column flex-grow-1">
 				<h6><b><i>e</i> -Tanda Tangan</b></h6>
 				<hr>
