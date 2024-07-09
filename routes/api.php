@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PekerjaanController;
 use App\Http\Controllers\API\AbsensiController;
+use App\Http\Controllers\API\SuratMasukController;
+use App\Http\Controllers\API\SuratDisposisiController;
+use App\Http\Controllers\API\AuthSuratController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +21,9 @@ use App\Http\Controllers\API\AbsensiController;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    return $request->users();
 });
+
 Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::post('get-pegawai', [AuthController::class, 'getPegawai'])->name('getPegawai');
 Route::group(['middleware' => ['authapi:sanctum']], function () {
@@ -34,3 +38,11 @@ Route::group(['middleware' => ['authapi:sanctum']], function () {
     Route::post('list-absensi', [AbsensiController::class, 'list_absen'])->name('list-absen');
   });
 });
+Route::group(array('prefix' => 'surat-masuk'), function () {
+  Route::get('/', [SuratMasukController::class, 'indexSuratMasuk'])->name('index-surat-masuk');
+  Route::post('create-surat-masuk', [SuratMasukController::class, 'createSuratMasuk'])->name('create-surat-masuk');
+});
+Route::get('user', [SuratMasukController::class, 'indexUser'])->name('index-user');
+Route::get('surat-disposisi', [SuratDisposisiController::class, 'indexSuratDisposisi'])->name('index-surat-disposisi');
+
+Route::post('/surat-login', [AuthSuratController::class, 'login'])->name('index-login');

@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 class Users extends Authenticatable
 {
 
-    use Notifiable,Loggable,HasRoles;
+    use HasApiTokens, Notifiable, Loggable, HasRoles;
     protected $fillable = [
         'email',
         'password',
