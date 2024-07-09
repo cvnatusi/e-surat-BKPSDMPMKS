@@ -51,12 +51,12 @@
 		img {
 			cursor: move;
 		}
-		.card {
-            display: flex;
-            flex-direction: column;
+		.card-canvas {
+            /* display: flex;
+            flex-direction: column; */
 			height: 95rem;
 			border-radius: 10px;
-			margin: 3px px;
+			/* margin: 3px px; */
 		}
 
         .form-save {
@@ -115,71 +115,73 @@
 </head>
 <body>
 	<div class="row content">
-		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 97rem;">
-			<form class="form-save d-flex flex-column flex-grow-1">
-				<h6><b><i>e</i> -Tanda Tangan</b></h6>
-				<hr>
-				<label for="inputBox yang_bertanda_tangan" id="label_tujuan_surat" class="form-label">Penanda Tangan Surat Tugas <span>*</span></label>
-                  <select class="form-select mb-3 select2" id="pilihanGambar" onchange="handleSelectChange(this)" aria-label="Default select example">
-                      <option value="" selected disabled>-- Pilih penanda tangan --</option>
-                      @foreach ($asn as $ttd)
-                          <option value="{{$ttd->id_mst_asn}}" >{{$ttd->nama_asn}} {{ ($ttd->id_mst_asn == 5) ? '(KABAN)' : '(SEKDA)' }}</option>
-                      @endforeach
-                  </select>
-					<div class="col-md-12 mt-3">
-						<label for="file_scan" class="form-label">Upload Surat <span>*</span></label>
-						<input class="form-control" type="file" id="upload-pdf" name="file_scan" accept="application/pdf">
-					</div>
-					<div id="surat_pendukung" style="display: none; margin-bottom: 10px; margin-top: 10px;">
-						<div class="col-md-12">
-							<label for="file_scan" class="form-label">Upload Surat Pendukung <span>*</span></label>
-							<input class="form-control" type="file" id="myPdf2" name="file_scan">
-						</div>
-					</div>
-					<div class="container">
-						<div class="show">
-							<input type="checkbox" id="barCode" >
-							<p>Tampilkan Barcode Tanda Tangan Elektronik</p>
-						</div>
-						<div class="show">
-							<input type="checkbox" name="" id="footerTTE">
-							<p>Tampilkan Footer Tanda Tangan Elektronik</p>
-						</div>
-					</div>
-					<div class="row mt-auto">
-						<div class="col-md-6">
-							<button type="button" id="submit" class="btn btn-primary col-md-11">SIMPAN</button>
-						</div>
-						<div class="col-md-6">
-							<button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
-						</div>
-					</div>
-            </form>
+        <div class="col-md-12">
+            <div class="card p-4 me-3 d-flex flex-column" {{-- style="height: 97rem;" --}}>
+                <form class="form-save d-flex flex-column flex-grow-1">
+                    <h6><b><i>e</i> -Tanda Tangan</b></h6>
+                    <hr>
+                    <label for="inputBox yang_bertanda_tangan" id="label_tujuan_surat" class="form-label">Penanda Tangan Surat Tugas <span>*</span></label>
+                      <select class="form-select mb-3 select2" id="pilihanGambar" onchange="handleSelectChange(this)" aria-label="Default select example">
+                          <option value="" selected disabled>-- Pilih penanda tangan --</option>
+                          @foreach ($asn as $ttd)
+                              <option value="{{$ttd->id_mst_asn}}" >{{$ttd->nama_asn}} {{ ($ttd->id_mst_asn == 5) ? '(KABAN)' : '(SEKDA)' }}</option>
+                          @endforeach
+                      </select>
+                        <div class="col-md-12 mt-3">
+                            <label for="file_scan" class="form-label">Upload Surat <span>*</span></label>
+                            <input class="form-control" type="file" id="upload-pdf" name="file_scan" accept="application/pdf">
+                        </div>
+                        <div id="surat_pendukung" style="display: none; margin-bottom: 10px; margin-top: 10px;">
+                            <div class="col-md-12">
+                                <label for="file_scan" class="form-label">Upload Surat Pendukung <span>*</span></label>
+                                <input class="form-control" type="file" id="myPdf2" name="file_scan">
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="show">
+                                <input type="checkbox" id="barCode" >
+                                <p>Tampilkan Barcode Tanda Tangan Elektronik</p>
+                            </div>
+                            <div class="show">
+                                <input type="checkbox" name="" id="footerTTE">
+                                <p>Tampilkan Footer Tanda Tangan Elektronik</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" id="submit" class="btn btn-primary col-md-11">SIMPAN</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button id="cancel" class="btn btn-secondary col-md-11">KEMBALI</button>
+                            </div>
+                        </div>
+                </form>
+            </div>
         </div>
-			{{-- Preview Surat --}}
-			<div class="col ms-2" style="height: 90rem;">
-				<div>
-					<button type="button" class="btn btn-secondary" id="prev">Previous</button>
-					<button type="button" class="btn btn-secondary" id="next">Next</button>
-					&nbsp; &nbsp;
-					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-				</div>
-				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
-                    <canvas id="pdf-canvas"></canvas>
-                    <img src="{{asset('gambar/qr.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
-                    <img src="{{asset('gambar/qrs.png')}}" id="qr-2" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
-                    {{-- <div class="draggable" id="draggable-div" style="display: none">
-                    </div> --}}
-                    {{-- <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
-                    {{-- <img src="{{ asset('gambar/qrs.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
-					{{-- <div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
-					</div> --}}
-                    <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="footer" style="width: 45rem; display: none;">
-					{{-- <div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
-					</div> --}}
-				</div>
-			</div>
-			{{-- Akhir Preview Surat --}}
+        {{-- Preview Surat --}}
+        <div class="col-md-12" style="height: 90rem;">
+            <div>
+                <button type="button" class="btn btn-secondary" id="prev">Previous</button>
+                <button type="button" class="btn btn-secondary" id="next">Next</button>
+                &nbsp; &nbsp;
+                <span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+            </div>
+            <div class="card card-canvas preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
+                <canvas id="pdf-canvas"></canvas>
+                <img src="{{asset('gambar/qr.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                <img src="{{asset('gambar/qrs.png')}}" id="qr-2" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                {{-- <div class="draggable" id="draggable-div" style="display: none">
+                </div> --}}
+                {{-- <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
+                {{-- <img src="{{ asset('gambar/qrs.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
+                {{-- <div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
+                </div> --}}
+                <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="footer" style="width: 45rem; display: none;">
+                {{-- <div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
+                </div> --}}
+            </div>
+        </div>
+        {{-- Akhir Preview Surat --}}
 	</div>
 
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -449,6 +451,9 @@
 
         $(document).ready(function () {
           submitButton.addEventListener('click', () => {
+                let textButton = submitButton.innerHTML;
+                submitButton.innerHTML = "Sending...";
+                submitButton.setAttribute('disabled',true);
               const rect = canvas.getBoundingClientRect();
               const draggableRect = draggableDiv.getBoundingClientRect();
               const position = {
@@ -498,6 +503,8 @@
                           penandaTangan: $('#pilihanGambar').val()
                       },
                   }).done(function(data){
+                    submitButton.innerHTML = textButton;
+                    submitButton.setAttribute('disabled',false);
                       if(data.status == 'success'){
                           Lobibox.notify('success', {
                               pauseDelayOnHover: true,
@@ -550,6 +557,8 @@
                           });
                       }
                   }).fail(function() {
+                        submitButton.innerHTML = textButton;
+                        submitButton.setAttribute('disabled',false);
                       $('#convertToPDF');
                       Lobibox.notify('warning', {
                           title: 'Maaf!',
