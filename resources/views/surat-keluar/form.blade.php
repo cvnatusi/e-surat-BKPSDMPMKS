@@ -260,6 +260,16 @@
             placeholder: $(this).data('placeholder'),
             allowClear: Boolean($(this).data('allow-clear')),
             tags: true,
+            createTag: function(params) {
+                return {
+                    id: params.term,
+                    text: params.term,
+                    newOption: true
+                }
+            },
+            insertTag: function(data, tag) {
+                data.push(tag);
+            }
         });
         $('.jenis_surat').select2({
             theme: 'bootstrap4',
@@ -520,10 +530,8 @@
     $(document).ready(function() {
       $('#tanggal_surat').on('change', function() {
           var selectedDate = $(this).val();
-          console.log(selectedDate);
           var selectedDate = new Date($(this).val());
           var today = new Date();
-          // Set the time to 00:00:00 to ignore the time part
           today.setHours(0, 0, 0, 0);
 
           if (selectedDate < today) {

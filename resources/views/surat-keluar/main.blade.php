@@ -10,7 +10,7 @@
             {{-- filter tanggal --}}
             <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="row">
-                    <div class="col-md-2">              
+                    <div class="col-md-2">
                         <label class="form-label">Tambah Surat Keluar</label>
                         <button type="button" class="btn btn-primary btn-add form-control"><i
                                 class="bx bx-plus me-1"></i>Surat Baru</button>
@@ -24,7 +24,7 @@
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
-                    
+
                 </div>
                 <hr>
             </div>
@@ -83,7 +83,7 @@
                 listCheked = [];
                 // console.log('false');
             }
-            
+
         }
 
         // filter tanggal awal akhir
@@ -197,8 +197,16 @@
                     {
                         data: 'namaPenerima',
                         name: 'namaPenerima',
-                        orderable: false,
-                        searchable: false
+                        render: function(data, type, row) {
+                            var maxLength = 50; // Panjang maksimum sebelum menambahkan <br>
+                            var formattedData = '';
+                            for (var i = 0; i < data.length; i += maxLength) {
+                                formattedData += data.substring(i, i + maxLength) + '<br>';
+                            }
+                            return '<p style="color:black">' + formattedData + '</p>';
+                        }
+                        // orderable: false,
+                        // searchable: false
                     },
                     {
                         data: 'perihal_surat',
