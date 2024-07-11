@@ -15,7 +15,7 @@
         @endif
       @else
          @if (!empty($data->file_surat))
-         <div style="position:absolute; top: 190px;right:280px; opacity:50%; font-size: 150px; color: grey; transform: rotate(-45deg);">SALINAN</div>
+         <div style="position:absolute; top: 320px;right:370px; opacity:50%; font-size: 150px; color: grey; transform: rotate(-45deg);">DRAFT</div>
             {{-- <iframe  width="100%" height="550px" src="{{asset('storage/surat-tte-salinan/'.$data->file_surat_salinan)}}#toolbar=0&navpanes=0&scrollbar=0"></iframe> --}}
             <iframe  width="100%" height="100%" src="{{asset('storage/surat-tte-salinan/'.$data->file_surat_salinan)}}#toolbar=0&navpanes=0&scrollbar=0"></iframe>
             @else
@@ -29,6 +29,18 @@
     </div>
   </div>
 </div>
+ {{-- @if ($data->verifikasi_kaban != 'Y')
+    <div style="position: fixed;
+      bottom: 500px;
+      left: 90px;
+      z-index: 10000;
+      font-size:150px;
+      color: grey;
+      transform:rotate(-45deg);
+      opacity: 0.2;">
+      DRAFT
+    </div>
+  @endif --}}
 <script type="text/javascript">
 
 var onLoad = (function() {

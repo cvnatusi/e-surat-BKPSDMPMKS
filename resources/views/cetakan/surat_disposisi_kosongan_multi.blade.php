@@ -13,11 +13,16 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 60px 25px;
+      margin: 60px 20px;
   }
-  /* .page-break {
-    page-break-after: always;
-  } */
+  .page-break {
+    page-break-before: always;
+  }
+  @media print {
+    body {
+      page-break-after: always;
+    }
+  }
   .column {
     float: left;
     width: 50%;
@@ -41,34 +46,34 @@
         $barcode = public_path('gambar/QR.png');
     @endphp
    @foreach ($listData as $data)
-   <table width="100%" cellpadding="0" cellspacing="0">
-    <thead>
-        <tr>
-            <td rowspan="5">
-                <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.56cm !important;">
-            </td>
-            <td align="center">
-                <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">
-                <p style="font-size:18px; margin:0 !important"><b>BADAN KEPEGAWAIAN DAN PENGEMBANGAN</b></p>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">
-                <p style="font-size:18px; margin:0 !important"><b>SUMBER DAYA MANUSIA</b></p>
-            </td>
-        </tr>
-        <tr>
-            <td align="center">Jalan Bonorogo Nomor 80 Pamekasan</td>
-        </tr>
-        <tr>
-            <td align="center">Telepon (0324) 322858 Faks (0324) 324319 E-mail Bkd.pamekasan@gmail.com</td>
-        </tr>
-    </thead>
-</table>
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <thead>
+          <tr>
+              <td rowspan="5">
+                  <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.50cm !important; height: 2.56cm !important;">
+              </td>
+              <td align="center">
+                  <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
+              </td>
+          </tr>
+          <tr>
+              <td align="center">
+                  <p style="font-size:18px; margin:0 !important;"><b>BADAN KEPEGAWAIAN DAN PENGEMBANGAN</b></p>
+              </td>
+          </tr>
+          <tr>
+              <td align="center">
+                  <p style="font-size:18px; margin:0 !important"><b>SUMBER DAYA MANUSIA</b></p>
+              </td>
+          </tr>
+          <tr>
+              <td align="center">Jalan Bonorogo Nomor 80 Pamekasan</td>
+          </tr>
+          <tr>
+              <td align="center">Telepon (0324) 322858 Faks (0324) 324319 E-mail Bkd.pamekasan@gmail.com</td>
+          </tr>
+      </thead>
+  </table>
 <hr>
 {{-- HEADER TULISAN SURAT TUGAS --}}
 <div style="text-align:center">
@@ -299,7 +304,8 @@
         </tr>
     </table> --}}
 </div>
-   @endforeach
+<div class="page-break"></div>
+@endforeach
 </body>
 </html>
 {{-- @endforeach --}}

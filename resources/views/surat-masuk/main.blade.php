@@ -125,35 +125,6 @@
 
         }
 
-        function printAll() {
-            // var selectedRow = 0;
-            // var arrPegawai = [];
-            // $("input:checkbox[name=check]:checked").each(function() {
-            //     selectedRow++;
-            //     var pegawaiId = $(this).data('id');
-            //     arrPegawai.push(pegawaiId);
-            // });
-            // var id = arrPegawai;
-            $.ajax({
-                url: "{{ route('multi-download') }}",
-                method: 'GET',
-                dataType: 'json',
-                data: {
-                    listId: listCheked
-                },
-                success: function (response) {
-                    // console.log(response);
-                    var w = window.open();
-                    // for (var i = 0; i < arrPegawai; i++) {
-                        $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
-                    // }
-                    w.print();
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
         // filter tanggal awal akhir
         $('#min').change(() => {
             var start = $('#min').val()
@@ -343,6 +314,37 @@
                     $('.modal-page').html(data.content).fadeIn();
                 } else {
                     $('.main-page').show();
+                }
+            });
+        }
+
+        function printAll() {
+            // var selectedRow = 0;
+            // var arrPegawai = [];
+            // $("input:checkbox[name=check]:checked").each(function() {
+            //     selectedRow++;
+            //     var pegawaiId = $(this).data('id');
+            //     arrPegawai.push(pegawaiId);
+            // });
+            // var id = arrPegawai;
+            $.ajax({
+                url: "{{ route('multi-download') }}",
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    listId: listCheked
+                },
+                success: function (response) {
+                    var w = window.open();
+                    $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
+                    setTimeout(function () {
+                      w.focus();
+                      w.print();
+                      w.close();
+                    }, 500);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
                 }
             });
         }

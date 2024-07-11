@@ -13,9 +13,12 @@
   @page {
       margin: 100px 25px;
   }
-  .page-break {
-    page-break-after: always;
+  @media print {
+    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
   }
+  /* .page-break {
+    page-break-after: always;
+  } */
   .column {
     float: left;
     width: 50%;
@@ -46,7 +49,7 @@
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="" style="width: 2.56cm !important; height: 2.56cm !important;">
+                    <img src="{{ asset('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -322,5 +325,6 @@
             </tr>
         </table> --}}
     </div>
+    <div class="pagebreak"> </div>
 </body>
 </html>
