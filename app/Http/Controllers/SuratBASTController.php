@@ -43,6 +43,9 @@ class SuratBASTController extends Controller
 					$btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_surat_disposisi.'" id="check_('.$row->id_surat_disposisi.')" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
 					return $btn;
 				})
+                ->addColumn('tanggalSurat', function($row){
+                    return date('d-m-Y', strtotime($row->tanggal_surat));
+                })
 				->rawColumns(['action', 'check'])
 				->make(true);;
 		}
@@ -160,6 +163,7 @@ class SuratBASTController extends Controller
 					$ext_foto = $file->getClientOriginalExtension();
 					$filename = $newdata->no_agenda."-".date('YmdHis').".".$ext_foto;
 					$file->storeAs('public/surat-bast/',$filename);
+                    file_put_contents(public_path('storage/surat-bast/' . $filename), file_get_contents($file->getRealPath()));
 					$newdata->file_scan = $filename;
 				}
 			}

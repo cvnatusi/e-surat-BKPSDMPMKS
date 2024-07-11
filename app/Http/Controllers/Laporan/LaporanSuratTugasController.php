@@ -65,7 +65,7 @@ class LaporanSuratTugasController extends Controller
 					return $btn;
 				})
 				->addColumn('namaPenerima',function($row){
-					
+
 					// return $row->penerimaan_request_pramubakti;
 					// return$data = $row->penerimaan_request_pramubakti;
 						$ins = explode(",",$row->asn_id);
@@ -93,7 +93,7 @@ class LaporanSuratTugasController extends Controller
 					}
 					return $join;
 				})
-				
+
 				->addColumn('tujuan', function($row){
 							$cekInst = TujuanSuratTugas::where('surat_tugas_id',$row->id_surat_perjalanan_dinas)->get();
 							$arrTjn=[];
@@ -102,11 +102,17 @@ class LaporanSuratTugasController extends Controller
 								{
 									array_push($arrTjn,$val->tempat_tujuan_bertugas);
 								}
-								
+
 							}
 							$dataTempat= implode(",",$arrTjn);
 							return $dataTempat;
 				})
+                ->addColumn('tanggalMulai', function($row){
+                    return date('d-m-Y', strtotime($row->tanggal_mulai));
+                })
+                ->addColumn('tanggalAkhir', function($row){
+                    return date('d-m-Y', strtotime($row->tanggal_akhir));
+                })
 				->rawColumns(['action','namaPenerima','tujuan'])
 				->make(true);;
 		}
@@ -510,7 +516,7 @@ class LaporanSuratTugasController extends Controller
 		// 			}
 		// 			return $data['lap'];
 
-					
+
 
 			return Excel::download(new LaporanSuratTugas($data), "Laporan Surat Tugas " . $data['periode'] . '.xlsx');
 		}

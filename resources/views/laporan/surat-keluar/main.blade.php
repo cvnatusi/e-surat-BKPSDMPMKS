@@ -185,8 +185,8 @@ $(document).ready(function () {
           }
         },
         {
-          data: 'tanggal_surat',
-          name: 'tanggal_surat',
+          data: 'formatDate',
+          name: 'formatDate',
           render: function(data, type, row) {
             return '<p style="color:black">' + data + '</p>';
           }

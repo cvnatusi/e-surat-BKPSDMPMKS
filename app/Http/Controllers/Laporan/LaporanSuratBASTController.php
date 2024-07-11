@@ -49,6 +49,9 @@ class LaporanSuratBASTController extends Controller
             ->addColumn('jumlah', function($row) {
                 return number_format($row->jumlah, 0, ',', '.');
             })
+            ->addColumn('formatDate', function($row){
+                return date('d-m-Y', strtotime($row->tanggal_surat));
+            })
 			->make(true);
             // return $data;
 		}

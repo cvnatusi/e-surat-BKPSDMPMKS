@@ -334,6 +334,7 @@
         });
 
         function showForm(id) {
+            console.log(id);
             // $('.main-page').hide();
             $.post("{!! route('show-surat-masuk') !!}", {
                 id: id

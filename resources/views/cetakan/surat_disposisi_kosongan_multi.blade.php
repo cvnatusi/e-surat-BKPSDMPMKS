@@ -35,6 +35,11 @@
 </head>
 
 <body>
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $check = public_path('assets/images/check.png');
+        $barcode = public_path('gambar/QR.png');
+    @endphp
    @foreach ($listData as $data)
    <table width="100%" cellpadding="0" cellspacing="0">
     <thead>
@@ -252,13 +257,13 @@
       <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; margin-top: 2px;">
         <thead>
           <tr>
-            <td> 
-                <img id='barcode' 
+            <td>
+                <img id='barcode'
                 {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
                 src="{{asset('assets/images/qr-code.png')}}"
-                alt="" 
-                title="" 
-                width="100" 
+                alt=""
+                title=""
+                width="100"
                 height="100" onblur='generateBarCode();' />
                 {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
             </td>

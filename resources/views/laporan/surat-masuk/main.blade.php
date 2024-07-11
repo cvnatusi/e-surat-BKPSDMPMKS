@@ -103,7 +103,7 @@
 		if (month < 10) month = "0" + month;
 		if (day < 10) day = "0" + day;
 
-		var today = year + "-" + month + "-" + day ;      
+		var today = year + "-" + month + "-" + day ;
 		$("#min").attr("value", today);
 		$("#max").attr("value", today);
 
@@ -168,7 +168,7 @@
   //     });
 
 
-  function loadTable(dateStart, dateEnd) { 
+  function loadTable(dateStart, dateEnd) {
 
       var table = $('#datagrid').DataTable({
         processing: true,
@@ -212,8 +212,8 @@
           }
         },
         {
-          data: 'tanggal_terima_surat',
-          name: 'tanggal_terima_surat',
+          data: 'formatDate',
+          name: 'formatDate',
           render: function(data, type, row) {
             return '<p style="color:black">' + data + '</p>';
           }
@@ -230,10 +230,10 @@
 
     }
 
-  
+
 
     // table.destroy();
-    
+
       function change(e) {
 
         var range = $('#rangeBy').val();

@@ -317,6 +317,7 @@ class SuratKeluarController extends Controller
 					$ext_foto = $file->getClientOriginalExtension();
 					$filename = $newdata->no_agenda."-".date('YmdHis').".".$ext_foto;
 					$file->storeAs('public/surat-keluar/',$filename);
+                    file_put_contents(public_path('storage/surat-keluar/' . $filename), file_get_contents($file->getRealPath()));
 					$newdata->file_scan = $filename;
 				}
 			}
