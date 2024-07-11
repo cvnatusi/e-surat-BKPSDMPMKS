@@ -51,12 +51,12 @@
 		img {
 			cursor: move;
 		}
-		.card {
-            display: flex;
-            flex-direction: column;
+		.card-canvas {
+            /* display: flex;
+            flex-direction: column; */
 			height: 95rem;
 			border-radius: 10px;
-			margin: 3px px;
+			/* margin: 3px px; */
 		}
 
         .form-save {
@@ -156,30 +156,30 @@
 					</div>
             </form>
         </div>
-			{{-- Preview Surat --}}
-			<div class="col ms-2" style="height: 90rem;">
-				<div>
-					<button type="button" class="btn btn-secondary" id="prev">Previous</button>
-					<button type="button" class="btn btn-secondary" id="next">Next</button>
-					&nbsp; &nbsp;
-					<span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
-				</div>
-				<div class="card preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
-                    <canvas id="pdf-canvas"></canvas>
-                    <img src="{{asset('gambar/qr.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
-                    <img src="{{asset('gambar/qrs.png')}}" id="qr-2" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
-                    {{-- <div class="draggable" id="draggable-div" style="display: none">
-                    </div> --}}
-                    {{-- <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
-                    {{-- <img src="{{ asset('gambar/qrs.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
-					{{-- <div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
-					</div> --}}
-                    <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="footer" style="width: 45rem; display: none;">
-					{{-- <div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
-					</div> --}}
-				</div>
-			</div>
-			{{-- Akhir Preview Surat --}}
+        {{-- Preview Surat --}}
+        <div class="col-md-12" style="height: 90rem;">
+            <div>
+                <button type="button" class="btn btn-secondary" id="prev">Previous</button>
+                <button type="button" class="btn btn-secondary" id="next">Next</button>
+                &nbsp; &nbsp;
+                <span style="color: red">Page: <span id="page_num"></span> / <span id="page_count"></span></span>
+            </div>
+            <div class="card card-canvas preview border-0 border-0 border-primary panel-form" style="background-color: rgb(222, 228, 226)">
+                <canvas id="pdf-canvas"></canvas>
+                <img src="{{asset('gambar/qr.png')}}" id="draggable-div" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                <img src="{{asset('gambar/qrs.png')}}" id="qr-2" class="draggable" crossorigin="anonymous" draggable="true" width="120" style="display: none;">
+                {{-- <div class="draggable" id="draggable-div" style="display: none">
+                </div> --}}
+                {{-- <img src="{{ asset('assets/images/qr.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
+                {{-- <img src="{{ asset('gambar/qrs.png') }}" id="qr-2" class="draggable" style="height: 100px; width: 100px; display: none;"> --}}
+                {{-- <div id="mydiv2" class="draggable" draggable="true" style="display: none;  position: absolute; left: 80px; top: -1px;">
+                </div> --}}
+                <img src="{{ asset('assets/images/footer-bsre.png') }}" class="footer" id="footer" style="width: 45rem; display: none;">
+                {{-- <div id="footer" class="draggable" draggable="true" style="display: none; position: absolute; left: 130px; top: 700px; width: 45rem cursor: pointer;">
+                </div> --}}
+            </div>
+        </div>
+        {{-- Akhir Preview Surat --}}
 	</div>
 
     <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
@@ -449,6 +449,9 @@
 
         $(document).ready(function () {
           submitButton.addEventListener('click', () => {
+                let textButton = submitButton.innerHTML;
+                submitButton.innerHTML = "Sending...";
+                submitButton.setAttribute('disabled',true);
               const rect = canvas.getBoundingClientRect();
               const draggableRect = draggableDiv.getBoundingClientRect();
               const position = {
@@ -498,6 +501,8 @@
                           penandaTangan: $('#pilihanGambar').val()
                       },
                   }).done(function(data){
+                    submitButton.innerHTML = textButton;
+                    submitButton.setAttribute('disabled',false);
                       if(data.status == 'success'){
                           Lobibox.notify('success', {
                               pauseDelayOnHover: true,
@@ -550,6 +555,8 @@
                           });
                       }
                   }).fail(function() {
+                        submitButton.innerHTML = textButton;
+                        submitButton.setAttribute('disabled',false);
                       $('#convertToPDF');
                       Lobibox.notify('warning', {
                           title: 'Maaf!',

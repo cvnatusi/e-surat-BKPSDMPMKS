@@ -78,14 +78,14 @@ h6 {
 }
 .show {
     display: flex;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
     margin-top: -3px;
     /* margin-bottom: 2px; */
 }
 .show p {
     padding-top: 3.5px;
     margin-left: 5px;
-    font-size: 13.5px;
+    font-size: small;
 }
 .show input {
     margin-bottom: 10px;
