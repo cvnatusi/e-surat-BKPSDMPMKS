@@ -57,6 +57,9 @@ class LaporanSuratMasukController extends Controller
 				}
 				return $pengirim_surat;
 			})
+            ->addColumn('formatDate', function($row){
+                return date('d-m-Y', strtotime($row->tanggal_terima_surat));
+            })
 			->rawColumns(['action'])
 			->make(true);;
 		}

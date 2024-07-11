@@ -24,7 +24,7 @@
                 <label class="form-label">Tanggal Akhir</label>
                 <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
             </div>
-            
+
         </div>
         <hr>
     </div>
@@ -58,7 +58,7 @@
       var end = $('#max').val()
       loadTable(start, end);
   })
-  
+
   $(document).ready(function() {
       var start = $('#min').val()
       var end = $('#max').val()
@@ -116,8 +116,8 @@
         }
       },
       {
-        data: 'tanggal_surat',
-        name: 'tanggal_surat',
+        data: 'tanggalSurat',
+        name: 'tanggalSurat',
         render: function(data, type, row) {
           return '<p style="color:black">' + data + '</p>';
         }
@@ -131,7 +131,7 @@
       ]
     });
   }
-  
+
 
   $('.btn-add').click(function(){
       // $('.preloader').show();

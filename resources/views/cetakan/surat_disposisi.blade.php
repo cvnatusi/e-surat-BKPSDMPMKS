@@ -37,11 +37,16 @@
 </head>
 
 <body>
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $check = public_path('assets/images/check.png');
+        $barcode = public_path('gambar/QR.png');
+    @endphp
     <table width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.56cm !important;">
+                    <img src="" style="width: 2.56cm !important; height: 2.56cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -175,7 +180,7 @@
                 <td width="5%">
                   {{-- @if ($penerima->jabatan == 2) --}}
                   @if ($penerima->jabatan == 1)
-                    <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                    <img src="{{$check}}" style="margin-left:10px" width="20px" alt="">
                   @endif
                 </td>
                 <td width="53%" rowspan="6">
@@ -270,7 +275,7 @@
                 <td>
                     <img id='barcode'
                     {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
-                    src="{{asset('gambar/QR.png')}}"
+                    src="{{$barcode}}"
                     alt=""
                     title=""
                     width="105"

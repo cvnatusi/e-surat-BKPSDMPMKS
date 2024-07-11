@@ -24,7 +24,7 @@
                         <label for="tanggal_surat" class="form-label">Tanggal Surat *</label>
                         <input type="date"
                             @if (!empty($data)) value="{{ date('Y-m-d', strtotime($data->tanggal_surat)) }}" @else value="{{ date('Y-m-d') }}" @endif
-                            class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat">
+                            class="form-control tanggal_surat" name="tanggal_surat" id="tanggal_surat" onchange="">
                     </div>
 
                     {{-- jenis surat --}}
@@ -46,13 +46,13 @@
                     {{-- checkbox --}}
                     <div class="col-md-12">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-6" id="surat-elektronik-container">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" name="buatSuratElektronik"
                                         @if (!empty($data)) @if ($data->surat_elektronik == 'Y') checked @endif
                                         @endif value="Y" id="buatSuratElektronik" >
                                     <label class="form-check-label" for="buatSuratElektronik">Buat Surat
-                                        Elektronik</label>
+                                      Elektronik</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -511,12 +511,26 @@
           }else {
             $('#no_surat1').val(myArray[1]+'.A');
           }
-
-
         }else {
           $("#suratTerakhir").hide();
           $('#no_surat1').val('');
         }
+      });
+    });
+    $(document).ready(function() {
+      $('#tanggal_surat').on('change', function() {
+          var selectedDate = $(this).val();
+          console.log(selectedDate);
+          var selectedDate = new Date($(this).val());
+          var today = new Date();
+          // Set the time to 00:00:00 to ignore the time part
+          today.setHours(0, 0, 0, 0);
+
+          if (selectedDate < today) {
+              $('#surat-elektronik-container').hide();
+          } else {
+              $('#surat-elektronik-container').show();
+          }
       });
     });
 </script>

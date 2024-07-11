@@ -382,15 +382,15 @@ $('.btn-submit').click(function(e){
             },
           success: function(data){
             if (data && data.data && data.data.surat_masuk) {
-                $('#no_surat_masuk').val(data.data.surat_masuk.nomor_surat_masuk);
-                $('#nama_pengirim').val(data.data.surat_masuk.pengirim.nama_instansi);
-                $('#isi_ringkas').val(data.data.surat_masuk.isi_ringkas_surat);
+                $('#noSuratMasuk').val(data.data.surat_masuk.nomor_surat_masuk);
+                $('#namaPengirim').val(data.data.surat_masuk.pengirim.nama_instansi);
+                $('#isiRingkas').val(data.data.surat_masuk.isi_ringkas_surat);
                 $('#tanggal_dikirim').val(data.data.surat_masuk.tanggal_surat);
                 $('#tanggal_terima_surat').val(data.data.surat_masuk.tanggal_terima_surat);
             } else {
-                $('#no_surat_masuk').val('undefined');
-                $('#nama_pengirim').val('undefined');
-                $('#isi_ringkas').val('undefined');
+                $('#noSuratMasuk').val('undefined');
+                $('#namaPengirim').val('undefined');
+                $('#isiRingkas').val('undefined');
                 $('#tanggal_dikirim').val('undefined');
                 $('#tanggal_terima_surat').val('undefined');
             }
@@ -406,7 +406,7 @@ $(document).ready(function () {
     const noSurat = urlParams.get('nosurat')
     $('#nomor_agenda').val(noSurat);
     const noSuratMasuk = urlParams.get('nosuratmasuk')
-    $('#no_surat_masuk').val(noSuratMasuk);
+    $('#noSuratMasuk').val(noSuratMasuk);
     const namaPengirim = urlParams.get('namapengirim');
     $('#nama_pengirim').val(namaPengirim);
     const isiRingkas = urlParams.get('isiringkas');

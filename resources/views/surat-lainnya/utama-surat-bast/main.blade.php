@@ -23,7 +23,7 @@
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
-                    
+
                 </div>
                 <hr>
             </div>
@@ -103,7 +103,7 @@
                         tglAkhir: dateEnd
                     }
                 },
-    
+
                 columns: [
                     {
                         data: 'check',
@@ -118,7 +118,7 @@
                             return '<p style="color:black">' + data + '</p>';
                         }
                     },
-    
+
                     {
                         data: 'nomor_surat_bast',
                         name: 'nomor_surat_bast',
@@ -129,8 +129,8 @@
                         }
                     },
                     {
-                        data: 'tanggal_surat',
-                        name: 'tanggal_surat',
+                        data: 'tanggalSurat',
+                        name: 'tanggalSurat',
                         render: function(data, type, row) {
                             return '<p style="color:black">' + data + '</p>';
                         }

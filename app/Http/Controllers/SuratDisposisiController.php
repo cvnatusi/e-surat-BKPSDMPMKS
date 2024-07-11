@@ -67,6 +67,7 @@ class SuratDisposisiController extends Controller
 			$data['sifat_surat'] = SifatSurat::get();
 			$data['instansi'] = Instansi::get();
 			$data['dengan_harap'] = DenganHarap::get();
+            // $data['surat_masuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
 			$data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];

@@ -47,6 +47,9 @@ class LaporanSuratKeputusanController extends Controller
 			// $data = SuratKeputusan::onlyTrashed()->get();
 			return Datatables::eloquent($data)
 			->addIndexColumn()
+            ->addColumn('formatDate', function($row){
+                return date('d-m-Y', strtotime($row->tanggal_surat));
+            })
 			->make(true);;
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);

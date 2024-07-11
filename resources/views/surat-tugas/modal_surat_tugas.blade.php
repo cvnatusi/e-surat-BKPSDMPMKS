@@ -36,9 +36,13 @@
                   @if (!empty($value->file_surat_sppd))
                       <td><small>Sudah dibuat</small></td>
                   @else
-                    <td><a href="javascript:void(0)" type="button"
+                    @if($value->surattugas->verifikasi_kaban == 'Y')
+                      <td><a href="javascript:void(0)" type="button"
                         onclick="buatSPPD({{$value->pegawai->id_mst_asn}}, {{$value->id_file_perjalanan_dinas}}, {{$value->surat_tugas_id}})"
                         class="btn btn-sm btn-success px-4">Buat</a></td>
+                    @else
+                    <td align="center">-</td>
+                    @endif
                   @endif
               </tr>
               @endforeach

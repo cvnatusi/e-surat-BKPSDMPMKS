@@ -96,7 +96,7 @@
 		if (month < 10) month = "0" + month;
 		if (day < 10) day = "0" + day;
 
-		var today = year + "-" + month + "-" + day ;      
+		var today = year + "-" + month + "-" + day ;
 		$("#min").attr("value", today);
 		$("#max").attr("value", today);
 
@@ -160,7 +160,7 @@
   //     });
 
 
-  function loadTable(dateStart, dateEnd) { 
+  function loadTable(dateStart, dateEnd) {
 
         var table = $('#datagrid').DataTable({
           processing: true,
@@ -201,8 +201,8 @@
               }
             },
             {
-              data: 'tanggal_surat',
-              name: 'tanggal_surat',
+              data: 'formatDate',
+              name: 'formatDate',
               render: function(data, type, row) {
                 return '<p style="color:black">' + data + '</p>';
               }
@@ -282,8 +282,8 @@
         } else if (rangeAkhir == 'bulan') {
           paramTanggal = $('#max').val();
         }
-        
-        window.open("{{ url('laporan/laporan-surat-keputusan/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir); 
+
+        window.open("{{ url('laporan/laporan-surat-keputusan/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
 
       }
   </script>

@@ -16,7 +16,7 @@
             <i class="bx bx-spreadsheet mr-1"></i>to Excel
           </button>
         </div>
-        
+
         <div class="col-md-4"></div>
           <div class="col-md-3 mb-3 panelTanggal">
             <label class="form-label">Tanggal Awal</label>
@@ -99,7 +99,7 @@
 		if (month < 10) month = "0" + month;
 		if (day < 10) day = "0" + day;
 
-		var today = year + "-" + month + "-" + day ;      
+		var today = year + "-" + month + "-" + day ;
 		$("#min").attr("value", today);
 		$("#max").attr("value", today);
 
@@ -192,8 +192,8 @@
   //   });
 
 
-  // function loadTable(dateStart, dateEnd) { 
-  
+  // function loadTable(dateStart, dateEnd) {
+
   //     var table = $('#datagrid').DataTable({
   //     processing: true,
   //     serverSide: true,
@@ -254,7 +254,7 @@
   //         return '<p style="color:black">' + data + '</p>';
   //       }
   //     },
-     
+
   //     {
   //       data: 'perihal_surat',
   //       name: 'perihal_surat',
@@ -262,7 +262,7 @@
   //         return '<p style="color:black">' + result + '</p>';
   //       }
   //     },
-      
+
   //     ]
 
   //   });
@@ -308,15 +308,15 @@
         searchable: false
       },
       {
-        data: 'tanggal_mulai',
-        name: 'tanggal_mulai',
+        data: 'tanggalMulai',
+        name: 'tanggalMulai',
         render: function(data, type, row) {
           return '<p style="color:black">' + data + '</p>';
         }
       },
       {
-        data: 'tanggal_akhir',
-        name: 'tanggal_akhir',
+        data: 'tanggalAkhir',
+        name: 'tanggalAkhir',
         render: function(data, type, row) {
           return '<p style="color:black">' + data + '</p>';
         }
@@ -328,7 +328,7 @@
           return '<p style="color:black">' + data + '</p>';
         }
       },
-     
+
       {
         data: 'perihal_surat',
         name: 'perihal_surat',
@@ -340,7 +340,7 @@
     });
   }
 
-    
+
 // });
 
 
@@ -416,7 +416,7 @@
     //       return '<p style="color:black">' + data + '</p>';
     //     }
     //   },
-     
+
     //   {
     //     data: 'perihal_surat',
     //     name: 'perihal_surat',

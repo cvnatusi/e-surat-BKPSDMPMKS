@@ -67,6 +67,9 @@ class LaporanSuratKeluarController extends Controller
 				}
 				return $btn;
 			})
+            ->addColumn('formatDate', function($row){
+                return date('d-m-Y', strtotime($row->tanggal_surat));
+            })
 			->rawColumns(['action','verifKABAN'])
 			->make(true);;
 		}

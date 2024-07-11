@@ -203,7 +203,7 @@ class SuratMasukController extends Controller
 				if (!empty($newdata->file_scan)) {
 					if (is_file($newdata->file_scan)) {
 						Storage::delete($newdata->file_scan);
-						unlink(storage_path('public/surat-masuk/'.$newdata->file_scan));
+						unlink(storage_path('public/storage/surat-masuk/'.$newdata->file_scan));
 						// File::delete($newdata->file_scan);
 					}
 				}
@@ -213,6 +213,7 @@ class SuratMasukController extends Controller
 					$ext_foto = $file->getClientOriginalExtension();
 					$filename = $newdata->no_agenda."-".date('YmdHis').".".$ext_foto;
 					$file->storeAs('public/surat-masuk/',$filename);
+                    file_put_contents(public_path('storage/surat-masuk/' . $filename), file_get_contents($file->getRealPath()));
 					$newdata->file_scan = $filename;
 				}
 			}
@@ -252,6 +253,7 @@ class SuratMasukController extends Controller
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
+            // return $data;
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
@@ -287,7 +289,7 @@ class SuratMasukController extends Controller
 			$data['surat'] = SuratMasuk::with('pengirim')->whereIn('id_surat_masuk',$request->id)->get();
 			$data['dengan_harap'] = DenganHarap::get();
 			$dompdf = PDF::loadView('cetakan.surat_disposisi_kosongan', $data)
-										->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+										->setPaper('f4', 'portrait');
 			// Render the HTML as PDF
 			$dompdf->render();
 			// Output the generated PDF to Browser
