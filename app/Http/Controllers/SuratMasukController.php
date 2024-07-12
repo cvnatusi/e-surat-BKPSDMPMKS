@@ -69,7 +69,7 @@ class SuratMasukController extends Controller
 						if (Auth::user()->level_user == 1) {
 							$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
 						}else {
-							$btn .= '<a href="surat-disposisi?redirect=buat-baru&idsurat='.$row->id_surat_masuk.'&nosurat='.$row->no_agenda.'&nosuratmasuk='.$row->nomor_surat_masuk.'&namapengirim='.$row->pengirim->nama_instansi.'&isiringkas='.$row->isi_ringkas_surat.'" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
+							$btn .= '<a href="surat-disposisi?redirect=buat-baru&idsurat='.$row->id_surat_masuk.'&nosurat='.$row->no_agenda.'&nosuratmasuk='.$row->nomor_surat_masuk.'&namapengirim='.$row->pengirim->nama_instansi.'&tanggalSurat='.$row->tanggal_surat.'&tanggalTerimaSurat='.$row->tanggal_terima_surat.'&isiringkas='.$row->isi_ringkas_surat.'" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
 						}
 						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a><br><br>';
 						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success " data-toggle="popover" data-trigger="hover" title="Timeline"><i class="bx bx-video-recording me-0"></i></a>';

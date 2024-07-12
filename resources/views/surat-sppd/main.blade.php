@@ -26,7 +26,7 @@
                 {{-- <button type="button" class="btn btn-primary px-5 mb-1 btn-add"><i class="bx bx-plus me-1"></i>Tambah</button> --}}
                 <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
                     <thead>
-                        <td>PILIH</td>
+                        <td><input type="checkbox" id="check_" onchange="checkAll()" class="form-check-input"></td>
                         <!-- <td>NO</td>
                 <td>NO AGENDA</td> -->
                         <td>NO SURAT</td>
@@ -57,6 +57,39 @@
             var end = $('#max').val()
             loadTable(start, end);
         })
+
+        let listCheked = [];
+        function checkedRow(ini) {
+            var statusChecked = $(ini).is(":checked");
+            console.log($(ini).is(":checked"));
+            if(statusChecked) {
+                listCheked.push(parseInt($(ini).val()));
+            } else {
+                let index = listCheked.indexOf($(ini).val());
+                listCheked.splice(index, 1);
+            }
+        }
+
+        function checkAll() {
+            if($('#check_').prop('checked')) {
+                $.post("{!! route('get-id-sppd') !!}", {
+                    // id: id
+                }).done(function(data) {
+                    listCheked = [];
+                    listCheked = data;
+                    listCheked.forEach(element => {
+                        $('#check_' + element).prop('checked', true);
+                    });
+                    console.log(listCheked);
+                })
+            } else {
+                listCheked.forEach(element => {
+                    $('#check_' + element).prop('checked', false);
+                });
+                listCheked = [];
+                // console.log('false');
+            }
+        }
 
         $(document).ready(function() {
             // var date = new Date();
@@ -103,6 +136,14 @@
                         name: 'check',
                         orderable: false,
                         searchable: false,
+                        render: function (data, type, row) {
+                            if(listCheked.includes(row.id_file_perjalanan_dinas)) {
+                                // console.log('asndas');
+                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_file_perjalanan_dinas}" id="check_${row.id_file_perjalanan_dinas}" name="check" value="${row.id_file_perjalanan_dinas}" type="checkbox" checked></a>`;
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                     //   {
                     //   data: 'DT_RowIndex',

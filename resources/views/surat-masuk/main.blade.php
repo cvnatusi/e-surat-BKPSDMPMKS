@@ -91,7 +91,7 @@
         }
 
         function showButtonPrint() {
-            console.log(listCheked.length);
+            // console.log(listCheked.length);
             if (listCheked.length >= 1) {
                 $('#cetak_all').css('display', 'block');
                 $('#span').removeClass('col-md-4').addClass('col-md-2');

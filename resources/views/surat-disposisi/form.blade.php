@@ -35,7 +35,6 @@
             @endif
           </div>
       @endif
-
       <div class="col-md-2">
         <label for="" class="form-label">No Surat *)</label>
         <input type="text" class="form-control" readonly name="no_surat_masuk" id="noSuratMasuk" @if(!empty($data)) value="{{$data->suratMasukId->nomor_surat_masuk}}" @endif>
@@ -54,7 +53,7 @@
       </div>
       <div class="col-md-12">
         <label for="" class="form-label">Isi Ringkas *)</label>
-        <input type="text" class="form-control" readonly name="isi_ringkas" id="isiRingkas"@if(!empty($data)) value="{{$data->suratMasukId->isi_ringkas_surat}}" @endif>
+        <input type="text" class="form-control" readonly name="isi_ringkas" id="isiRingkas" @if(!empty($data)) value="{{$data->suratMasukId->isi_ringkas_surat}}" @endif>
       </div>
       <div class="col-md-6">
         <label for="pemberi_disposisi_id" class="form-label">Pemberi Disposisi *)</label>
@@ -408,8 +407,13 @@ $(document).ready(function () {
     const noSuratMasuk = urlParams.get('nosuratmasuk')
     $('#noSuratMasuk').val(noSuratMasuk);
     const namaPengirim = urlParams.get('namapengirim');
-    $('#nama_pengirim').val(namaPengirim);
+    $('#namaPengirim').val(namaPengirim);
+    const tanggalSurat = urlParams.get('tanggalSurat');
+    $('#tanggal_dikirim').val(tanggalSurat);
+    const tanggalTerimaSurat = urlParams.get('tanggalTerimaSurat')
+    $('#tanggal_terima_surat').val(tanggalTerimaSurat);
+    // console.log(namaPengirim);
     const isiRingkas = urlParams.get('isiringkas');
-    $('#isi_ringkas').val(isiRingkas);
+    $('#isiRingkas').val(isiRingkas);
 })
 </script>
