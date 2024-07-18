@@ -394,6 +394,16 @@ class SuratMasukController extends Controller
 			return ['status'=>'error','message' => 'Data Gagal Direstore','title' => 'Whoops'];
 		}
 	}
+	public function restoreAllSurat(Request $request)
+	{
+		$data = SuratMasuk::onlyTrashed()->where('id_surat_masuk',$request->id);
+		if(!empty($data)){
+			$data->restore();
+			return ['status' => 'success','message' => 'Anda Berhasil Restore Data','title' => 'Success'];
+		}else{
+			return ['status'=>'error','message' => 'Data Gagal Direstore','title' => 'Whoops'];
+		}
+	}
 	public function deleteSurat(Request $request)
 	{
 		$data = SuratMasuk::onlyTrashed()->where('id_surat_masuk',$request->id);

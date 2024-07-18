@@ -9,17 +9,16 @@
         <div class="card-body">
             {{-- filter tanggal --}}
             <div class="table-responsive">
-                <!-- <div>
-                      <button type="button" class="btn btn-primary btn-add" style="width: 170px;"><i class="bx bx-plus me-1"></i>Tambah</button>
-                      <button type="button" class="btn btn-info btn-print" style="width: 170px;"><i class="bx bx-printer me-1"></i>Cetak Disposisi</button>
-                    </div> -->
-
+                    <div>
+                      <button type="button" class="btn btn-secondary btn-add" style="width: 170px;"><i class="bx bx-back me-1"></i>Kembali</button>
+                      <button type="button" class="btn btn-info btn-print" style="width: 170px;"><i class="bx bx-loader-alt me-0"></i>Pulihkan</button>
+                    </div>
                 <p></p>
 
                 <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
 
                     <thead>
-                        <td>PILIH</td>
+                        <td><input type="checkbox" id="check_" onchange="checkAll()" class="form-check-input"></td>
                         <td>NO AGENDA</td>
                         <td>NO SURAT</td>
                         <td>TANGGAL TERIMA</td>
@@ -41,6 +40,41 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+        function checkedRow(ini) {
+            var statusChecked = $(ini).is(":checked");
+            // console.log($(ini).is(":checked"));
+            if(statusChecked) {
+                listCheked.push(parseInt($(ini).val()));
+            } else {
+                let index = listCheked.indexOf($(ini).val());
+                listCheked.splice(index, 1);
+            }
+            // showButtonPrint();
+        }
+
+        function checkAll() {
+            if($('#check_').prop('checked')) {
+                $.post("{!! route('get-id-surat-masuk') !!}", {
+                    // id: id
+                }).done(function(data) {
+                    listCheked = [];
+                    listCheked = data;
+                    listCheked.forEach(element => {
+                        $('#check_' + element).prop('checked', true);
+                    });
+                    showButtonPrint();
+                    // console.log(data);
+                })
+            } else {
+                listCheked.forEach(element => {
+                    $('#check_' + element).prop('checked', false);
+                });
+                listCheked = [];
+                showButtonPrint();
+                // console.log('false');
+            }
+        }
+
         function checkedRow() {
             var selectedRow = 0;
             $("input:checkbox[name=check]:checked").each(function() {
@@ -133,7 +167,17 @@
                         data: 'check',
                         name: 'check',
                         orderable: false,
-                        searchable: false
+                        searchable: false,
+                        render: function (data, type, row) {
+                            // console.log(listCheked, row.id_surat_masuk);
+                            // console.log(listCheked.includes(row.id_surat_masuk.toString()));
+                            if(listCheked.includes(row.id_surat_masuk)) {
+                                // console.log('asndas');
+                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
+                            } else {
+                                return data;
+                            }
+                        }
                     },
                     {
                         data: 'no_agenda',
