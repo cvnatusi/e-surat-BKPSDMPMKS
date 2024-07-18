@@ -190,14 +190,16 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/buat-SPPD', [SuratTugasController::class, 'buatSPPD'])->name('buatSPPD');
 			Route::get('/preview-surat-tugas', [SuratTugasController::class, 'previewST'])->name('previewST');
 			Route::post('/verifikasi-ST', [SuratTugasController::class, 'verifikasiST'])->name('verifikasiST');
-			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-tugas');
+			Route::post('/get-id', [SuratTugasController::class, 'getId'])->name('get-id-surat-tugas');
 			Route::get('/st-kosong', [SuratTugasController::class, 'stKosong'])->name('st-kosong');
+			Route::post('/delete-all-st', [SuratTugasController::class, 'deleteAllSurat'])->name('delete-all-st');
 		});
 		Route::group(array('prefix' => 'surat-perjalanan-dinas'), function () {
 			Route::get('/', [SuratSPPDController::class, 'index'])->name('surat-perjalanan-dinas');
 			Route::post('/form', [SuratSPPDController::class, 'form'])->name('form-surat-perjalanan-dinas');
 			Route::post('/show', [SuratSPPDController::class, 'show'])->name('show-surat-perjalanan-dinas');
 			Route::post('/destroy', [SuratSPPDController::class, 'destroy'])->name('destroy-surat-perjalanan-dinas');
+            Route::post('/get-id', [SuratSPPDController::class, 'getId'])->name('get-id-sppd');
 		});
 		Route::group(array('prefix' => 'surat-disposisi'), function () {
 			Route::get('/', [SuratDisposisiController::class, 'index'])->name('surat-disposisi');

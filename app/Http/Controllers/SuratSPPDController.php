@@ -20,40 +20,75 @@ class SuratSPPDController extends Controller
 	private $menuActive = "surat-sppd";
 	private $submnActive = "";
 
-	public function index(Request $request)
-	{
-		$this->data['title'] = $this->title;
-		$this->data['menuActive'] = $this->menuActive;
-		$this->data['submnActive'] = $this->submnActive;
-		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
-		$this->data['smallTitle'] = "";
-		if ($request->ajax()) {
-			$paramTglAwal = $request->tglAwal;
-			$paramTglAkhir = $request->tglAkhir;
-				$data = FileSuratTugas::with(['pegawai','surattugas'])->whereHas('surattugas',fn($query)=>$query->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir]))
-				->whereNotNull('file_surat_sppd')
-				->orderBy('id_file_perjalanan_dinas','desc')
-				->get();
+    public function index(Request $request)
+    {
+        $this->data['title'] = $this->title;
+        $this->data['menuActive'] = $this->menuActive;
+        $this->data['submnActive'] = $this->submnActive;
+        $this->data['smallTitle'] = "";
 
-			// return $data;
-			return Datatables::of($data)
-				->addIndexColumn()
-				->addColumn('action', function($row){
-					$btn = '<a href="javascript:void(0)" onclick="showSuratSPPD('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
-					// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
-					$btn .='</div></div>';
-					return $btn;
-				})
-				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_surat_disposisi.'" id="check_('.$row->id_surat_disposisi.')" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
-					return $btn;
-				})
-				->rawColumns(['action', 'check'])
-				->make(true);;
-		}
-		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
-	}
+        if ($request->ajax()) {
+            $paramTglAwal = $request->tglAwal;
+            $paramTglAkhir = $request->tglAkhir;
+
+            $data = FileSuratTugas::with(['pegawai','surattugas'])
+                    ->whereHas('surattugas', fn($query) => $query->whereBetween('tanggal_surat', [$paramTglAwal, $paramTglAkhir]))
+                    ->whereNotNull('file_surat_sppd')
+                    ->orderBy('id_file_perjalanan_dinas', 'desc')
+                    ->get();
+
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('action', function($row){
+                        $btn = '<a href="javascript:void(0)" onclick="showSuratSPPD('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
+                        $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+                        return $btn;
+                    })
+                    ->addColumn('check', function($row){
+                        $btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox">';
+                        return $btn;
+                    })
+                    ->rawColumns(['action', 'check'])
+                    ->make(true);
+        }
+
+        return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data', $this->data);
+    }
+
+	// public function index(Request $request)
+	// {
+	// 	$this->data['title'] = $this->title;
+	// 	$this->data['menuActive'] = $this->menuActive;
+	// 	$this->data['submnActive'] = $this->submnActive;
+	// 	// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
+	// 	$this->data['smallTitle'] = "";
+	// 	if ($request->ajax()) {
+	// 		$paramTglAwal = $request->tglAwal;
+	// 		$paramTglAkhir = $request->tglAkhir;
+	// 			$data = FileSuratTugas::with(['pegawai','surattugas'])->whereHas('surattugas',fn($query)=>$query->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir]))
+	// 			->whereNotNull('file_surat_sppd')
+	// 			->orderBy('id_file_perjalanan_dinas','desc')
+	// 			->get();
+
+	// 		// return $data;
+	// 		return Datatables::of($data)
+	// 			->addIndexColumn()
+	// 			->addColumn('action', function($row){
+	// 				$btn = '<a href="javascript:void(0)" onclick="showSuratSPPD('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
+	// 				// $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+	// 				$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_file_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+	// 				$btn .='</div></div>';
+	// 				return $btn;
+	// 			})
+	// 			->addColumn('check', function($row){
+	// 				$btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox"></a>';
+	// 				return $btn;
+	// 			})
+	// 			->rawColumns(['action', 'check'])
+	// 			->make(true);;
+	// 	}
+	// 	return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
+	// }
 	public function form(Request $request)
 	{
 		try {
@@ -101,5 +136,13 @@ class SuratSPPDController extends Controller
 		}else{
 			return ['status'=>'error','message' => 'Data Gagal Dihapus','title' => 'Whoops'];
 		}
+	}
+
+    public function getId(Request $request) {
+       $data = FileSuratTugas::whereNotNull('file_surat_sppd')
+        ->pluck('id_file_perjalanan_dinas');
+
+		// $data = FileSuratTugas::get()->pluck('id_file_perjalanan_dinas');
+		return response()->json($data);
 	}
 }

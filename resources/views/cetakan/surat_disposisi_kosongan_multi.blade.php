@@ -125,7 +125,7 @@
           <td width="28%">&nbsp; a. Rahasia</td>
           <td width="10%">
             @if ($data->sifat->nama_sifat_surat == 'Rahasia')
-              <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+              <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
           </td>
         </tr>
@@ -141,7 +141,7 @@
           <td width="28%">&nbsp; b. Biasa</td>
           <td width="10%">
             @if ($data->sifat->nama_sifat_surat == 'Biasa')
-              <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+              <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
           </td>
         </tr>
@@ -157,7 +157,7 @@
           <td width="28%">&nbsp; c. Segera</td>
           <td width="10%">
             @if ($data->sifat->nama_sifat_surat == 'Segera')
-              <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+              <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
           </td>
         </tr>
@@ -165,7 +165,7 @@
           <td width="28%">&nbsp; d. Penting</td>
           <td width="10%">
             @if ($data->sifat->nama_sifat_surat == 'Penting')
-              <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+              <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
           </td>
         </tr>

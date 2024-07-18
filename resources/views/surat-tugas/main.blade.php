@@ -11,13 +11,18 @@
 
       {{-- filter tanggal --}}
       <div class="col-md-12" style="margin-bottom: 20px;">
-        <div class="row"> 
+        <div class="row">
           <div class="col-md-2">
             <label class="form-label">Tambah Surat Tugas</label>
               <button type="button" class="btn btn-primary btn-add form-control">
                 <i class="bx bx-plus me-1"></i>Surat Baru</button>
           </div>
-          <div class="col-md-4"></div>
+          <div class="col-md-2" id="delete_all" style="display: none">
+            <label class="form-label">Hapus Semua Surat</label>
+              <button type="button" class="btn btn-danger form-control" onclick="deleteAll()">
+                <i class="bx bx-trash me-1"></i>Hapus</button>
+          </div>
+          <div class="col-md-4 margin"></div>
           <div class="col-md-3 mb-3 panelTanggal">
             <label class="form-label">Tanggal Awal</label>
             <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -26,7 +31,7 @@
             <label class="form-label">Tanggal Akhir</label>
             <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
           </div>
-          
+
         </div>
         <hr>
       </div>
@@ -53,6 +58,7 @@
 @section('js')
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
   <script type="text/javascript">
+  let listCheked = [];
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
@@ -62,6 +68,18 @@
                 let index = listCheked.indexOf($(ini).val());
                 listCheked.splice(index, 1);
             }
+            // console.log(listCheked);
+            showDeleteAll();
+        }
+
+        function showDeleteAll() {
+          if (listCheked.length >= 1) {
+            $('#delete_all').css('display', 'block');
+            $('.margin').removeClass('col-md-4').addClass('col-md-2');
+          } else {
+            $('#delete_all').css('display', 'none');
+            $('.margin').removeClass('col-md-2').addClass('col-md-4');
+          }
         }
 
         function checkAll() {
@@ -82,8 +100,25 @@
                 });
                 listCheked = [];
                 // console.log('false');
+                showDeleteAll();
             }
-            
+        }
+
+        function deleteAll() {
+          $.ajax({
+            url: "{{ route('delete-all-st') }}",
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                listId: listCheked
+            },
+            success: function (response) {
+              console.log(response);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+          });
         }
 
   // filter tanggal awal akhir
@@ -107,18 +142,19 @@
 		// if (month < 10) month = "0" + month;
 		// if (day < 10) day = "0" + day;
 
-		// var today = year + "-" + month + "-" + day ;      
+		// var today = year + "-" + month + "-" + day ;
 		// $("#min").attr("value", today);
 		// $("#max").attr("value", today);
 
 		// //initial run
 		// loadTable(today , today);
-    var start = $('#min').val()
-    var end = $('#max').val()
-    loadTable(start, end);
+
+        var start = $('#min').val()
+        var end = $('#max').val()
+        loadTable(start, end);
 	});
 
-  let listCheked = [];
+
 
   function loadTable(dateStart,dateEnd) {
     var table = $('#datagrid').DataTable({

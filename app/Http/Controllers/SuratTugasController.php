@@ -843,8 +843,8 @@ class SuratTugasController extends Controller
     }
 
 	public function getId() {
-		$data = SuratTugas::get()->pluck('id_surat_perjalanan_dinas');
-		return response()->json($data);
+        $data = SuratTugas::get()->pluck('id_surat_perjalanan_dinas');
+        return response()->json($data);
 	}
 
     public function stKosong() {
@@ -854,5 +854,9 @@ class SuratTugasController extends Controller
         $html = view('cetakan.surat_tugas_kosongan')->render();
         return PDF::loadHTML($html, 'utf-8')->setOption('page-size', 'A4')->stream();
         // return view('cetakan.surat_tugas_kosongan');
+    }
+
+    public function deleteAllSurat(Request $request) {
+        $dataId = 
     }
 }
