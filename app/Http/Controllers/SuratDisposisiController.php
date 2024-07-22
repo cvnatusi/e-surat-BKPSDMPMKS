@@ -67,7 +67,7 @@ class SuratDisposisiController extends Controller
 			$data['sifat_surat'] = SifatSurat::get();
 			$data['instansi'] = Instansi::get();
 			$data['dengan_harap'] = DenganHarap::get();
-            // $data['surat_masuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
+            $data['suratMasuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
 			$data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
@@ -200,7 +200,7 @@ class SuratDisposisiController extends Controller
 					]
 				],JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES)
 			);
-			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e->getMessage()];
 			return response()->json($return);
 		}
 	}
@@ -268,7 +268,7 @@ class SuratDisposisiController extends Controller
 	}
 
 	public function deleteAll(Request $request) {
-		$dataId = $request->listId; 
+		$dataId = $request->listId;
 		// return $dataId;
 		if (is_array($dataId)) {
 			foreach ($dataId as $id) {
