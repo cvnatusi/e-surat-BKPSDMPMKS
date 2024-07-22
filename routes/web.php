@@ -157,6 +157,8 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/restore-surat', [SuratMasukController::class, 'restoreSurat'])->name('restoreSurat-surat-masuk');
 			Route::post('/delete-surat', [SuratMasukController::class, 'deleteSurat'])->name('deleteSurat-surat-masuk');
 			Route::post('/get-id-surat-masuk', [SuratMasukController::class, 'getId'])->name('get-id-surat-masuk');
+			Route::post('/get-id-surat-masuk-deleted', [SuratMasukController::class, 'getIdSuratDeleted'])->name('get-id-surat-masuk-deleted');
+			Route::post('/delete-all-surat', [SuratMasukController::class, 'deleteAll'])->name('delete-all-surat-masuk');
 		});
 
 		Route::group(array('prefix' => 'surat-keluar'), function () {
@@ -173,6 +175,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/show', [SuratKeluarController::class, 'show'])->name('show-surat-keluar');
 			Route::post('/checkSuratKeluarByDate', [SuratKeluarController::class, 'checkSuratKeluarByDate'])->name('checkSuratKeluarByDate');
 			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-keluar');
+			Route::post('/delete-all-surat-keluar', [SuratKeluarController::class, 'deleteAll'])->name('delete-all-surat-keluar');
 		});
 
 		// Route::post('/store', [SuratTugasControllerOld::class, 'store'])->name('store-surat-tugas');
@@ -200,6 +203,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/show', [SuratSPPDController::class, 'show'])->name('show-surat-perjalanan-dinas');
 			Route::post('/destroy', [SuratSPPDController::class, 'destroy'])->name('destroy-surat-perjalanan-dinas');
             Route::post('/get-id', [SuratSPPDController::class, 'getId'])->name('get-id-sppd');
+			Route::post('/delete-all-surat-sppd', [SuratSPPDController::class, 'deleteAll'])->name('delete-all-surat-sppd');
 		});
 		Route::group(array('prefix' => 'surat-disposisi'), function () {
 			Route::get('/', [SuratDisposisiController::class, 'index'])->name('surat-disposisi');
@@ -210,6 +214,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
 			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
 			Route::post('/get-id', [SuratDisposisiController::class, 'getId'])->name('get-id');
+			Route::post('/delete-all-surat-disposisi', [SuratDisposisiController::class, 'deleteAll'])->name('delete-all-surat-disposisi');
 		});
 		Route::group(array('prefix' => 'surat-lainnya'), function () {
 			Route::group(array('prefix' => 'utama-surat-bast'), function () {
@@ -219,6 +224,8 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/destroy', [SuratBASTController::class, 'destroy'])->name('destroy-surat-bast');
 				Route::post('/show', [SuratBASTController::class, 'show'])->name('show-surat-bast');
 				Route::post('/getSuratBASTByDate', [SuratBASTController::class, 'getSuratBASTByDate'])->name('getSuratBASTByDate');
+				Route::post('/get-id-surat-bast', [SuratBASTController::class, 'getId'])->name('get-id-surat-bast');
+				Route::post('/delete-all-surat-bast', [SuratBASTController::class, 'deleteAll'])->name('delete-all-surat-bast');
 			});
 			Route::group(array('prefix' => 'utama-surat-keputusan'), function () {
 				Route::get('/', [SuratKeputusanController::class, 'index'])->name('utama-surat-keputusan');
@@ -227,6 +234,8 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/destroy', [SuratKeputusanController::class, 'destroy'])->name('destroy-surat-keputusan');
 				Route::post('/show', [SuratKeputusanController::class, 'show'])->name('show-surat-keputusan');
 				Route::post('/getSuratSKByDate', [SuratKeputusanController::class, 'getSuratSKByDate'])->name('getSuratSKByDate');
+				Route::post('/get-id-surat-keputusan', [SuratKeputusanController::class, 'getId'])->name('get-id-surat-keputusan');
+				Route::post('/delete-surat-keputusan', [SuratKeputusanController::class, 'deleteAll'])->name('delete-surat-keputusan');
 			});
 			Route::group(array('prefix' => 'tanda-tangan-elektronik'), function () {
 				Route::get('/', [TteController::class, 'index'])->name('tanda-tangan-elektronik');

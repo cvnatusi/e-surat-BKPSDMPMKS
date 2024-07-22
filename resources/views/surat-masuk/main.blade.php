@@ -14,16 +14,22 @@
                         <label class="form-label">Tambah Surat Masuk</label>
                         <button type="button" class="btn btn-primary btn-add form-control"><i class="bx bx-plus me-1"></i>Surat Baru</button>
                     </div>
-                    <div class="col-md-2" id="cetak_all" style="display: none">
-                        <label class="form-label">Cetak Semua Surat</label>
+                    <div class="col-md-1" id="cetak_all" style="display: none">
+                        <label class="form-label">Cetak Semua</label>
                         <button type="button" onclick="printAll()" class="btn btn-success btn-a form-control"><i
                             class="bx bx-printer me-1"></i>Cetak</button>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-2" id="delete_all" style="display: none">
+                        <label class="form-label">Hapus Semua Surat</label>
+                        <button type="button" onclick="deleteAll()" class="btn btn-danger btn-a form-control"><i
+                            class="bx bx-trash me-1"></i>Hapus</button>
+                    </div>
+                    <div class="col-md-1">
                         <label class="form-label">Arsip</label>
-                        <a href="{{ route('show-trash-surat-masuk') }}" class="btn btn-danger form-control btn-trash"><i class="bx bx-trash me-1"></i>Trash</a>
+                        <a href="{{ route('show-trash-surat-masuk') }}" class="btn btn-warning form-control btn-trash"><i class="bx bx-trash me-1"></i>Trash</a>
                         {{-- <button type="button" class="btn btn-danger form-control btn-trash" href="{{ route('surat-keluar') }}"><i class="bx bx-trash me-1"></i>Trash</button> --}}
                     </div>
+                    <div class="col-md-3" id="span"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -69,8 +75,8 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
         function checkedRow(ini) {
-            var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
+            var statusChecked = $(ini).is(":checked");
             if(statusChecked) {
                 listCheked.push(parseInt($(ini).val()));
             } else {
@@ -94,14 +100,25 @@
             // console.log(listCheked.length);
             if (listCheked.length >= 1) {
                 $('#cetak_all').css('display', 'block');
-                $('#span').removeClass('col-md-4').addClass('col-md-2');
+                $('#delete_all').css('display', 'block');
+                $('#span').hide();
             } else {
                 $('#cetak_all').css('display', 'none');
-                $('#span').removeClass('col-md-2').addClass('col-md-4');
+                $('#delete_all').css('display', 'none');
+                $('#span').show();
             }
         }
 
         function checkAll() {
+            let isChecked = document.getElementById('check_').checked;
+            let rows = document.querySelectorAll('.data-row');
+            rows.forEach(row => {
+                if (isChecked) {
+                    row.classList.add('checked');
+                } else {
+                    row.classList.remove('checked');
+                }
+            });
             if($('#check_').prop('checked')) {
                 $.post("{!! route('get-id-surat-masuk') !!}", {
                     // id: id
@@ -122,7 +139,60 @@
                 showButtonPrint();
                 // console.log('false');
             }
+        }
 
+        function deleteAll() {
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-all-surat-masuk') !!}",{listId: listCheked}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
         }
 
         // filter tanggal awal akhir
@@ -204,7 +274,8 @@
                                 // console.log('asndas');
                                 return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
                             } else {
-                                return data;
+                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox"></a>`;
+                                // return data;
                             }
                         }
                     },

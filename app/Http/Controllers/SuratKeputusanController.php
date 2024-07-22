@@ -38,7 +38,7 @@ class SuratKeputusanController extends Controller
 					return $btn;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_surat_disposisi.'" id="check_('.$row->id_surat_disposisi.')" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_keputusan.'" id="check_'.$row->id_surat_keputusan.'" name="check" value="'.$row->id_surat_keputusan.'" type="checkbox"></a>';
 					return $btn;
 				})
                 ->addColumn('tanggalSurat', function($row){
@@ -217,6 +217,24 @@ class SuratKeputusanController extends Controller
 		}else {
 			$dataa = SuratKeputusan::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderByDesc('tanggal_surat')->get();
 			return response()->json($dataa);
+		}
+	}
+
+	public function getId(Request $request) {
+		$data = SuratKeputusan::pluck('id_surat_keputusan');
+        return response()->json($data);
+	}
+
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId;
+		// return $dataId;
+		if (is_array($dataId)) {
+		foreach ($dataId as $id) {
+			$suratKeputusan = SuratKeputusan::find($id);
+			if ($suratKeputusan) {
+				$suratKeputusan->delete();
+			}
+		}
 		}
 	}
 }

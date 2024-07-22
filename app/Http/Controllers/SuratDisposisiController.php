@@ -40,13 +40,13 @@ class SuratDisposisiController extends Controller
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){
-					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-secondary "><i class="bx bx-show me-0"></i></a>';
+					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-secondary " title="Lihat file"><i class="bx bx-show me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-warning "data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
 					if(Auth::user()->level_user == 2) {
 					} else {
-						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger " title="Hapus"><i class="bx bx-trash me-0"></i></a>';
 					}
-					$btn .= '<a href="javascript:void(0)" onclick="previewSuratMasuk('.$row->surat_masuk_id.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-download me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="previewSuratMasuk('.$row->surat_masuk_id.')" style="margin-right: 5px;" class="btn btn-info" title="Download"><i class="bx bx-download me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
 				})
@@ -265,5 +265,19 @@ class SuratDisposisiController extends Controller
 	public function getId() {
 		$data = SuratDisposisi::get()->pluck('id_surat_disposisi');
 		return response()->json($data);
+	}
+
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId; 
+		// return $dataId;
+		if (is_array($dataId)) {
+			foreach ($dataId as $id) {
+				$suratDispos = SuratDisposisi::find($id);
+				if ($suratDispos) {
+					$suratDispos->delete();
+				}
+			}
+		}
+		return response()->json(['message' => 'Data berhasuil dihapus']);
 	}
 }

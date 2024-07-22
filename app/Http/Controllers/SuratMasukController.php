@@ -79,6 +79,7 @@ class SuratMasukController extends Controller
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
 					return $btn;
 				}
 
@@ -319,7 +320,12 @@ class SuratMasukController extends Controller
 	}
 
 	public function getId() {
+		// return 'bimbimbambam';
 		$data = SuratMasuk::get()->pluck('id_surat_masuk');
+		return response()->json($data);
+	}
+	public function getIdSuratDeleted() {
+		$data = SuratMasuk::pluck('id_surat_masuk');
 		return response()->json($data);
 	}
 
@@ -374,11 +380,11 @@ class SuratMasukController extends Controller
 
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input " onchange="checkedRow()" id="check_('.$row->id_surat_masuk.')" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
-				->make(true);;
+				->make(true);
 
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'trash')->with('data',$this->data);
@@ -413,5 +419,19 @@ class SuratMasukController extends Controller
 		}else{
 			return ['status'=>'error','message' => 'Data Gagal Direstore','title' => 'Whoops'];
 		}
+	}
+
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId; 
+		// return $dataId;
+		if (is_array($dataId)) {
+			foreach ($dataId as $id) {
+				$suratMasuk = SuratMasuk::find($id);
+				if ($suratMasuk) {
+					$suratMasuk->delete();
+				}
+			}
+		}
+		return response()->json(['message' => 'Data berhasuil dihapus']);
 	}
 }

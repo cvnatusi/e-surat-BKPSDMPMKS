@@ -307,6 +307,7 @@ class SuratTugasController extends Controller
 			return response()->json($return);
 		}
 	}
+
 	// public function store(Request $request)
 	// {
 	// 	// return $request->all();
@@ -843,7 +844,7 @@ class SuratTugasController extends Controller
     }
 
 	public function getId() {
-        $data = SuratTugas::get()->pluck('id_surat_perjalanan_dinas');
+        $data = SuratTugas::pluck('id_surat_perjalanan_dinas');
         return response()->json($data);
 	}
 
@@ -857,6 +858,16 @@ class SuratTugasController extends Controller
     }
 
     public function deleteAllSurat(Request $request) {
-        $dataId = 
+      $dataId = $request->listId; 
+      // return $dataId;
+      if (is_array($dataId)) {
+        foreach ($dataId as $id) {
+            $suratTugas = SuratTugas::find($id);
+            if ($suratTugas) {
+                $suratTugas->delete();
+            }
+        }
+      }
+      return response()->json(['message' => 'delete']);
     }
 }

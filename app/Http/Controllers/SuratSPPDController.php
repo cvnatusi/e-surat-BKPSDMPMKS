@@ -45,7 +45,7 @@ class SuratSPPDController extends Controller
                         return $btn;
                     })
                     ->addColumn('check', function($row){
-                        $btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox">';
+                        $btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox">';
                         return $btn;
                     })
                     ->rawColumns(['action', 'check'])
@@ -144,5 +144,18 @@ class SuratSPPDController extends Controller
 
 		// $data = FileSuratTugas::get()->pluck('id_file_perjalanan_dinas');
 		return response()->json($data);
+	}
+
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId; 
+		if (is_array($dataId)) {
+			foreach ($dataId as $id) {
+				$suratSPPD = FileSuratTugas::find($id);
+				if ($suratSPPD) {
+					$suratSPPD->delete();
+				}
+			}
+		}
+		return response()->json(['message' => 'Data berhasuil dihapus']);
 	}
 }

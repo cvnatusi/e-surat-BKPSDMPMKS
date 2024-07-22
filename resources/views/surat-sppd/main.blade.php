@@ -11,6 +11,12 @@
             {{-- filter tanggal --}}
             <div class="col-md-12" style="margin-bottom: 20px;">
                 <div class="row">
+                    <div class="col-md-2" id="delete_all" style="display: none">
+                        <label class="form-label">Hapus Semua Surat</label>
+                        <button type="button" class="btn btn-danger form-control" onclick="deleteAll()"><i
+                                class="bx bx-trash me-1"></i>Hapus</button>
+                    </div>
+                    <div class="col-md-6" id="span"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -46,6 +52,29 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+        function showButtonDelete() {
+            // console.log(listCheked.length);
+            if (listCheked.length >= 1) {
+                $('#delete_all').css('display', 'block');
+                $('#span').removeClass('col-md-6').addClass('col-md-4');
+            } else {
+                $('#delete_all').css('display', 'none');
+                $('#span').removeClass('col-md-4').addClass('col-md-6');
+            }
+        }
+
+        let listCheked = [];
+        function checkedRow(ini) {
+            var statusChecked = $(ini).is(":checked");
+            console.log($(ini).is(":checked"));
+            if(statusChecked) {
+                listCheked.push(parseInt($(ini).val()));
+            } else {
+                let index = listCheked.indexOf($(ini).val());
+                listCheked.splice(index, 1);
+            }
+            showButtonDelete()
+        }
         // filter tanggal awal akhir
         $('#min').change(() => {
             var start = $('#min').val()
@@ -58,17 +87,7 @@
             loadTable(start, end);
         })
 
-        let listCheked = [];
-        function checkedRow(ini) {
-            var statusChecked = $(ini).is(":checked");
-            console.log($(ini).is(":checked"));
-            if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
-            } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
-            }
-        }
+       
 
         function checkAll() {
             if($('#check_').prop('checked')) {
@@ -81,14 +100,70 @@
                         $('#check_' + element).prop('checked', true);
                     });
                     console.log(listCheked);
+                    showButtonDelete()
                 })
             } else {
                 listCheked.forEach(element => {
                     $('#check_' + element).prop('checked', false);
                 });
                 listCheked = [];
+                showButtonDelete()
                 // console.log('false');
             }
+        }
+
+        function deleteAll() {
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-all-surat-sppd') !!}",{listId: listCheked}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
         }
 
         $(document).ready(function() {

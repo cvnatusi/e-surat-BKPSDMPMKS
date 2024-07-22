@@ -70,6 +70,12 @@
       <div class="col-md-6">
         <label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
         <input class="form-control" type="file" id="file_scan" name="file_scan">
+        @if(!empty($data->file_scan))
+        <div class="mt-2">
+            <span style="color: red">Lihat file terakhir yang diupload</span>
+            <button type="button" onclick="showForm('{{$data->id_surat_masuk}}')" class="btn-primary">Show File</button>
+        </div>
+        @endif
       </div>
       <div class="col-md-12">
         <label for="isi_ringkas_surat" class="form-label">Isi Ringkas Surat *</label>
@@ -128,6 +134,20 @@ var onLoad = (function() {
           tags: true,
         });
 })();
+
+function showForm(id) {
+  console.log(id);
+  // $('.main-page').hide();
+  $.post("{!! route('show-surat-masuk') !!}", {
+      id: id
+  }).done(function(data) {
+      if (data.status == 'success') {
+          $('.modal-page').html(data.content).fadeIn();
+      } else {
+          $('.main-page').show();
+      }
+  });
+}
 
 $('.btn-cancel').click(function(e){
   e.preventDefault();

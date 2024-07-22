@@ -15,7 +15,12 @@
                         <button type="button" class="btn btn-primary btn-add form-control"><i
                                 class="bx bx-plus me-1"></i>Surat Baru</button>
                     </div>
-                    <div class="col-md-4"></div>
+                    <div class="col-md-2" id="delete_all" style="display: none">
+                        <label class="form-label">Hapus Semua Surat</label>
+                        <button type="button" class="btn btn-danger form-control" onclick="deleteAll()"><i
+                                class="bx bx-trash me-1"></i>Hapus</button>
+                    </div>
+                    <div class="col-md-4" id="span"></div>
                     <div class="col-md-3 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -53,6 +58,16 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+        function showButtonDelete() {
+            // console.log(listCheked.length);
+            if (listCheked.length >= 1) {
+                $('#delete_all').css('display', 'block');
+                $('#span').removeClass('col-md-4').addClass('col-md-2');
+            } else {
+                $('#delete_all').css('display', 'none');
+                $('#span').removeClass('col-md-2').addClass('col-md-4');
+            }
+        }
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
@@ -62,6 +77,7 @@
                 let index = listCheked.indexOf($(ini).val());
                 listCheked.splice(index, 1);
             }
+            showButtonDelete()
         }
 
         function checkAll() {
@@ -75,15 +91,70 @@
                         $('#check_' + element).prop('checked', true);
                     });
                     console.log(data);
+                    showButtonDelete()
                 })
             } else {
                 listCheked.forEach(element => {
                     $('#check_' + element).prop('checked', false);
                 });
                 listCheked = [];
+                showButtonDelete()
                 // console.log('false');
             }
+        }
 
+        function deleteAll() {
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-all-surat-keluar') !!}",{listId: listCheked}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
         }
 
         // filter tanggal awal akhir

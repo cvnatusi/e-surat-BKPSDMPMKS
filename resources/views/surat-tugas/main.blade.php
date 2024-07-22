@@ -58,7 +58,17 @@
 @section('js')
   <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
   <script type="text/javascript">
-  let listCheked = [];
+        let listCheked = [];
+        function showDeleteAll() {
+          if (listCheked.length >= 1) {
+            $('#delete_all').css('display', 'block');
+            $('.margin').removeClass('col-md-4').addClass('col-md-2');
+          } else {
+            $('#delete_all').css('display', 'none');
+            $('.margin').removeClass('col-md-2').addClass('col-md-4');
+          }
+        }
+
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
@@ -72,16 +82,6 @@
             showDeleteAll();
         }
 
-        function showDeleteAll() {
-          if (listCheked.length >= 1) {
-            $('#delete_all').css('display', 'block');
-            $('.margin').removeClass('col-md-4').addClass('col-md-2');
-          } else {
-            $('#delete_all').css('display', 'none');
-            $('.margin').removeClass('col-md-2').addClass('col-md-4');
-          }
-        }
-
         function checkAll() {
             if($('#check_').prop('checked')) {
                 $.post("{!! route('get-id-surat-tugas') !!}", {
@@ -92,33 +92,71 @@
                     listCheked.forEach(element => {
                         $('#check_' + element).prop('checked', true);
                     });
+                    showDeleteAll();
                     // console.log(data);
                 })
             } else {
-                listCheked.forEach(element => {
-                    $('#check_' + element).prop('checked', false);
-                });
-                listCheked = [];
-                // console.log('false');
-                showDeleteAll();
+              listCheked.forEach(element => {
+                  $('#check_' + element).prop('checked', false);
+              });
+              listCheked = [];
+              showDeleteAll();
+              // console.log('false');
             }
         }
 
         function deleteAll() {
-          $.ajax({
-            url: "{{ route('delete-all-st') }}",
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                listId: listCheked
-            },
-            success: function (response) {
-              console.log(response);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-            }
-          });
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-all-st') !!}",{listId: listCheked}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
         }
 
   // filter tanggal awal akhir

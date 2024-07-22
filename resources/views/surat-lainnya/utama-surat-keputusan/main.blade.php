@@ -15,7 +15,12 @@
                 <button type="button" class="btn btn-primary btn-add form-control"><i
                         class="bx bx-plus me-1"></i>Surat Baru</button>
             </div>
-            <div class="col-md-4"></div>
+            <div class="col-md-2" id="delete_all" style="display: none">
+              <label class="form-label">Hapus Semua Surat</label>
+              <button type="button" class="btn btn-danger form-control"><i
+                      class="bx bx-trash me-1"></i>Hapus</button>
+            </div>
+            <div class="col-md-4" id="span"></div>
             <div class="col-md-3 mb-3 panelTanggal">
                 <label class="form-label">Tanggal Awal</label>
                 <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
@@ -31,7 +36,7 @@
       <div class="table-responsive">
         <table class="table table-striped dataTable" id="datagrid" style="width: 100%">
           <thead>
-            <td>PILIH</td>
+            <td><input type="checkbox" id="check_" onchange="checkAll()" class="form-check-input"></td>
             <td>NO</td>
             <td>NO SURAT</td>
             <td style="width: 100%">PERIHAL</td>
@@ -48,6 +53,106 @@
 @section('js')
   <script src="{{asset('assets/js/number_format.js')}}"></script>
   <script type="text/javascript">
+        let listCheked = [];
+        function showDeleteAll() {
+          if (listCheked.length >= 1) {
+            $('#delete_all').css('display', 'block');
+            $('#span').removeClass('col-md-4').addClass('col-md-2');
+          } else {
+            $('#delete_all').css('display', 'none');
+            $('#span').removeClass('col-md-2').addClass('col-md-4');
+          }
+        }
+
+        function checkedRow(ini) {
+            var statusChecked = $(ini).is(":checked");
+            console.log($(ini).is(":checked"));
+            if(statusChecked) {
+                listCheked.push(parseInt($(ini).val()));
+            } else {
+                let index = listCheked.indexOf($(ini).val());
+                listCheked.splice(index, 1);
+            }
+            // console.log(listCheked);
+            showDeleteAll();
+        }
+
+        function checkAll() {
+            if($('#check_').prop('checked')) {
+                $.post("{!! route('get-id-surat-keputusan') !!}", {
+                    // id: id
+                }).done(function(data) {
+                    listCheked = [];
+                    listCheked = data;
+                    listCheked.forEach(element => {
+                        $('#check_' + element).prop('checked', true);
+                    });
+                    showDeleteAll();
+                    // console.log(data);
+                })
+            } else {
+              listCheked.forEach(element => {
+                  $('#check_' + element).prop('checked', false);
+              });
+              listCheked = [];
+              showDeleteAll();
+              // console.log('false');
+            }
+        }
+
+        function deleteAll() {
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-surat-keputusan') !!}",{listId: listCheked}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
+        }
     $('#min').change(() => {
     var start = $('#min').val()
     var end = $('#max').val()
@@ -92,6 +197,13 @@
         name: 'check',
         orderable: false,
         searchable: false,
+        render: function (data, type, row) {
+            if(listCheked.includes(row.id_surat_keputusan)) {
+                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_keputusan}" id="check_${row.id_surat_keputusan}" name="check" value="${row.id_surat_keputusan}" type="checkbox" checked></a>`;
+            } else {
+                return data;
+            }
+        }
       },
       {
         data: 'DT_RowIndex',

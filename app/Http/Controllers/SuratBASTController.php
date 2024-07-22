@@ -40,7 +40,7 @@ class SuratBASTController extends Controller
 					return $btn;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" data-id="'.$row->id_surat_disposisi.'" id="check_('.$row->id_surat_disposisi.')" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_bast.'" id="check_'.$row->id_surat_bast.'" name="check" value="'.$row->id_surat_bast.'" type="checkbox"></a>';
 					return $btn;
 				})
                 ->addColumn('tanggalSurat', function($row){
@@ -224,5 +224,24 @@ class SuratBASTController extends Controller
 			$dataa = SuratBAST::whereDate('tanggal_surat','<',$request->tanggal)->limit(10)->orderBy('tanggal_surat','DESC')->get();
 			return response()->json($dataa);
 		}
+	}
+
+	public function getId(Request $request) {
+		$data = SuratBAST::pluck('id_surat_bast');
+		return response()->json($data);
+	}
+
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId; 
+		// return $dataId;
+		if (is_array($dataId)) {
+			foreach ($dataId as $id) {
+				$suratBAST = SuratBAST::find($id);
+				if ($suratBAST) {
+					$suratBAST->delete();
+				}
+			}
+		}
+		return response()->json(['message' => 'Data berhasuil dihapus']);
 	}
 }

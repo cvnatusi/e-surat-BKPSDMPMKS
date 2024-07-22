@@ -10,8 +10,8 @@
             {{-- filter tanggal --}}
             <div class="table-responsive">
                     <div>
-                      <button type="button" class="btn btn-secondary btn-add" style="width: 170px;"><i class="bx bx-back me-1"></i>Kembali</button>
-                      <button type="button" class="btn btn-info btn-print" style="width: 170px;"><i class="bx bx-loader-alt me-0"></i>Pulihkan</button>
+                      {{-- <button type="button" class="btn btn-secondary" onclick="btnCancel()" style="width: 170px;"><i class="bx bx-back me-1"></i>Kembali</button> --}}
+                      <button type="button" class="btn btn-info" id="restore_all" style="width: 170px; display: none;"><i class="bx bx-loader-alt me-0"></i>Pulihkan</button>
                     </div>
                 <p></p>
 
@@ -40,6 +40,7 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+        let listCheked = [];
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
@@ -49,12 +50,35 @@
                 let index = listCheked.indexOf($(ini).val());
                 listCheked.splice(index, 1);
             }
-            // showButtonPrint();
+        }
+        
+        // function checkedRows(ini) {
+        //     // console.log($(ini).is(":checked"));
+        //     var statusChecked = $(ini).is(":checked");
+        //     if(statusChecked) {
+        //         listCheked.push(parseInt($(ini).val()));
+        //     } else {
+        //         let index = listCheked.indexOf($(ini).val());
+        //         listCheked.splice(index, 1);
+        //     }
+        //     // showButtonRestore();
+        //     // console.log(listCheked);
+        // }
+
+        function showButtonRestore() {
+            // console.log(listCheked.length);
+            if (listCheked.length >= 1) {
+                $('#restore_all').css('display', 'block');
+                $('#span').removeClass('col-md-4').addClass('col-md-2');
+            } else {
+                $('#restore_all').css('display', 'none');
+                $('#span').removeClass('col-md-2').addClass('col-md-4');
+            }
         }
 
         function checkAll() {
             if($('#check_').prop('checked')) {
-                $.post("{!! route('get-id-surat-masuk') !!}", {
+                $.post("{!! route('get-id-surat-masuk-deleted') !!}", {
                     // id: id
                 }).done(function(data) {
                     listCheked = [];
@@ -62,54 +86,19 @@
                     listCheked.forEach(element => {
                         $('#check_' + element).prop('checked', true);
                     });
-                    showButtonPrint();
-                    // console.log(data);
+                    console.log(data);
                 })
             } else {
                 listCheked.forEach(element => {
                     $('#check_' + element).prop('checked', false);
                 });
                 listCheked = [];
-                showButtonPrint();
                 // console.log('false');
             }
+
         }
 
-        function checkedRow() {
-            var selectedRow = 0;
-            $("input:checkbox[name=check]:checked").each(function() {
-                selectedRow++;
-            });
-            if (selectedRow >= 1) {
-                $('#cetak_all').css('display', 'block');
-                $('#span').removeClass('col-md-4').addClass('col-md-2');
-            } else {
-                $('#cetak_all').css('display', 'none');
-                $('#span').removeClass('col-md-2').addClass('col-md-4');
-            }
-        }
 
-        function printAll() {
-            var selectedRow = 0;
-            $("input:checkbox[name=check]:checked").each(function() {
-                selectedRow++;
-            });
-            $.ajax({
-                url: "{{ route('surat-dispos-kosong') }}",
-                method: 'GET',
-                dataType: 'json',
-                success: function (response) {
-                    var w = window.open();
-                    for (var i = 0; i < selectedRow; i++) {
-                        $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
-                    }
-                    w.print();
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        }
         // filter tanggal awal akhir
         $('#min').change(() => {
             var start = $('#min').val()
@@ -151,6 +140,15 @@
                 "pageLength": 25,
                 scrollX: true,
                 scrollY: 350,
+                columnDefs: [{
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0
+                }],
+                select: {
+                    style: 'os',
+                    selector: 'td:first-child'
+                },
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
                 },
@@ -169,8 +167,6 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
-                            // console.log(listCheked, row.id_surat_masuk);
-                            // console.log(listCheked.includes(row.id_surat_masuk.toString()));
                             if(listCheked.includes(row.id_surat_masuk)) {
                                 // console.log('asndas');
                                 return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
@@ -261,6 +257,10 @@
 
             });
         }
+
+        function btnCancel() {
+            console.log('kembali');
+        } 
 
         // $('.btn-add').click(function() {
         //     // $('.preloader').show();

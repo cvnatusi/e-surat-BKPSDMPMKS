@@ -503,4 +503,17 @@ class SuratKeluarController extends Controller
 		return response()->json($data);
 	}
 
+	public function deleteAll(Request $request) {
+		$dataId = $request->listId; 
+		if (is_array($dataId)) {
+			foreach ($dataId as $id) {
+				$suratKeluar = SuratKeluar::find($id);
+				if ($suratKeluar) {
+					$suratKeluar->delete();
+				}
+			}
+		}
+		return response()->json(['message' => 'Data berhasuil dihapus']);
+	}
+
 }
