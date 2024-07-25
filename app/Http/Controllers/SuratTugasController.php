@@ -103,7 +103,7 @@ class SuratTugasController extends Controller
 					return $btn;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_perjalanan_dinas.'" id="check_'.$row->id_surat_perjalanan_dinas.'" name="check" value="'.$row->id_surat_perjalanan_dinas.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_perjalanan_dinas.'" id="check_'.$row->id_surat_perjalanan_dinas.'" name="check" value="'.$row->id_surat_perjalanan_dinas.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','namaPenerima','verifikasi', 'check'])
@@ -843,9 +843,10 @@ class SuratTugasController extends Controller
      return view('daterange');
     }
 
-	public function getId() {
-        $data = SuratTugas::pluck('id_surat_perjalanan_dinas');
-        return response()->json($data);
+	public function getId(Request $request) {
+        return $request->arrSuratId;
+        // $data = SuratTugas::where($request->arrSuratId)->pluck('id_surat_perjalanan_dinas');
+        // return response()->json($data);
 	}
 
     public function stKosong() {
@@ -858,8 +859,8 @@ class SuratTugasController extends Controller
     }
 
     public function deleteAllSurat(Request $request) {
-      $dataId = $request->listId; 
-      // return $dataId;
+      $dataId = $request->listId;
+    //   return $dataId;
       if (is_array($dataId)) {
         foreach ($dataId as $id) {
             $suratTugas = SuratTugas::find($id);

@@ -14,7 +14,7 @@
                         <label class="form-label">Tambah Surat Masuk</label>
                         <button type="button" class="btn btn-primary btn-add form-control"><i class="bx bx-plus me-1"></i>Surat Baru</button>
                     </div>
-                    <div class="col-md-1" id="cetak_all" style="display: none">
+                    <div class="col-md-2" id="cetak_all" style="display: none">
                         <label class="form-label">Cetak Semua</label>
                         <button type="button" onclick="printAll()" class="btn btn-success btn-a form-control"><i
                             class="bx bx-printer me-1"></i>Cetak</button>
@@ -24,17 +24,17 @@
                         <button type="button" onclick="deleteAll()" class="btn btn-danger btn-a form-control"><i
                             class="bx bx-trash me-1"></i>Hapus</button>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         <label class="form-label">Arsip</label>
-                        <a href="{{ route('show-trash-surat-masuk') }}" class="btn btn-warning form-control btn-trash"><i class="bx bx-trash me-1"></i>Trash</a>
+                        <a href="{{ route('show-trash-surat-masuk') }}" style="background-color: #6c757d; color: white;" class="btn form-control btn-trash"><i class="bx bx-trash me-1"></i>Trash</a>
                         {{-- <button type="button" class="btn btn-danger form-control btn-trash" href="{{ route('surat-keluar') }}"><i class="bx bx-trash me-1"></i>Trash</button> --}}
                     </div>
-                    <div class="col-md-3" id="span"></div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-4" id="span"></div>
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
@@ -74,6 +74,7 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+        var arrSuratId = [];
         function checkedRow(ini) {
             // console.log($(ini).is(":checked"));
             var statusChecked = $(ini).is(":checked");
@@ -110,36 +111,59 @@
         }
 
         function checkAll() {
-            let isChecked = document.getElementById('check_').checked;
-            let rows = document.querySelectorAll('.data-row');
-            rows.forEach(row => {
-                if (isChecked) {
-                    row.classList.add('checked');
-                } else {
-                    row.classList.remove('checked');
-                }
-            });
-            if($('#check_').prop('checked')) {
-                $.post("{!! route('get-id-surat-masuk') !!}", {
-                    // id: id
-                }).done(function(data) {
-                    listCheked = [];
-                    listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
-                    showButtonPrint();
-                    // console.log(data);
-                })
-            } else {
-                listCheked.forEach(element => {
-                    $('#check_' + element).prop('checked', false);
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
                 });
+                $('.row_surat').prop('checked', true);
+                $.post("{!! route('get-id-surat-masuk') !!}", {
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
+                }).done(function(data) {
+                    listCheked = data;
+                    console.log(listCheked);
+                    showButtonPrint();
+                });
+            } else {
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
                 listCheked = [];
                 showButtonPrint();
-                // console.log('false');
             }
         }
+
+        // function checkAll() {
+        //     let isChecked = document.getElementById('check_').checked;
+        //     let rows = document.querySelectorAll('.data-row');
+        //     rows.forEach(row => {
+        //         if (isChecked) {
+        //             row.classList.add('checked');
+        //         } else {
+        //             row.classList.remove('checked');
+        //         }
+        //     });
+        //     if($('#check_').prop('checked')) {
+        //         $.post("{!! route('get-id-surat-masuk') !!}", {
+        //             // id: id
+        //         }).done(function(data) {
+        //             listCheked = [];
+        //             listCheked = data;
+        //             listCheked.forEach(element => {
+        //                 $('#check_' + element).prop('checked', true);
+        //             });
+        //             showButtonPrint();
+        //             // console.log(data);
+        //         })
+        //     } else {
+        //         listCheked.forEach(element => {
+        //             $('#check_' + element).prop('checked', false);
+        //         });
+        //         listCheked = [];
+        //         showButtonPrint();
+        //         // console.log('false');
+        //     }
+        // }
 
         function deleteAll() {
           swal({
@@ -151,7 +175,7 @@
             confirmButtonText: 'Ya, Hapus Data!',
           }).then((result) => {
             if (result.value) {
-              $.post("{!! route('delete-all-surat-masuk') !!}",{listId: listCheked}).done(function(data){
+              $.post("{!! route('delete-all-surat-masuk') !!}",{listId: arrSuratId}).done(function(data){
                 Lobibox.notify('success', {
                   pauseDelayOnHover: true,
                   size: 'mini',
@@ -272,9 +296,9 @@
                             // console.log(listCheked.includes(row.id_surat_masuk.toString()));
                             if(listCheked.includes(row.id_surat_masuk)) {
                                 // console.log('asndas');
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
+                                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
                             } else {
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox"></a>`;
+                                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox"></a>`;
                                 // return data;
                             }
                         }

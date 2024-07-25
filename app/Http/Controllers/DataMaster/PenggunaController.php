@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Users;
 use App\Models\MasterASN;
+use App\Models\LevelPengguna;
 use DataTables,Validator,DB,Hash,Auth;
 class PenggunaController extends Controller
 {
@@ -21,7 +22,7 @@ class PenggunaController extends Controller
 		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
-			$data = Users::orderBy('id','desc')->get();
+			$data = Users::orderBy('id','desc')->get(); //with('level_user')->
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){
@@ -32,6 +33,7 @@ class PenggunaController extends Controller
 				})
 				->rawColumns(['action'])
 				->make(true);;
+                // return $data;
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
@@ -44,7 +46,8 @@ class PenggunaController extends Controller
 			if (!empty($request->id)) {
 				$data['dataasn'] = MasterASN::where('users_id',$request->id)->first();
 			}
-
+            $data['level_pengguna'] = LevelPengguna::get();
+            // return $data['level_pengguna'];
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content];
 		} catch (\Exception $e) {

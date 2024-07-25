@@ -31,6 +31,9 @@
           <option value="3" @if (!empty($data)) @if ($data->level_user == '3') selected @endif @endif>SEKRETARIS</option>
           <option value="4" @if (!empty($data)) @if ($data->level_user == '4') selected @endif @endif>KABID</option>
           <option value="5" @if (!empty($data)) @if ($data->level_user == '5') selected @endif @endif>OPERATOR SURAT</option>
+          {{-- @foreach ($level_pengguna as $role)
+            <option value="{{$role->id_level_user}}" >{{$role->name}}</option>
+          @endforeach --}}
 
             {{-- @if (!empty($tanda_tangan))
               @foreach ($tanda_tangan as $ttd)

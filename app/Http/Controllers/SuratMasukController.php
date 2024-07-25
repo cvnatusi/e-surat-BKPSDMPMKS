@@ -73,19 +73,19 @@ class SuratMasukController extends Controller
 						}
 						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a><br><br>';
 						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success " data-toggle="popover" data-trigger="hover" title="Timeline"><i class="bx bx-video-recording me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
+						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
 						return $btn;
 				   }else {
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
 					return $btn;
 				}
 
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
@@ -319,10 +319,10 @@ class SuratMasukController extends Controller
     	return response()->json(['html' => $html]);
 	}
 
-	public function getId() {
-		// return 'bimbimbambam';
-		$data = SuratMasuk::get()->pluck('id_surat_masuk');
-		return response()->json($data);
+	public function getId(Request $request) {
+		return $request->arrSuratId;
+		// $data = SuratMasuk::pluck('id_surat_masuk');
+		// return response()->json($data);
 	}
 	public function getIdSuratDeleted() {
 		$data = SuratMasuk::pluck('id_surat_masuk');
@@ -342,7 +342,7 @@ class SuratMasukController extends Controller
 			$paramTglAkhir = $request->tglAkhir;
 				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
 				// ->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-				// ->orderBy('id_surat_masuk','desc')
+				->orderBy('id_surat_masuk','desc')
 				->onlyTrashed()
 				->get();
 
@@ -422,7 +422,7 @@ class SuratMasukController extends Controller
 	}
 
 	public function deleteAll(Request $request) {
-		$dataId = $request->listId; 
+		$dataId = $request->listId;
 		// return $dataId;
 		if (is_array($dataId)) {
 			foreach ($dataId as $id) {

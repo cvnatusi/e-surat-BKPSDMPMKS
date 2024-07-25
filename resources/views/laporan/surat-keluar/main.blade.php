@@ -32,7 +32,7 @@
         {{-- <div class="col-md-4"></div> --}}
         <div class="col-md-2 mb-3" >
           <label class="form-label">Export</label>
-          <button type="button" onclick="CetakExcel()" class="btn btn-info cetakExcel form-control" style="color: white">
+          <button type="button" onclick="CetakExcel()" class="btn btn-info cetakExcel form-control" style="background-color: #1E6E42; color: white">
             <i class="bx bx-spreadsheet mr-1"></i>to Excel
           </button>
         </div>
@@ -155,6 +155,9 @@ $(document).ready(function () {
     dataTable = $('#datagrid').DataTable({
       processing: true,
       serverSide: true,
+      language: {
+        searchPlaceholder: "Ketikkan yang dicari"
+      },
       ajax: {
         url: "{{ route('laporan-surat-keluar') }}",
         data: {

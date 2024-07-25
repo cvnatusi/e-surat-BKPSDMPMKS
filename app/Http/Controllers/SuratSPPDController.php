@@ -45,7 +45,7 @@ class SuratSPPDController extends Controller
                         return $btn;
                     })
                     ->addColumn('check', function($row){
-                        $btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox">';
+                        $btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_file_perjalanan_dinas.'" id="check_'.$row->id_file_perjalanan_dinas.'" name="check" value="'.$row->id_file_perjalanan_dinas.'" type="checkbox">';
                         return $btn;
                     })
                     ->rawColumns(['action', 'check'])
@@ -139,15 +139,14 @@ class SuratSPPDController extends Controller
 	}
 
     public function getId(Request $request) {
-       $data = FileSuratTugas::whereNotNull('file_surat_sppd')
-        ->pluck('id_file_perjalanan_dinas');
-
-		// $data = FileSuratTugas::get()->pluck('id_file_perjalanan_dinas');
-		return response()->json($data);
+        return $request->arrSuratId;
+		// $data = FileSuratTugas::where($request->arrSuratId)->pluck('id_file_perjalanan_dinas');
+		// return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {
-		$dataId = $request->listId; 
+		$dataId = $request->listId;
+        // return $dataId;
 		if (is_array($dataId)) {
 			foreach ($dataId as $id) {
 				$suratSPPD = FileSuratTugas::find($id);

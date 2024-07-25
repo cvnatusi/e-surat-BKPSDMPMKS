@@ -11,7 +11,7 @@
       <div class="col-md-12" style="margin-bottom: 20px;">
         <div class="row">
             <div class="col-md-2">
-                <label class="form-label">Tambah Surat Keputusan</label>
+                <label class="form-label">Tambah SK</label>
                 <button type="button" class="btn btn-primary btn-add form-control"><i
                         class="bx bx-plus me-1"></i>Surat Baru</button>
             </div>

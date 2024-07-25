@@ -47,7 +47,7 @@ class InstansiController extends Controller
 			// return $data;
 			return ['status' => 'success', 'content' => $content];
 		} catch (\Exception $e) {
-			return ['status' => 'error', 'content' => '','errMsg'=>$e];
+			return ['status' => 'error', 'content' => '','errMsg'=>$e->getMessage(), 'line'=>$e->getLine()];
 		}
 
 	}

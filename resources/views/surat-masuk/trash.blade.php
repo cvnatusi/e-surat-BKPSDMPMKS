@@ -51,7 +51,7 @@
                 listCheked.splice(index, 1);
             }
         }
-        
+
         // function checkedRows(ini) {
         //     // console.log($(ini).is(":checked"));
         //     var statusChecked = $(ini).is(":checked");
@@ -254,13 +254,31 @@
                         searchable: false
                     },
                 ]
-
+            });
+            table.on("click", "th.select-checkbox", function() {
+                if ($("th.select-checkbox").hasClass("selected")) {
+                    table.rows().deselect();
+                    $("th.select-checkbox").removeClass("selected");
+                } else {
+                    table.rows().select();
+                    $("th.select-checkbox").addClass("selected");
+                }
+            }).on("select deselect", function() {
+                ("Some selection or deselection going on")
+                if (table.rows({
+                        selected: true
+                    }).count() !== table.rows().count()) {
+                    $("th.select-checkbox").removeClass("selected");
+                } else {
+                    $("th.select-checkbox").addClass("selected");
+                }
             });
         }
 
+
         function btnCancel() {
             console.log('kembali');
-        } 
+        }
 
         // $('.btn-add').click(function() {
         //     // $('.preloader').show();

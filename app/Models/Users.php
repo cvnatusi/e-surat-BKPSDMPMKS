@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Haruncpi\LaravelUserActivity\Traits\Loggable;
 use Spatie\Permission\Traits\HasRoles;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\LevelPengguna;
 class Users extends Authenticatable
 {
 
@@ -36,5 +37,9 @@ class Users extends Authenticatable
     public function users()
     {
         return $this->belongsTo(Users::class,  'name');
+    }
+
+    public function level_user() {
+        return $this->belongsTo(LevelPengguna::class, 'level_user');
     }
 }

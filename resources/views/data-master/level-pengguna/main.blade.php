@@ -81,7 +81,7 @@
     });
     function editForm(id) {
         $('.main-page').hide();
-        $.post("{!! route('form-asn') !!}",{id:id}).done(function(data){
+        $.post("{!! route('form-level-pengguna') !!}",{id:id}).done(function(data){
             if(data.status == 'success'){
                 $('.other-page').html(data.content).fadeIn();
             } else {
@@ -90,6 +90,7 @@
         });
     }
     function deleteForm(id) {
+        console.log(id);
         swal({
         title: "Apakah Anda yakin akan menghapus data ini ?",
         text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
@@ -99,7 +100,7 @@
         confirmButtonText: 'Ya, Hapus Data!',
         }).then((result) => {
         if (result.value) {
-            $.post("{!! route('destroy-asn') !!}",{id:id}).done(function(data){
+            $.post("{!! route('destroy-level-pengguna') !!}",{id:id}).done(function(data){
             if (data.status == 'success') {
                 Lobibox.notify('success', {
                 pauseDelayOnHover: true,

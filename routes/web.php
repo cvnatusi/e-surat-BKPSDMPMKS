@@ -90,6 +90,7 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::get('/', [RoleController::class, 'index'])->name('level-pengguna');
 				Route::post('/form', [RoleController::class, 'form'])->name('form-level-pengguna');
 				Route::post('/store', [RoleController::class, 'store'])->name('store-level-pengguna');
+				Route::post('/destroy', [RoleController::class, 'destroy'])->name('destroy-level-pengguna');
 			});
 			Route::group(array('prefix' => 'instansi'), function () {
 				Route::get('/', [InstansiController::class, 'index'])->name('instansi');
