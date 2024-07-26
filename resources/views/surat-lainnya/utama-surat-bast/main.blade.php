@@ -58,9 +58,9 @@
     <script src="{{ asset('assets/js/number_format.js') }}"></script>
     <script type="text/javascript">
         let listCheked = [];
-
+        var arrSuratId = [];
         function showDeleteAll() {
-          if (listCheked.length >= 1) {
+          if (arrSuratId.length >= 1) {
             $('#delete_all').css('display', 'block');
             $('#span').removeClass('col-md-4').addClass('col-md-2');
           } else {
@@ -73,37 +73,60 @@
             // console.log($(ini).is(":checked"));
             var statusChecked = $(ini).is(":checked");
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
             showDeleteAll()
-            // console.log(listCheked);
+            console.log(arrSuratId);
         }
 
         function checkAll() {
-            if($('#check_').prop('checked')) {
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
+                });
+                $('.row_surat').prop('checked', true);
                 $.post("{!! route('get-id-surat-bast') !!}", {
-                    // id: id
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
                 }).done(function(data) {
-                    listCheked = [];
                     listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
+                    console.log(listCheked);
                     showDeleteAll();
-                    // console.log(data);
-                })
+                });
             } else {
-              listCheked.forEach(element => {
-                  $('#check_' + element).prop('checked', false);
-              });
-              listCheked = [];
-              showDeleteAll();
-              // console.log('false');
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
+                listCheked = [];
+                showDeleteAll();
             }
         }
+
+        // function checkAll() {
+        //     if($('#check_').prop('checked')) {
+        //         $.post("{!! route('get-id-surat-bast') !!}", {
+        //             // id: id
+        //         }).done(function(data) {
+        //             listCheked = [];
+        //             listCheked = data;
+        //             listCheked.forEach(element => {
+        //                 $('#check_' + element).prop('checked', true);
+        //             });
+        //             showDeleteAll();
+        //             // console.log(data);
+        //         })
+        //     } else {
+        //       listCheked.forEach(element => {
+        //           $('#check_' + element).prop('checked', false);
+        //       });
+        //       listCheked = [];
+        //       showDeleteAll();
+        //       // console.log('false');
+        //     }
+        // }
 
         function deleteAll() {
           swal({
@@ -115,7 +138,7 @@
             confirmButtonText: 'Ya, Hapus Data!',
           }).then((result) => {
             if (result.value) {
-              $.post("{!! route('delete-all-surat-bast') !!}",{listId: listCheked}).done(function(data){
+              $.post("{!! route('delete-all-surat-bast') !!}",{listId: arrSuratId}).done(function(data){
                 Lobibox.notify('success', {
                   pauseDelayOnHover: true,
                   size: 'mini',
@@ -219,7 +242,7 @@
                         render: function (data, type, row) {
                             if(listCheked.includes(row.id_surat_bast)) {
                                 // console.log('asndas');
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_bast}" id="check_${row.id_surat_bast}" name="check" value="${row.id_surat_bast}" type="checkbox" checked></a>`;
+                                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_bast}" id="check_${row.id_surat_bast}" name="check" value="${row.id_surat_bast}" type="checkbox" checked></a>`;
                             } else {
                                 return data;
                             }

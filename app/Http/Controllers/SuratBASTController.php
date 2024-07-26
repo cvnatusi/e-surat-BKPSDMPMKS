@@ -40,7 +40,7 @@ class SuratBASTController extends Controller
 					return $btn;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_bast.'" id="check_'.$row->id_surat_bast.'" name="check" value="'.$row->id_surat_bast.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_bast.'" id="check_'.$row->id_surat_bast.'" name="check" value="'.$row->id_surat_bast.'" type="checkbox"></a>';
 					return $btn;
 				})
                 ->addColumn('tanggalSurat', function($row){
@@ -227,12 +227,13 @@ class SuratBASTController extends Controller
 	}
 
 	public function getId(Request $request) {
-		$data = SuratBAST::pluck('id_surat_bast');
-		return response()->json($data);
+        return $request->arrSuratId;
+		// $data = SuratBAST::pluck('id_surat_bast');
+		// return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {
-		$dataId = $request->listId; 
+		$dataId = $request->listId;
 		// return $dataId;
 		if (is_array($dataId)) {
 			foreach ($dataId as $id) {

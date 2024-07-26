@@ -69,7 +69,7 @@
         // var arrSuratId = new Array();
         var arrSuratId = [];
         function showDeleteAll() {
-          if (listCheked.length >= 1) {
+          if (arrSuratId.length >= 1) {
             $('#delete_all').css('display', 'block');
             $('.margin').removeClass('col-md-6').addClass('col-md-4');
           } else {
@@ -82,12 +82,12 @@
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
-            // console.log(listCheked);
+            // console.log(arrSuratId);
             showDeleteAll();
         }
 

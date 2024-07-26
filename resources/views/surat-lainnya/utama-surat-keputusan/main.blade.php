@@ -56,7 +56,7 @@
         let listCheked = [];
         var arrSuratId = [];
         function showDeleteAll() {
-          if (listCheked.length >= 1) {
+          if (arrSuratId.length >= 1) {
             $('#delete_all').css('display', 'block');
             $('#span').removeClass('col-md-4').addClass('col-md-2');
           } else {
@@ -69,10 +69,10 @@
             var statusChecked = $(ini).is(":checked");
             console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
             // console.log(listCheked);
             showDeleteAll();
