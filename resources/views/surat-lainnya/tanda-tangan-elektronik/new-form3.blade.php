@@ -115,7 +115,7 @@
 </head>
 <body>
 	<div class="row content">
-		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 30rem; width: 100%;">
+		<div class="card col-md-5 p-4 me-3 d-flex flex-column" style="height: 100%; width: 100%;">
 			<form class="form-save d-flex flex-column flex-grow-1">
 				<h6><b><i>e</i> -Tanda Tangan</b></h6>
 				<hr>
@@ -146,7 +146,7 @@
 							<p>Tampilkan Footer Tanda Tangan Elektronik</p>
 						</div>
 					</div>
-					<div class="row mt-auto">
+					<div class="row mt-2">
 						<div class="col-md-6">
 							<button type="button" id="submit" class="btn btn-primary col-md-11">SIMPAN</button>
 						</div>

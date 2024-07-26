@@ -20,12 +20,12 @@
                         <button type="button" class="btn btn-danger form-control" onclick="deleteAll()"><i
                                 class="bx bx-trash me-1"></i>Hapus</button>
                     </div>
-                    <div class="col-md-4" id="span"></div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-6" id="span"></div>
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
@@ -58,50 +58,77 @@
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
+    var arrSuratId = [];
         function showButtonDelete() {
             // console.log(listCheked.length);
-            if (listCheked.length >= 1) {
+            if (arrSuratId.length >= 1) {
                 $('#delete_all').css('display', 'block');
-                $('#span').removeClass('col-md-4').addClass('col-md-2');
+                $('#span').removeClass('col-md-6').addClass('col-md-4');
+                // $('#span').hide();
             } else {
                 $('#delete_all').css('display', 'none');
-                $('#span').removeClass('col-md-2').addClass('col-md-4');
+                $('#span').removeClass('col-md-4').addClass('col-md-6');
+                // $('#span').show();
             }
         }
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
+            console.log(arrSuratId);
             showButtonDelete()
         }
 
         function checkAll() {
-            if($('#check_').prop('checked')) {
-                $.post("{!! route('get-id-surat-keluar') !!}", {
-                    // id: id
-                }).done(function(data) {
-                    listCheked = [];
-                    listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
-                    console.log(data);
-                    showButtonDelete()
-                })
-            } else {
-                listCheked.forEach(element => {
-                    $('#check_' + element).prop('checked', false);
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
                 });
+                $('.row_surat').prop('checked', true);
+                $.post("{!! route('get-id-surat-keluar') !!}", {
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
+                }).done(function(data) {
+                    listCheked = data;
+                    console.log(listCheked);
+                    showButtonDelete();
+                });
+            } else {
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
                 listCheked = [];
-                showButtonDelete()
-                // console.log('false');
+                showButtonDelete();
             }
         }
+
+        // function checkAll() {
+        //     if($('#check_').prop('checked')) {
+        //         $.post("{!! route('get-id-surat-keluar') !!}", {
+        //             // id: id
+        //         }).done(function(data) {
+        //             listCheked = [];
+        //             listCheked = data;
+        //             listCheked.forEach(element => {
+        //                 $('#check_' + element).prop('checked', true);
+        //             });
+        //             console.log(data);
+        //             showButtonDelete()
+        //         })
+        //     } else {
+        //         listCheked.forEach(element => {
+        //             $('#check_' + element).prop('checked', false);
+        //         });
+        //         listCheked = [];
+        //         showButtonDelete()
+        //         // console.log('false');
+        //     }
+        // }
 
         function deleteAll() {
           swal({
@@ -113,7 +140,7 @@
             confirmButtonText: 'Ya, Hapus Data!',
           }).then((result) => {
             if (result.value) {
-              $.post("{!! route('delete-all-surat-keluar') !!}",{listId: listCheked}).done(function(data){
+              $.post("{!! route('delete-all-surat-keluar') !!}",{listId: arrSuratId}).done(function(data){
                 Lobibox.notify('success', {
                   pauseDelayOnHover: true,
                   size: 'mini',
@@ -222,7 +249,7 @@
                         render: function (data, type, row) {
                             if(listCheked.includes(row.id_surat_keluar)) {
                                 // console.log('asndas');
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_keluar}" id="check_${row.id_surat_keluar}" name="check" value="${row.id_surat_keluar}" type="checkbox" checked></a>`;
+                                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_keluar}" id="check_${row.id_surat_keluar}" name="check" value="${row.id_surat_keluar}" type="checkbox" checked></a>`;
                             } else {
                                 return data;
                             }

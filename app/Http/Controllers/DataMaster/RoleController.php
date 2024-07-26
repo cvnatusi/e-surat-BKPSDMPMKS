@@ -44,8 +44,8 @@ class RoleController extends Controller
             return ['status' => 'success', 'content' => $content];
         } catch(\Exception $e) {
             return response()->json([
-                'status' => 'error', 
-                'code' => 500, 
+                'status' => 'error',
+                'code' => 500,
                 'message' => $e->getMessage(),
             ]);
         }
@@ -106,8 +106,14 @@ class RoleController extends Controller
         //
     }
 
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $do_delete = LevelPengguna::find($request->id);
+        if(!empty($do_delete)){
+            $do_delete->delete();
+            return ['status' => 'success','message' => 'Anda Berhasil Menghapus Data','title' => 'Success'];
+        }else{
+            return ['status'=>'error','message' => 'Data Gagal Dihapus','title' => 'Whoops'];
+        }
     }
 }

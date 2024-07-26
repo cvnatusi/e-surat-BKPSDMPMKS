@@ -49,7 +49,8 @@
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="{{ asset('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;">
+                    {{-- <img src="{{ asset('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;"> --}}
+                    <img src="{{ public_path('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>

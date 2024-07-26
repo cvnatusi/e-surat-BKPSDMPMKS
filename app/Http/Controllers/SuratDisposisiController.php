@@ -34,7 +34,7 @@ class SuratDisposisiController extends Controller
 				->whereBetween('created_at',[$paramTglAwal,$paramTglAkhir])
 				->orderBy('id_surat_disposisi','desc')
 				->get();
-
+            // return $data;
 				// $data = SuratDisposisi::with(['suratMasukId','pemberi','penerima'])->orderBy('id_surat_disposisi','desc')->get();
 
 			return Datatables::of($data)
@@ -51,11 +51,11 @@ class SuratDisposisiController extends Controller
 					return $btn;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_disposisi.'" id="check_'.$row->id_surat_disposisi.'" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_disposisi.'" id="check_'.$row->id_surat_disposisi.'" name="check" value="'.$row->id_surat_disposisi.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action', 'check'])
-				->make(true);;
+				->make(true);
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
@@ -139,7 +139,7 @@ class SuratDisposisiController extends Controller
 				$newdata->surat_masuk_id = $request->surat_masuk_id;
 				$newdata->pemberi_disposisi_id = $request->pemberi_disposisi_id;
 				$newdata->penerima_disposisi_id = $request->penerima_disposisi_id;
-				$newdata->catatan_disposisi = $request->catatan_disposisi ;
+				$newdata->catatan_disposisi = $request->catatan_disposisi;
 			}else {
 				$newdata->pemberi_disposisi2_id = $request->pemberi_disposisi_id;
 				$newdata->penerima_disposisi2_id = $request->penerima_disposisi_id;
@@ -262,9 +262,12 @@ class SuratDisposisiController extends Controller
 		return  $dompdf->stream();
 	}
 
-	public function getId() {
-		$data = SuratDisposisi::get()->pluck('id_surat_disposisi');
-		return response()->json($data);
+	public function getId(Request $request) {
+        return $request->arrSuratId;
+		// $data = SuratDisposisi::pluck('id_surat_disposisi')->where($request->arrSuratId);
+		// $data = SuratDisposisi::where('id_surat_disposisi',$request->arrSuratId)->pluck('id_surat_disposisi');
+		// $data = ['1','2','3'];
+		// return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {

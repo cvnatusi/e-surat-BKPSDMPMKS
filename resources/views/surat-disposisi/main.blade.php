@@ -1,6 +1,7 @@
 @extends('component.app')
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/select/1.2.6/css/select.dataTables.min.css"> --}}
 @endsection
 @section('content')
     <h6 class="mb-0 text-uppercase">{{ $data['title'] }}</h6>
@@ -20,12 +21,12 @@
                         <button type="button" class="btn btn-danger form-control" onclick="deleteAll()" ><i
                                 class="bx bx-trash me-1"></i>Hapus</button>
                     </div>
-                    <div class="col-md-4" id="span"></div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-6" id="span"></div>
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
                         <input type="date" id="min" class="form-control datepickertanggal" value="{{date('Y-m-01')}}">
                     </div>
-                    <div class="col-md-3 mb-3 panelTanggal">
+                    <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Akhir</label>
                         <input type="date" id="max" class="form-control datepickertanggal" value="{{date('Y-m-t')}}">
                     </div>
@@ -57,52 +58,87 @@
 @endsection
 @section('js')
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
+    {{-- <script type="text/javascript" src="https://cdn.datatables.net/select/1.2.6/js/dataTables.select.min.js"></script> --}}
     <script type="text/javascript">
+        // var arrSuratId = new Array([103]);
+        var arrSuratId = [];
         function showButtonDelete() {
             // console.log(listCheked.length);
-            if (listCheked.length >= 1) {
+            if (arrSuratId.length >= 1) {
                 $('#delete_all').css('display', 'block');
-                $('#span').removeClass('col-md-4').addClass('col-md-2');
+                $('#span').removeClass('col-md-6').addClass('col-md-4');
             } else {
                 $('#delete_all').css('display', 'none');
-                $('#span').removeClass('col-md-2').addClass('col-md-4');
+                $('#span').removeClass('col-md-4').addClass('col-md-6');
             }
         }
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
+            // console.log(arrSuratId);
             showButtonDelete()
         }
 
         function checkAll() {
-            if($('#check_').prop('checked')) {
-                $.post("{!! route('get-id') !!}", {
-                    // id: id
-                }).done(function(data) {
-                    listCheked = [];
-                    listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
-                    showButtonDelete()
-                    // console.log(data);
-                })
-            } else {
-                listCheked.forEach(element => {
-                    $('#check_' + element).prop('checked', false);
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
                 });
+                $('.row_surat').prop('checked', true);
+                $.post("{!! route('get-id') !!}", {
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
+                }).done(function(data) {
+                    listCheked = data;
+                    console.log(listCheked);
+                    showButtonDelete();
+                });
+            } else {
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
                 listCheked = [];
-                showButtonDelete()
-                // console.log('false');
+                showButtonDelete();
             }
-
         }
+
+        // function checkAll() {
+        //     if($('#check_').prop('checked')) {
+
+        //       $.each($('.row_surat'),function (i,v) {
+        //         if ($(v).is(':checked')) {
+        //             arrSuratId.push($(v).data('id'))
+        //         }
+        //       })
+        //       $('.row_surat').prop('checked',true)
+        //         // $.post("{!! route('get-id') !!}", {
+        //         //     id: arrSuratId.join(',')
+        //         // }).done(function(data) {
+        //         //     listCheked = [];
+        //         //     listCheked = data;
+        //         //     listCheked.forEach(element => {
+        //         //         $('#check_' + element).prop('checked', true);
+        //         //     });
+        //         //     showButtonDelete()
+        //         //     // console.log(data);
+        //         // })
+        //     } else {
+        //       $('.row_surat').prop('checked',false)
+        //         listCheked.forEach(element => {
+        //             $('#check_' + element).prop('checked', false);
+        //         });
+        //         listCheked = [];
+        //         showButtonDelete()
+        //         // console.log('false');
+        //     }
+        //       console.log(arrSuratId);
+        // }
 
         // filter tanggal awal akhir
         $('#min').change(() => {
@@ -159,7 +195,7 @@
             confirmButtonText: 'Ya, Hapus Data!',
           }).then((result) => {
             if (result.value) {
-              $.post("{!! route('delete-all-surat-disposisi') !!}",{listId: listCheked}).done(function(data){
+              $.post("{!! route('delete-all-surat-disposisi') !!}",{listId: arrSuratId}).done(function(data){
                 Lobibox.notify('success', {
                   pauseDelayOnHover: true,
                   size: 'mini',
@@ -204,12 +240,14 @@
         }
 
         let listCheked = [];
+        var table = $('#datagrid');
 
         function loadTable(dateStart, dateEnd) {
-            var table = $('#datagrid').DataTable({
+            table.DataTable({
                 processing: true,
                 serverSide: true,
-                destroy: true,
+                // stateSave: true,
+                // destroy: true,
                 "pageLength": 25,
                 language: {
                     searchPlaceholder: "Ketikkan yang dicari"
@@ -222,6 +260,17 @@
                         tglAkhir: dateEnd
                     }
                 },
+                // 'columnDefs': [
+                //   {
+                //     'targets': 0,
+                //     'checkboxes': {
+                //       'selectRow': true
+                //     }
+                //   }
+                // ],
+                // 'select': {
+                //   'style': 'multi'
+                // },
 
                 columns: [
                     {
@@ -232,12 +281,30 @@
                         render: function (data, type, row) {
                             if(listCheked.includes(row.id_surat_disposisi)) {
                                 // console.log('asndas');
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_disposisi}" id="check_${row.id_surat_disposisi}" name="check" value="${row.id_surat_disposisi}" type="checkbox" checked></a>`;
+                                if (arrSuratId.includes(row.id_surat_disposisi)) {
+                                    return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_disposisi}" id="check_${row.id_surat_disposisi}" name="check" value="${row.id_surat_disposisi}" type="checkbox" checked></a>`;
+                                  }
+                                  return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_disposisi}" id="check_${row.id_surat_disposisi}" name="check" value="${row.id_surat_disposisi}" type="checkbox"></a>`;
                             } else {
                                 return data;
                             }
-                        }
+                        },
+                        // targets: 0,
+                        // data: null,
+                        // // defaultContent: "",
+                        // orderable:false,
+                        // checkboxes: {
+                        //     selectRow: true,
+                        //     selectAllPages: false
+                        // },
                     },
+                    // {
+                    //   targets: 0,
+                    //   data: null,
+                    //   defaultContent: "",
+                    //   orderable:false,
+                    //   className: "select-checkbox"
+                    // },
                     {
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
@@ -315,7 +382,11 @@
                 ]
 
             });
+
         }
+        table.on('click', 'tbody tr', function (e) {
+            e.currentTarget.classList.toggle('selected');
+        });
         $('.btn-add').click(function() {
             // $('.preloader').show();
             $('.main-page').hide();

@@ -90,6 +90,7 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::get('/', [RoleController::class, 'index'])->name('level-pengguna');
 				Route::post('/form', [RoleController::class, 'form'])->name('form-level-pengguna');
 				Route::post('/store', [RoleController::class, 'store'])->name('store-level-pengguna');
+				Route::post('/destroy', [RoleController::class, 'destroy'])->name('destroy-level-pengguna');
 			});
 			Route::group(array('prefix' => 'instansi'), function () {
 				Route::get('/', [InstansiController::class, 'index'])->name('instansi');
@@ -235,7 +236,7 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/show', [SuratKeputusanController::class, 'show'])->name('show-surat-keputusan');
 				Route::post('/getSuratSKByDate', [SuratKeputusanController::class, 'getSuratSKByDate'])->name('getSuratSKByDate');
 				Route::post('/get-id-surat-keputusan', [SuratKeputusanController::class, 'getId'])->name('get-id-surat-keputusan');
-				Route::post('/delete-surat-keputusan', [SuratKeputusanController::class, 'deleteAll'])->name('delete-surat-keputusan');
+				Route::post('/delete-all-surat-keputusan', [SuratKeputusanController::class, 'deleteAll'])->name('delete-all-surat-keputusan');
 			});
 			Route::group(array('prefix' => 'tanda-tangan-elektronik'), function () {
 				Route::get('/', [TteController::class, 'index'])->name('tanda-tangan-elektronik');

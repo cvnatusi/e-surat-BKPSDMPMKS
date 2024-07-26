@@ -14,15 +14,15 @@
                     <div class="row mb-3">
                         <input type="hidden" name="id" id="id">
                         <div class="col-md-4">
-                            <label>Pilih Level Pengguna <small>*)</small></label>
+                            <label>Pilih Level Penanda Tangan <small>*)</small></label>
                             <select name="level_pengguna" id="level_pengguna" class="form-control level_pengguna" onchange="getPengguna(this.value)">
-                              <option value="">Pilih Level Pengguna</option>
+                              <option value="">-- Pilih Level Penanda Tangan --</option>
                               <option value="0">SEKRETARIS DAERAH (SEKDA)</option>
                               <option value="1">KABAN</option>
                             </select>
                         </div>
                         <div class="col-md-4" >
-                            <label>Pilih Pengguna <small>*)</small></label>
+                            <label>Pilih Penanda Tangan <small>*)</small></label>
                             <select name="user_id" id="user_id" class="form-control user_id">
                                 {{-- <option value="">Pilih Pengguna</option>
                                 <option value="0" >Ir. TOTOK HARTONO</option> --}}
@@ -81,12 +81,13 @@
         allowClear: Boolean($(this).data('allow-clear')),
         tags: true,
     });
-    // $('.user_id').select2('destroy'); 
+    // $('.user_id').select2('destroy');
     $('.user_id').css('display', 'block');
     $('.user_id').select2({
         theme: 'bootstrap4',
         width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-        placeholder: $(this).data('placeholder'),
+        // placeholder: $(this).data('placeholder'),
+        placeholder: '-- Pilih Penanda Tangan --',
         allowClear: Boolean($(this).data('allow-clear')),
         tags: true,
     });
@@ -116,26 +117,29 @@
         var table = $('#datatable').DataTable({
             processing: true,
             serverSide: true,
+            language: {
+                searchPlaceholder: "Ketikkan yang dicari"
+            },
             ajax: "{{ route('penandaTanganSurat') }}",
             columns: [
                 {
-                    data: 'DT_RowIndex', 
+                    data: 'DT_RowIndex',
                     name: 'DT_RowIndex',
-                    
+
                 },
                 {
-                    data: 'pengguna.nama_asn', 
+                    data: 'pengguna.nama_asn',
                     name: 'pengguna.nama_asn'
                 },
                 {
-                    data: 'level', 
+                    data: 'level',
                     name: 'level'
                 },
                 {
-                    data: 'action', 
-                    name: 'action', 
-                    class: 'text-center', 
-                    orderable: false, 
+                    data: 'action',
+                    name: 'action',
+                    class: 'text-center',
+                    orderable: false,
                     searchable: false},
             ]
         });
@@ -156,7 +160,7 @@
                     url: "{{ route('penandaTanganSuratStore') }}",
                     type: "POST",
                     dataType: 'json',
-                    processData: false, 
+                    processData: false,
                     contentType: false,
                     success: function (data) {
                         if (data.code=='200') {

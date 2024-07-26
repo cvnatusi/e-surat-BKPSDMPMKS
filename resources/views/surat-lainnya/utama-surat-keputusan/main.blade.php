@@ -11,13 +11,13 @@
       <div class="col-md-12" style="margin-bottom: 20px;">
         <div class="row">
             <div class="col-md-2">
-                <label class="form-label">Tambah Surat Keputusan</label>
+                <label class="form-label">Tambah SK</label>
                 <button type="button" class="btn btn-primary btn-add form-control"><i
                         class="bx bx-plus me-1"></i>Surat Baru</button>
             </div>
             <div class="col-md-2" id="delete_all" style="display: none">
               <label class="form-label">Hapus Semua Surat</label>
-              <button type="button" class="btn btn-danger form-control"><i
+              <button type="button" class="btn btn-danger form-control" onclick="deleteAll()"><i
                       class="bx bx-trash me-1"></i>Hapus</button>
             </div>
             <div class="col-md-4" id="span"></div>
@@ -54,8 +54,9 @@
   <script src="{{asset('assets/js/number_format.js')}}"></script>
   <script type="text/javascript">
         let listCheked = [];
+        var arrSuratId = [];
         function showDeleteAll() {
-          if (listCheked.length >= 1) {
+          if (arrSuratId.length >= 1) {
             $('#delete_all').css('display', 'block');
             $('#span').removeClass('col-md-4').addClass('col-md-2');
           } else {
@@ -68,37 +69,60 @@
             var statusChecked = $(ini).is(":checked");
             console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
             // console.log(listCheked);
             showDeleteAll();
         }
 
         function checkAll() {
-            if($('#check_').prop('checked')) {
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
+                });
+                $('.row_surat').prop('checked', true);
                 $.post("{!! route('get-id-surat-keputusan') !!}", {
-                    // id: id
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
                 }).done(function(data) {
-                    listCheked = [];
                     listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
+                    console.log(listCheked);
                     showDeleteAll();
-                    // console.log(data);
-                })
+                });
             } else {
-              listCheked.forEach(element => {
-                  $('#check_' + element).prop('checked', false);
-              });
-              listCheked = [];
-              showDeleteAll();
-              // console.log('false');
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
+                listCheked = [];
+                showDeleteAll();
             }
         }
+
+        // function checkAll() {
+        //     if($('#check_').prop('checked')) {
+        //         $.post("{!! route('get-id-surat-keputusan') !!}", {
+        //             // id: id
+        //         }).done(function(data) {
+        //             listCheked = [];
+        //             listCheked = data;
+        //             listCheked.forEach(element => {
+        //                 $('#check_' + element).prop('checked', true);
+        //             });
+        //             showDeleteAll();
+        //             // console.log(data);
+        //         })
+        //     } else {
+        //       listCheked.forEach(element => {
+        //           $('#check_' + element).prop('checked', false);
+        //       });
+        //       listCheked = [];
+        //       showDeleteAll();
+        //       // console.log('false');
+        //     }
+        // }
 
         function deleteAll() {
           swal({
@@ -110,7 +134,7 @@
             confirmButtonText: 'Ya, Hapus Data!',
           }).then((result) => {
             if (result.value) {
-              $.post("{!! route('delete-surat-keputusan') !!}",{listId: listCheked}).done(function(data){
+              $.post("{!! route('delete-all-surat-keputusan') !!}",{listId: arrSuratId}).done(function(data){
                 Lobibox.notify('success', {
                   pauseDelayOnHover: true,
                   size: 'mini',
@@ -153,6 +177,7 @@
               }
             });
         }
+
     $('#min').change(() => {
     var start = $('#min').val()
     var end = $('#max').val()
@@ -199,7 +224,7 @@
         searchable: false,
         render: function (data, type, row) {
             if(listCheked.includes(row.id_surat_keputusan)) {
-                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_keputusan}" id="check_${row.id_surat_keputusan}" name="check" value="${row.id_surat_keputusan}" type="checkbox" checked></a>`;
+                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_keputusan}" id="check_${row.id_surat_keputusan}" name="check" value="${row.id_surat_keputusan}" type="checkbox" checked></a>`;
             } else {
                 return data;
             }

@@ -88,6 +88,13 @@
           }
         }
       },
+    // {
+    //     data: 'level_user.name',
+    //     name: 'level_user.name',
+    //     render: function(data, type, row) {
+    //         return '<p style="color:black">'+data+'</p>';
+    //     }
+    //   },
       {
         data: 'action',
         name: 'action',

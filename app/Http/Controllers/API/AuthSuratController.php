@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\TAPMAN\Pegawai;
 use App\Models\Users;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,11 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthSuratController extends Controller
 {
+  public function getUser() {
+    $data = Users::get();
+    return response()->json(['status' => 'ok', 'data' => $data]);
+  }
+
   public function login(Request $request) {
     $validator = Validator::make($request->all(), [
         'nip' => 'required',
@@ -25,6 +31,7 @@ class AuthSuratController extends Controller
         $data['token'] = $auth->createToken('auth_token')->plainTextToken;
         $data['name'] = $auth->name;
         $data['nip'] = $auth->email;
+        $data['level_user'] = $auth->level_user;
         return response()->json([
             'success' => true,
             'code' => 200,
@@ -38,4 +45,5 @@ class AuthSuratController extends Controller
     ]);
     }
   }
+
 }

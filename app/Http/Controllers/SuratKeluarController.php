@@ -118,7 +118,7 @@ class SuratKeluarController extends Controller
 					return $join;
 				})
 				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_keluar.'" id="check_'.$row->id_surat_keluar.'" name="check" value="'.$row->id_surat_keluar.'" type="checkbox"></a>';
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_keluar.'" id="check_'.$row->id_surat_keluar.'" name="check" value="'.$row->id_surat_keluar.'" type="checkbox"></a>';
 					return $btn;
 				})
 				// ->addColumn('verifKABAN', function($row){
@@ -225,7 +225,128 @@ class SuratKeluarController extends Controller
 			$findAgendaTerakhir = 0;
 		}else {
 			$findAgendaTerakhir = $findAgendaTerakhir + 1;
-		}
+        }
+
+        // try {
+        //     DB::beginTransaction();
+
+        //     $newdata = (!empty($request->id)) ? SuratKeluar::find($request->id) : new SuratKeluar;
+
+        //     // CEK NO AGENDA BERDASARKAN AGENDA TERAKHIR ATAU SEDANG DI EDIT
+        //     if (!empty($request->id)) {
+        //         $newdata->no_agenda = $newdata->no_agenda;
+        //     } else {
+        //         $newdata->no_agenda = $findAgendaTerakhir;
+        //     }
+
+        //     $newdata->tujuan_surat_id = implode(",", $id_tujuan);
+
+        //     // CEK BUAT SURAT ELEKTRONIK
+        //     if (!empty($request->buatSuratElektronik)) {
+        //         $newdata->surat_elektronik = $request->buatSuratElektronik;
+        //     } else {
+        //         $newdata->surat_elektronik = 'N';
+        //     }
+
+        //     // Inisialisasi variabel $noSurat
+        //     $noSurat = '';
+
+        //     // CEK KETIKA USER BUAT SURAT MANUAL
+        //     if (!empty($request->noSuratManual)) {
+        //         $newdata->surat_manual = $request->noSuratManual;
+        //         if (!empty($request->no_surat1)) {
+        //             $newdata->no_surat1 = $request->no_surat1;
+        //             $newdata->no_surat2 = $request->no_surat2;
+        //             $newdata->no_surat3 = $request->no_surat3;
+        //             $newdata->no_surat4 = $request->no_surat4;
+
+        //             // KETIKA BUAT SURAT MANUAL DAN SURAT ITU ELEKTRONIK
+        //             if ($request->buatSuratElektronik == 'Y') {
+        //                 $noSurat = $request->no_surat2 . '/E.' . $request->no_surat1 . '/432.403/' . $request->no_surat4;
+        //             } else {
+        //                 $noSurat = $request->no_surat2 . '/' . $request->no_surat1 . '/432.403/' . $request->no_surat4;
+        //             }
+        //         }
+        //         $newdata->nomor_surat_keluar = $noSurat;
+        //     } else {
+        //         // CEK KETIKA USER TIDAK BUAT SURAT MANUAL, DISINI GENERATEKAN NOMOR SURAT OTOMATIS
+        //         $newdata->surat_manual = 'N';
+        //         if (empty($request->id)) {
+        //             $findJenisSurat = JenisSurat::findOrFail($request->jenis_surat_id);
+        //             $kodeJenisSurat = $findJenisSurat->kode_jenis_surat;
+        //             $noUrutSurat = SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))
+        //                 ->whereNull('deleted_at')
+        //                 ->where('surat_manual', 'N')
+        //                 ->orderBy('id_surat_keluar', 'DESC')
+        //                 ->count(); // 0
+        //             if ($noUrutSurat == 0) {
+        //                 $noUrutSurat = 1;
+        //             } else {
+        //                 $noUrutSurat = $noUrutSurat + 1;
+        //             }
+
+        //             // CEK KETIKA USER BUAT SURAT ELEKTRONIK, DISINI GENERATEKAN NOMOR SURAT OTOMATIS
+        //             if ($request->buatSuratElektronik == 'Y') {
+        //                 $noSurat = $kodeJenisSurat . '/E.' . $noUrutSurat . '/432.403/' . $request->no_surat4;
+        //             } else {
+        //                 $noSurat = $kodeJenisSurat . '/' . $noUrutSurat . '/432.403/' . $request->no_surat4;
+        //             }
+        //             $newdata->nomor_surat_keluar = $noSurat;
+        //         } else {
+        //             // Jika update dan noSurat tidak dihasilkan di jalur else, inisialisasi noSurat dengan nilai dari database
+        //             $noSurat = $newdata->nomor_surat_keluar;
+        //         }
+        //     }
+
+        //     $cekNoSurat = SuratKeluar::where('nomor_surat_keluar', 'ilike', '%' . $noSurat . '%')->first(); // 0
+        //     if (!empty($cekNoSurat) && $cekNoSurat->id != $newdata->id) {
+        //         $cekTerakhir = SuratKeluar::where('tanggal_surat', $request->tanggal_surat)->latest()->first();
+        //         if (!empty($cekTerakhir)) {
+        //             $return = ['status' => 'error', 'code' => '201', 'message' => 'Nomor Surat Duplikat!! Dengan Surat Pada Tanggal ' . $cekNoSurat->tanggal_surat];
+        //         } else {
+        //             $return = ['status' => 'error', 'code' => '201', 'message' => 'Nomor Surat Duplikat!!'];
+        //         }
+        //         DB::rollback();
+        //         return response()->json($return);
+        //     }
+
+        //     $newdata->sifat_surat_id = $request->sifat_surat_id;
+        //     $newdata->jenis_surat_id = $request->jenis_surat_id;
+        //     $newdata->tanggal_surat = $request->tanggal_surat;
+        //     $newdata->perihal_surat = $request->perihal_surat;
+        //     $newdata->isi_ringkas_surat = $request->isi_ringkas_surat;
+        //     $newdata->user_id = $request->user_id;
+        //     if (!empty($request->ttd)) {
+        //         $newdata->ttd = $request->ttd;
+        //     } else {
+        //         $newdata->ttd = 'f';
+        //     }
+        //     if (!empty($request->file_scan)) {
+        //         if (!empty($newdata->file_scan)) {
+        //             Storage::delete($newdata->file_scan);
+        //             unlink(public_path('surat-keluar/' . $newdata->file_scan));
+        //         }
+        //         $file = $request->file('file_scan');
+        //         if ($request->hasFile('file_scan')) {
+        //             $filename = $file->getClientOriginalName();
+        //             $ext_foto = $file->getClientOriginalExtension();
+        //             $filename = $newdata->no_agenda . "-" . date('YmdHis') . "." . $ext_foto;
+        //             $file->storeAs('public/surat-keluar/', $filename);
+        //             file_put_contents(public_path('storage/surat-keluar/' . $filename), file_get_contents($file->getRealPath()));
+        //             $newdata->file_scan = $filename;
+        //         }
+        //     }
+        //     $newdata->save();
+        //     DB::commit();
+        //     $return = ['status' => 'success', 'code' => '200', 'message' => 'Data Berhasil Disimpan !!'];
+        //     return response()->json($return);
+        // } catch (\Exception $e) {
+        //     DB::rollback();
+        //     $return = ['status' => 'error', 'code' => '500', 'message' => 'Terjadi kesalahan pada server!'];
+        //     return response()->json($return);
+        // }
+
+
 		try{
 			$newdata = (!empty($request->id)) ? SuratKeluar::find($request->id) : new SuratKeluar;
 			// CEK NO AGENDA BERDASARKAN AGENDA TERAKHIR ATAU SEDANG DI EDIT
@@ -242,6 +363,7 @@ class SuratKeluarController extends Controller
 			}else {
 				$newdata->surat_elektronik = 'N';
 			}
+
 			// CEK KETIKA USER BUAT SURAT MANUAL
 			if (!empty($request->noSuratManual)) {
 				$newdata->surat_manual = $request->noSuratManual;
@@ -279,19 +401,20 @@ class SuratKeluarController extends Controller
 						$noSurat = $kodeJenisSurat.'/'.$noUrutSurat.'/432.403/'.$request->no_surat4;
 					}
 					$newdata->nomor_surat_keluar = $noSurat;
+
 				}
 			}
-			$cekNoSurat = SuratKeluar::where('nomor_surat_keluar','ilike','%'.$noSurat.'%')->first(); // 0
-			if (!empty($cekNoSurat)) {
-				$cekTerakhir = SuratKeluar::where('tanggal_surat',$request->tanggal_surat)->latest()->first();
-				if (!empty($cekTerakhir)) {
-					$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!! Dengan Surat Pada Tanggal '.$cekNoSurat->tanggal_surat];
-				}else {
-					$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!!'];
-				}
-				DB::rollback();
-				return response()->json($return);
-			}
+			// $cekNoSurat = SuratKeluar::where('nomor_surat_keluar','ilike','%'.$noSurat.'%')->first(); // 0
+			// if (!empty($cekNoSurat)) {
+			// 	$cekTerakhir = SuratKeluar::where('tanggal_surat',$request->tanggal_surat)->latest()->first();
+			// 	if (!empty($cekTerakhir)) {
+			// 		$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!! Dengan Surat Pada Tanggal '.$cekNoSurat->tanggal_surat];
+			// 	}else {
+			// 		$return = ['status'=>'error', 'code'=>'201', 'message'=>'Nomor Surat Duplikat!!'];
+			// 	}
+			// 	DB::rollback();
+			// 	return response()->json($return);
+			// }
 			$newdata->sifat_surat_id = $request->sifat_surat_id;
 			$newdata->jenis_surat_id = $request->jenis_surat_id;
 			$newdata->tanggal_surat = $request->tanggal_surat;
@@ -498,13 +621,15 @@ class SuratKeluarController extends Controller
 	return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)->latest()->first();
 	}
 
-	public function getId() {
-		$data = SuratKeluar::get()->pluck('id_surat_keluar');
-		return response()->json($data);
+	public function getId(Request $request) {
+        return $request->arrSuratId;
+		// $data = SuratKeluar::wher($request->arrSuratId)->pluck('id_surat_keluar');
+		// return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {
-		$dataId = $request->listId; 
+		$dataId = $request->listId;
+        // return $dataId;
 		if (is_array($dataId)) {
 			foreach ($dataId as $id) {
 				$suratKeluar = SuratKeluar::find($id);

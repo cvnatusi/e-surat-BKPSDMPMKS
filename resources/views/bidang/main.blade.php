@@ -76,6 +76,9 @@
         var table = $('#datatable').DataTable({
             processing: true,
             serverSide: true,
+            language: {
+                searchPlaceholder: "Ketikkan yang dicari"
+            },
             ajax: "{{ route('bidang') }}",
             columns: [
                 {data: 'DT_RowIndex', name: 'DT_RowIndex'},
