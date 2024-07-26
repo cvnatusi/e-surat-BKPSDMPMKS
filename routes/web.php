@@ -236,7 +236,7 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::post('/show', [SuratKeputusanController::class, 'show'])->name('show-surat-keputusan');
 				Route::post('/getSuratSKByDate', [SuratKeputusanController::class, 'getSuratSKByDate'])->name('getSuratSKByDate');
 				Route::post('/get-id-surat-keputusan', [SuratKeputusanController::class, 'getId'])->name('get-id-surat-keputusan');
-				Route::post('/delete-surat-keputusan', [SuratKeputusanController::class, 'deleteAll'])->name('delete-surat-keputusan');
+				Route::post('/delete-all-surat-keputusan', [SuratKeputusanController::class, 'deleteAll'])->name('delete-all-surat-keputusan');
 			});
 			Route::group(array('prefix' => 'tanda-tangan-elektronik'), function () {
 				Route::get('/', [TteController::class, 'index'])->name('tanda-tangan-elektronik');
