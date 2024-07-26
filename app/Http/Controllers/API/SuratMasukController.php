@@ -73,7 +73,8 @@ class SuratMasukController extends Controller
       }else {
         $surat_masuk->sampai_bkpsdm = 'N';
       }
-      $surat_masuk->true;
+      // $surat_masuk->true;
+      $surat_masuk->save();
 
       DB::commit();
       return response()->json([
