@@ -9,6 +9,7 @@ use App\Models\SuratDisposisi;
 use App\Models\SuratMasuk;
 use Illuminate\Http\Request;
 use DB, Auth;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class SuratDisposisiController extends Controller
 {
@@ -98,6 +99,28 @@ class SuratDisposisiController extends Controller
       return response()->json(['status' => 'success', 'code' => 200, 'data' => $data]);
     } else {
       return response()->json(['status' => 'error', 'code' => 500, 'data' => '']);
+    }
+  }
+
+  public function storeSuratDisposisi(Request $request) {
+    try {
+      DB::beginTransaction();
+      
+      DB::commit();
+      return response()->json([
+        'status' => 'success',
+        'code' => 200,
+        'message' => 'Berhasil menyimpan data',
+        'data' => ''
+      ]);
+    } catch(\Exception $e) {
+      throw($e);
+      DB::rollback();
+      return response()->json([
+        'status' => 'error',
+        'code' => 500,
+        'message' => $e->getMessage()
+      ]);
     }
   }
 }

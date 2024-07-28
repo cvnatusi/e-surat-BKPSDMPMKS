@@ -58,6 +58,7 @@ Route::group(array('prefix' => 'surat-disposisi'), function () {
     Route::get('/surat-disposisi', [SuratDisposisiController::class, 'indexSuratDisposisi'])->name('index-surat-disposisi');
     Route::get('/get-diteruskan-kepada', [SuratDisposisiController::class, 'diteruskanKepada'])->name('get-diteruskan-kepada');
     Route::get('/get-dengan-hormat-harap', [SuratDisposisiController::class, 'denganHarap'])->name('get-dengan-hormat-harap');
+    Route::get('/store-surat-disposisi', [SuratDisposisiController::class, 'denganHarap'])->name('store-surat-disposisi');
 });
 
 Route::group(array('prefix' => 'asn'), function () {
