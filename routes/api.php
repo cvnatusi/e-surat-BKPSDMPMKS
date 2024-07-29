@@ -9,6 +9,16 @@ use App\Http\Controllers\API\ASNController;
 use App\Http\Controllers\API\SuratMasukController;
 use App\Http\Controllers\API\SuratDisposisiController;
 use App\Http\Controllers\API\AuthSuratController;
+use App\Http\Controllers\API\DataMaster\BidangController;
+use App\Http\Controllers\API\DataMaster\InstansiController;
+use App\Http\Controllers\API\DataMaster\JabatanController;
+use App\Http\Controllers\API\DataMaster\JenisSuratController;
+use App\Http\Controllers\API\DataMaster\LevelPenggunaController;
+use App\Http\Controllers\API\DataMaster\MasterASNController;
+use App\Http\Controllers\API\DataMaster\PenandaTanganSuratController;
+use App\Http\Controllers\API\DataMaster\PenggunaController;
+use App\Http\Controllers\API\DataMaster\SifatSuratController;
+use App\Http\Controllers\API\SuratKeluarController;
 use Psy\CodeCleaner\FunctionContextPass;
 
 /*
@@ -42,30 +52,61 @@ Route::group(['middleware' => ['authapi:sanctum']], function () {
 });
 
 
+# API ANDOROID E-SURAT
+Route::post('/surat-login', [AuthSuratController::class, 'login'])->name('index-login');
 
 Route::group(array('prefix' => 'surat-masuk'), function () {
   Route::get('/', [SuratMasukController::class, 'indexSuratMasuk'])->name('index-surat-masuk');
-  Route::get('/get-sifat-surat', [SuratMasukController::class, 'getSifatSurat'])->name('get-sifat-surat');
-  Route::get('/get-jenis-surat', [SuratMasukController::class, 'getJenisSurat'])->name('get-jenis-surat');
+  // Route::get('/get-sifat-surat', [SuratMasukController::class, 'getSifatSurat'])->name('get-sifat-surat');
+  // Route::get('/get-jenis-surat', [SuratMasukController::class, 'getJenisSurat'])->name('get-jenis-surat');
   Route::get('/get-detail-surat-masuk/{id}', [SuratMasukController::class, 'getDetailSuratMasuk'])->name('get-detail-surat-masuk');
-  Route::get('/get-pengirim-surat', [SuratMasukController::class, 'getPengirimSurat'])->name('get-pengirim-surat');
+  // Route::get('/get-pengirim-surat', [SuratMasukController::class, 'getPengirimSurat'])->name('get-pengirim-surat');
   Route::get('/download-pdf-surat-masuk/{id}', [SuratMasukController::class, 'downloadFileSuratMasuk'])->name('download-pdf-surat-masuk');
   Route::post('/create-surat-masuk', [SuratMasukController::class, 'createSuratMasuk'])->name('create-surat-masuk');
   Route::post('/get-range-surat-masuk', [SuratMasukController::class, 'getRangeSuratMasuk'])->name('get-range-surat-masuk');
 });
 
 Route::group(array('prefix' => 'surat-disposisi'), function () {
-    Route::get('/surat-disposisi', [SuratDisposisiController::class, 'indexSuratDisposisi'])->name('index-surat-disposisi');
-    Route::get('/get-diteruskan-kepada', [SuratDisposisiController::class, 'diteruskanKepada'])->name('get-diteruskan-kepada');
-    Route::get('/get-dengan-hormat-harap', [SuratDisposisiController::class, 'denganHarap'])->name('get-dengan-hormat-harap');
-    Route::get('/store-surat-disposisi', [SuratDisposisiController::class, 'denganHarap'])->name('store-surat-disposisi');
+  Route::get('/', [SuratDisposisiController::class, 'indexSuratDisposisi'])->name('index-surat-disposisi');
+  Route::get('/get-diteruskan-kepada', [SuratDisposisiController::class, 'diteruskanKepada'])->name('get-diteruskan-kepada');
+  Route::get('/get-dengan-hormat-harap', [SuratDisposisiController::class, 'denganHarap'])->name('get-dengan-hormat-harap');
+  Route::post('/store-surat-disposisi', [SuratDisposisiController::class, 'storeSuratDisposisi'])->name('store-surat-disposisi');
 });
 
-Route::group(array('prefix' => 'asn'), function () {
-    Route::get('/get-asn', [ASNController::class, 'getASN'])->name('get-asn');
-    Route::get('/get-jabatan', [ASNController::class, 'getJabatan'])->name('get-jabatan');
+Route::group(array('prefix' => 'surat-keluar'), function () {
+  Route::get('/', [SuratKeluarController::class, 'index'])->name('index-surat-keluar');
 });
-Route::post('/surat-login', [AuthSuratController::class, 'login'])->name('index-login');
-Route::get('/get-user', [AuthSuratController::class, 'getUser'])->name('get-user');
+
+Route::group(array('prefix' => 'data-master'), function () {
+  Route::group(array('prefix' => 'pengguna'), function () {
+    Route::get('/', [PenggunaController::class, 'index'])->name('index-pengguna');
+  });
+  Route::group(array('prefix' => 'level-pengguna'), function () {
+    Route::get('/', [LevelPenggunaController::class, 'index'])->name('index-level-pengguna');
+  });
+  Route::group(array('prefix' => 'instansi'), function () {
+    Route::get('/', [InstansiController::class, 'index'])->name('index-instansi');
+  });
+  Route::group(array('prefix' => 'bidang'), function () {
+    Route::get('/', [BidangController::class, 'index'])->name('index-bidang');
+  });
+  Route::group(array('prefix' => 'asn'), function () {
+    Route::get('/', [ASNController::class, 'getASN'])->name('get-asn');
+  });
+  Route::group(array('prefix' => 'jabatan'), function () {
+    Route::get('/', [JabatanController::class, 'index'])->name('index-jabatan');
+  });
+  Route::group(array('prefix' => 'jenis-surat'), function () {
+    Route::get('/', [JenisSuratController::class, 'index'])->name('index-jenis-surat');
+  });
+  Route::group(array('prefix' => 'sifat-surat'), function () {
+    Route::get('/', [SifatSuratController::class, 'index'])->name('index-sifat-surat');
+  });
+  Route::group(array('prefix' => 'penanda-tangan-surat'), function () {
+    Route::get('/', [PenandaTanganSuratController::class, 'index'])->name('index-sifat-surat');
+  });
+});
+
+
 
 

@@ -132,7 +132,7 @@ class SuratMasukController extends Controller
     if(!empty($data)) {
         return response()->json(['status' => 'success', 'message' => 'data ditemukan', 'code' => 200, 'data' => $data]);
     } else {
-        return response()->json(['status' => 'error', 'code' => 500, 'data' => '']);
+        return response()->json(['status' => 'error', 'code' => 400, 'message' => 'data tidak ditemukan !']);
     }
   }
 
@@ -168,7 +168,7 @@ class SuratMasukController extends Controller
             $q->where('pengirim_surat_id', $request->pengirim);
         })
         ->orderBy('tanggal_surat', 'DESC')->get();
-
+        // return $data;
     // if (Auth::user()->level_user != 1) {
     //     $query->whereNull('status_disposisi');
     // }
