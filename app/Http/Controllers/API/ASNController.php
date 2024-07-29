@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 class ASNController extends Controller
 {
     public function getASN() {
-        $data = MasterASN::get();
+        $data = MasterASN::orderBy('id_mst_asn', 'desc')->get();
         if(!empty($data)) {
             return response()->json(['status' => 'success', 'message' => 'data ditemukan', 'code' => 200, 'data' => $data]);
         } else {

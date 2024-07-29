@@ -86,11 +86,11 @@ class SuratDisposisiController extends Controller
     // $data['data'] = SuratDisposisi::with(['suratMasukId'])->find(15);
     $data['penerima'] = MasterASN::whereIn('id_mst_asn', [1,5,6])->get();
     // return $data['penerima'];
-    // if(!empty($data)) {
-    //   return response()->json(['status' => 'success', 'code' => 200, 'data' => $data]);
-    // } else {
-    //   return response()->json(['status' => 'error', 'code' => 500, 'data' => '']);
-    // }
+    if(!empty($data)) {
+      return response()->json(['status' => 'success', 'code' => 200, 'data' => $data]);
+    } else {
+      return response()->json(['status' => 'error', 'code' => 500, 'data' => '']);
+    }
   }
 
   public function denganHarap() {
@@ -105,7 +105,7 @@ class SuratDisposisiController extends Controller
   public function storeSuratDisposisi(Request $request) {
     try {
       DB::beginTransaction();
-      
+
       DB::commit();
       return response()->json([
         'status' => 'success',

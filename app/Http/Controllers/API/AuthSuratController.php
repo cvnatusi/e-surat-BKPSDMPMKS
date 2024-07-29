@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthSuratController extends Controller
 {
-  public function getUser() {
-    $data = Users::get();
-    return response()->json(['status' => 'ok', 'data' => $data]);
-  }
-
   public function login(Request $request) {
     $validator = Validator::make($request->all(), [
         'nip' => 'required',
