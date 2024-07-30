@@ -59,8 +59,9 @@ Route::group(array('prefix' => 'surat-masuk'), function () {
   Route::get('/', [SuratMasukController::class, 'indexSuratMasuk'])->name('index-surat-masuk');
   // Route::get('/get-sifat-surat', [SuratMasukController::class, 'getSifatSurat'])->name('get-sifat-surat');
   // Route::get('/get-jenis-surat', [SuratMasukController::class, 'getJenisSurat'])->name('get-jenis-surat');
+//   Route::get('/get-pengirim-surat', [SuratMasukController::class, 'getPengirimSurat'])->name('get-pengirim-surat');
+  Route::get('/get-agenda-pejabat', [SuratMasukController::class, 'agendaPejabat'])->name('get-agenda-pejabat');
   Route::get('/get-detail-surat-masuk/{id}', [SuratMasukController::class, 'getDetailSuratMasuk'])->name('get-detail-surat-masuk');
-  // Route::get('/get-pengirim-surat', [SuratMasukController::class, 'getPengirimSurat'])->name('get-pengirim-surat');
   Route::get('/download-pdf-surat-masuk/{id}', [SuratMasukController::class, 'downloadFileSuratMasuk'])->name('download-pdf-surat-masuk');
   Route::post('/create-surat-masuk', [SuratMasukController::class, 'createSuratMasuk'])->name('create-surat-masuk');
   Route::post('/get-range-surat-masuk', [SuratMasukController::class, 'getRangeSuratMasuk'])->name('get-range-surat-masuk');

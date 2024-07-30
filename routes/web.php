@@ -215,6 +215,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
 			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
 			Route::post('/get-id', [SuratDisposisiController::class, 'getId'])->name('get-id');
+			Route::get('/get-no-agenda', [SuratDisposisiController::class, 'getNoAgenda'])->name('get-no-agenda');
 			Route::post('/delete-all-surat-disposisi', [SuratDisposisiController::class, 'deleteAll'])->name('delete-all-surat-disposisi');
 		});
 		Route::group(array('prefix' => 'surat-lainnya'), function () {

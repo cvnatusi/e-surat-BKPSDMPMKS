@@ -64,7 +64,7 @@ class SuratMasukController extends Controller
 					return $pengirim_surat;
 				})
 				->addColumn('action', function($row){
-					if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti
+					if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti || Jika login Admin dan Kaban
 						$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info " data-toggle="popover" data-trigger="hover" title="Lihat File Surat" ><i class="bx bx-show me-0"></i></a>';
 						if (Auth::user()->level_user == 1) {
 							$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
