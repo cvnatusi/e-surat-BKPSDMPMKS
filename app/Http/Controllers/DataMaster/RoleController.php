@@ -78,6 +78,19 @@ class RoleController extends Controller
 
             $newdata->name = $request->nama_level_pengguna;
             $newdata->singkatan = $request->singkatan;
+            if($request->singkatan == 'SEKDA') {
+                $newdata->level_user = 0;
+            } elseif($request->singkatan == 'ADMIN') {
+                $newdata->level_user = 1;
+            } elseif($request->singkatan == 'KABAN') {
+                $newdata->level_user = 2;
+            } elseif($request->singkatan == 'SEKRETARIS') {
+                $newdata->level_user = 3;
+            } elseif($request->singkatan == 'KABID') {
+                $newdata->level_user = 4;
+            } elseif($request->singkatan == 'OPERATOR') {
+                $newdata->level_user = 5;
+            }
             $newdata->save();
             DB::commit();
 

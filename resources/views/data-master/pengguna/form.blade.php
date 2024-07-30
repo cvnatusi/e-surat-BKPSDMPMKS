@@ -25,15 +25,15 @@
         <label for="level_user" class="form-label">Level User *</label>
         <select class="form-select select-level-user" name="level_user" id="level_user" onchange="lvUser()">
         <option value="">Pilih Level Pengguna</option>
-          <option value="0" @if (!empty($data)) @if ($data->level_user == '0') selected @endif @endif>SEKRETARIS DAERAH (SEKDA)</option>
+          {{-- <option value="0" @if (!empty($data)) @if ($data->level_user == '0') selected @endif @endif>SEKRETARIS DAERAH (SEKDA)</option>
           <option value="1" @if (!empty($data)) @if ($data->level_user == '1') selected @endif @endif>ADMIN</option>
           <option value="2" @if (!empty($data)) @if ($data->level_user == '2') selected @endif @endif>KABAN</option>
           <option value="3" @if (!empty($data)) @if ($data->level_user == '3') selected @endif @endif>SEKRETARIS</option>
           <option value="4" @if (!empty($data)) @if ($data->level_user == '4') selected @endif @endif>KABID</option>
-          <option value="5" @if (!empty($data)) @if ($data->level_user == '5') selected @endif @endif>OPERATOR SURAT</option>
-          {{-- @foreach ($level_pengguna as $role)
-            <option value="{{$role->id_level_user}}" >{{$role->name}}</option>
-          @endforeach --}}
+          <option value="5" @if (!empty($data)) @if ($data->level_user == '5') selected @endif @endif>OPERATOR SURAT</option> --}}
+          @foreach ($level_pengguna as $role)
+            <option value="{{$role->level_user}}" {{ ($data == $role->level_role ? 'selected' : '') }} >{{$role->singkatan}}</option>
+          @endforeach
 
             {{-- @if (!empty($tanda_tangan))
               @foreach ($tanda_tangan as $ttd)

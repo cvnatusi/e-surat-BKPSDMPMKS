@@ -69,32 +69,32 @@
       //     return `<img src='${url}' width="50" class="center" alt="Kosong">`;
       //   }
       // },
-      {
-        data: 'level_user',
-        name: 'level_user',
-        render: function(data, type, row) {
-          if (data == 2) {
-            return '<p style="color:black">KABAN</p>';
-          }else if (data == 3) {
-            return '<p style="color:black">SEKRETARIS</p>';
-          }else if (data == 4) {
-            return '<p style="color:black">KABID</p>';
-          }else if (data == 5) {
-            return '<p style="color:black">OPERATOR</p>';
-          }else if (data == 1) {
-            return '<p style="color:black">ADMIN</p>';
-          } else if (data == 0) {
-            return '<p style="color:black">SEKRETARIS DAERAH (SEKDA)</p>';
-          }
-        }
-      },
-    // {
-    //     data: 'level_user.name',
-    //     name: 'level_user.name',
+    //   {
+    //     data: 'level_user',
+    //     name: 'level_user',
     //     render: function(data, type, row) {
-    //         return '<p style="color:black">'+data+'</p>';
+    //       if (data == 2) {
+    //         return '<p style="color:black">KABAN</p>';
+    //       }else if (data == 3) {
+    //         return '<p style="color:black">SEKRETARIS</p>';
+    //       }else if (data == 4) {
+    //         return '<p style="color:black">KABID</p>';
+    //       }else if (data == 5) {
+    //         return '<p style="color:black">OPERATOR</p>';
+    //       }else if (data == 1) {
+    //         return '<p style="color:black">ADMIN</p>';
+    //       } else if (data == 0) {
+    //         return '<p style="color:black">SEKRETARIS DAERAH (SEKDA)</p>';
+    //       }
     //     }
     //   },
+    {
+        data: 'level_user.singkatan',
+        name: 'level_user.singkatan',
+        render: function(data, type, row) {
+            return '<p style="color:black">'+data+'</p>';
+        }
+      },
       {
         data: 'action',
         name: 'action',

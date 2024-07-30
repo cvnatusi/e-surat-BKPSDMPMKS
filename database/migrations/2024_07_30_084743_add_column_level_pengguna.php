@@ -14,7 +14,7 @@ class AddColumnLevelPengguna extends Migration
     public function up()
     {
         Schema::table('level_pengguna', function (Blueprint $table) {
-            $table->integer('level_user')->nullable();
+            $table->integer('level_role')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnLevelPengguna extends Migration
     public function down()
     {
         Schema::table('level_pengguna', function (Blueprint $table) {
-            $table->dropColumn('level_user')->nullable();
+            $table->dropColumn('level_role')->nullable();
         });
     }
 }

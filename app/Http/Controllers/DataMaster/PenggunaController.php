@@ -22,7 +22,7 @@ class PenggunaController extends Controller
 		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
 		$this->data['smallTitle'] = "";
 		if ($request->ajax()) {
-			$data = Users::orderBy('id','desc')->get(); //with('level_user')->
+			$data = Users::with('level_user')->orderBy('id','desc')->get(); //with('level_user')->
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){

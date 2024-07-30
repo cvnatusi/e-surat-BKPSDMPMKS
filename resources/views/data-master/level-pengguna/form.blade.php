@@ -8,7 +8,7 @@
       <hr>
       <form class="row g-3 form-save">
         @if(!empty($data))
-            <input type="hidden" class="form-control" name="id" value="{{$data->id_mst_asn}}">
+            <input type="hidden" class="form-control" name="id" value="{{$data->id_level_user}}">
         @endif
         <div class="col-md-6">
           <label for="nama_level_pengguna" class="form-label">Nama Level Pengguna *)</label>
@@ -39,7 +39,7 @@
         tags: true,
       });
   })();
-  
+
   $('.btn-cancel').click(function(e){
     e.preventDefault();
     $('.panel-form').animateCss('bounceOutDown');
@@ -49,7 +49,7 @@
       $('#datagrid').DataTable().ajax.reload();
     });
   });
-  
+
   $('.btn-submit').click(function(e){
    e.preventDefault();
       // $('.btn-submit').html('Please wait...').attr('disabled', true);
@@ -132,4 +132,3 @@
       });
   });
   </script>
-  
