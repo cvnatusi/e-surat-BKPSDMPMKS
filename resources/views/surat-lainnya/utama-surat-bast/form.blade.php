@@ -206,26 +206,19 @@ $('.jumlah').on('input', function () {
   this.value = this.value.replace(/[^0-9]/g, ''); // Hanya mengizinkan angka
 });
 
+
 $('#jumlah').on('input', function () {
 		var input = this;
 		var value = input.value;
-
-		// Hapus semua karakter selain angka
 		var unformattedValue = unformatRupiah(value);
-
-		// Ubah format angka dengan titik sebagai pemisah ribuan
 		var formattedValue = formatRupiah(unformattedValue);
-
-		// Tambahkan "Rp" sebagai awalan
-		input.value = formattedValue; // 'Rp. ' +
+		input.value = 'Rp. ' + formattedValue; //
 	});
 
-	// Fungsi untuk menghapus semua karakter non-digit
 	function unformatRupiah(angka) {
 		return angka.replace(/\D/g, '');
 	}
 
-	// Fungsi untuk mengubah format angka menjadi rupiah
 	function formatRupiah(angka) {
 		var reverse = angka.toString().split('').reverse().join('');
 		var ribuan = reverse.match(/\d{1,3}/g);

@@ -32,7 +32,7 @@
           <option value="4" @if (!empty($data)) @if ($data->level_user == '4') selected @endif @endif>KABID</option>
           <option value="5" @if (!empty($data)) @if ($data->level_user == '5') selected @endif @endif>OPERATOR SURAT</option> --}}
           @foreach ($level_pengguna as $role)
-            <option value="{{$role->level_user}}" {{ ($data == $role->level_role ? 'selected' : '') }} >{{$role->singkatan}}</option>
+            <option value="{{$role->level_role}}" {{ $data ? ($data->level_user == $role->level_role ? 'selected' : '') : '' }} >{{$role->singkatan}}</option>
           @endforeach
 
             {{-- @if (!empty($tanda_tangan))

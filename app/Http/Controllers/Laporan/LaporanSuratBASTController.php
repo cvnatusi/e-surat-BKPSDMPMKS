@@ -46,7 +46,7 @@ class LaporanSuratBASTController extends Controller
 			// $data = SuratBAST::onlyTrashed()->get();
 			return Datatables::of($data)
 			->addIndexColumn()
-            ->addColumn('jumlah', function($row) {
+            ->addColumn('numberFormat', function($row) {
                 return number_format($row->jumlah, 0, ',', '.');
             })
             ->addColumn('formatDate', function($row){

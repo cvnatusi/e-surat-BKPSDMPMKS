@@ -284,8 +284,8 @@
               }
             },
             {
-              data: 'jumlah',
-              name: 'jumlah',
+              data: 'numberFormat',
+              name: 'numberFormat',
               render: function(data, type, row) {
                 return '<p style="color:black">Rp. ' + data + '</p>';
               }
