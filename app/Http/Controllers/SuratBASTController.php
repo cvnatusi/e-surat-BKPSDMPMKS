@@ -116,10 +116,10 @@ class SuratBASTController extends Controller
 			// }
 		}else {
 		$findAgendaTerakhir = SuratBAST::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
-																		->whereYear('tanggal_surat', '=', date('Y'))
-																		->whereNull('deleted_at')
-																		->first()
-																		->max_number;
+                                        ->whereYear('tanggal_surat', '=', date('Y'))
+                                        ->whereNull('deleted_at')
+                                        ->first()
+                                        ->max_number;
 			if ($findAgendaTerakhir == 0) {
 				$findAgendaTerakhir = 1;
 			}else {
@@ -148,7 +148,7 @@ class SuratBASTController extends Controller
 			$newdata->kegiatan = $request->kegiatan;
 			$newdata->tanggal_surat = $request->tanggal_surat;
 			// $newdata->jumlah = $request->jumlah;
-			$newdata->jumlah = str_replace('.', '', $request->jumlah);
+			$newdata->jumlah = str_replace(['Rp. ', '.'], '', $request->jumlah);
 			if (!empty($request->file_scan)) {
 				if (!empty($newdata->file_scan)) {
 					if (is_file($newdata->file_scan)) {

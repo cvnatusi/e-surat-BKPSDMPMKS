@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\DenganHarap;
 use App\Models\Instansi;
 use App\Models\JenisSurat;
+use App\Models\MasterASN;
 use App\Models\SifatSurat;
 use App\Models\SuratDisposisi;
 use App\Models\SuratMasuk;
@@ -175,6 +176,15 @@ class SuratMasukController extends Controller
     // }
     // $data = $query->get();
 
+    if(!empty($data)) {
+      return response()->json(['status' => 'success', 'code' => 200, 'data' => $data]);
+    } else {
+      return response()->json(['status' => 'error', 'code' => 500, 'data' => '']);
+    }
+  }
+
+  public function agendaPejabat(Request $request) {
+    $data['penerima'] = MasterASN::whereIn('id_mst_asn', [1,5,6])->get();
     if(!empty($data)) {
       return response()->json(['status' => 'success', 'code' => 200, 'data' => $data]);
     } else {

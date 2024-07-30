@@ -24,13 +24,13 @@
             @if (Auth::user()->level_user == 2)
               <input type="text" onchange="trigger_suratMasuk(this)" class="form-control" value="" id="nomor_agenda">
             @else
-              <select class="form-select surat_masuk" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
-                 <option value="">-- Pilih No Agenda --</option>
-                 @if (!empty($surat_masuk))
+              <select class="form-select surat_masuk no_agenda" onchange="trigger_suratMasuk(this)" name="surat_masuk_id" id="surat_masuk_id">
+                 {{-- <option value="">-- Pilih No Agenda --</option> --}}
+                 {{-- @if (!empty($surat_masuk))
                    @foreach ($surat_masuk as $sm)
                      <option value="" @if(!empty($data)) @if ($data->surat_masuk_id == $sm->id_surat_masuk) selected="selected" @endif @endif>{{$sm->nomor_surat_masuk}} {{ $sm->perihal_surat }}</option>
                    @endforeach
-                 @endif
+                 @endif --}}
                </select>
             @endif
           </div>
@@ -333,6 +333,111 @@ $('.btn-submit').click(function(e){
     });
 });
 
+    $('.no_agenda').select2({
+        theme: 'bootstrap4',
+        width: '100%',
+        placeholder: 'Cari No Agenda',
+        allowClear: true,
+        minimumInputLength: 1, // Set minimum input length to trigger search
+        ajax: {
+            url: "{{ route('get-no-agenda') }}",
+            dataType: "json",
+            type: "GET",
+            delay: 250,
+            data: function (params) {
+                // var query = {
+                //     search: params.term,
+                //     type: 'public'
+                // };
+                if (!params.term || params.term.length < 1) {
+                    return {
+                        search: ''
+                    };
+                }
+                return {
+                    search: params.term
+                };
+                return query;
+            },
+            processResults: function (data) {
+                return {
+                    results: data.agenda.map(function (item) {
+                        // console.log(item);
+                        return {
+                            text: `${item.no_agenda}`,
+                            id: item.id_surat_masuk,
+                            no_surat_masuk: item.nomor_surat_masuk,
+                            nama_pengirim: item.pengirim.nama_instansi,
+                            tanggal_dikirim: item.tanggal_surat,
+                            tanggal_terima: item.tanggal_terima_surat,
+                            isi_surat: item.isi_ringkas_surat,
+                        };
+                    })
+                };
+            },
+            cache: true,
+        },
+        language: {
+            inputTooShort: function () {
+                return 'Masukkan Nomor Agenda';
+            }
+        },
+        templateSelection: function(container) {
+            $(container.element).attr('data-no_surat', container.no_surat_masuk);
+            $(container.element).attr('data-nama_pengirim', container.nama_pengirim);
+            $(container.element).attr('data-tanggal_surat', container.tanggal_dikirim);
+            $(container.element).attr('data-tanggal_terima_surat', container.tanggal_terima);
+            $(container.element).attr('data-isi_ringkas', container.isi_surat);
+
+            return container.text;
+        }
+        }).on('change', function() {
+            appendValue();
+    });
+
+    function appendValue() {
+        var selectedOption = $('.no_agenda').select2('data')[0];
+        // console.log(selectedOption);
+        // $('#id_anggota').val(selectedOption);
+        $('#noSuratMasuk').val(selectedOption.no_surat_masuk);
+        $('#namaPengirim').val(selectedOption.nama_pengirim);
+        $('#tanggal_dikirim').val(selectedOption.tanggal_dikirim);
+        $('#tanggal_terima_surat').val(selectedOption.tanggal_terima);
+        $('#isiRingkas').val(selectedOption.isi_surat);
+    }
+
+    // $('.no_agendas').select2({
+    //     theme: 'bootstrap4',
+    //     width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+    //     placeholder: $(this).data('placeholder'),
+    //     allowClear: Boolean($(this).data('allow-clear')),
+    //     ajax: {
+    //         url: "{{ route('get-no-agenda') }}",
+    //         dataType: "json",
+    //         type: "GET",
+    //         delay: 250,
+    //         data: function (params) {
+    //             var query = {
+    //                 search: params.term,
+    //                 type: 'public'
+    //             }
+    //             return query;
+    //         },
+    //         processResults: function (data) {
+    //             return {
+    //                 results: data.agenda.map(function (item) {
+    //                     console.log(item);
+    //                     return {
+    //                         text: `${item.no_agenda}`,
+    //                         id: item.id_surat_masuk,
+    //                     };
+    //                 })
+    //             };
+    //         },
+    //         cache: true,
+    //     },
+    // });
+
 // $("#surat_masuk_id").select2(
 //   {
 //     theme: 'bootstrap4',
@@ -368,7 +473,7 @@ $('.btn-submit').click(function(e){
       function trigger_suratMasuk(ini) {
         // let id = $(ini).find(':selected').val();
         let id = $(ini).val();
-        getSuratMasuk(id);
+        // getSuratMasuk(id);
       }
 
       function getSuratMasuk(id) {

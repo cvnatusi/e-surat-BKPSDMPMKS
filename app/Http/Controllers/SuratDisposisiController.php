@@ -283,4 +283,19 @@ class SuratDisposisiController extends Controller
 		}
 		return response()->json(['message' => 'Data berhasuil dihapus']);
 	}
+
+    public function getNoAgenda(Request $request) {
+      $data['agenda'] = SuratMasuk::with('pengirim')
+          ->where('no_agenda', 'like', "%$request->search%")
+          ->whereNull('deleted_at')
+          ->orderBy('id_surat_masuk', 'desc')
+          ->get();
+
+      // $data['agenda'] = SuratMasuk::where('no_agenda', 'Ilike', "%{$request->search}%")
+      //         ->orderBy('id_surat_masuk', 'desc')
+      //         // ->distinct('no_agenda')
+      //         ->get();
+
+      return response()->json($data);
+    }
 }

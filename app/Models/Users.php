@@ -40,6 +40,6 @@ class Users extends Authenticatable
     }
 
     public function level_user() {
-        return $this->belongsTo(LevelPengguna::class, 'level_user');
+        return $this->belongsTo(LevelPengguna::class, 'level_user', 'level_role');
     }
 }
