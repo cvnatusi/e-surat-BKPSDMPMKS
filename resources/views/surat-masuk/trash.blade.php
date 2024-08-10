@@ -9,9 +9,14 @@
         <div class="card-body">
             {{-- filter tanggal --}}
             <div class="table-responsive">
-                    <div>
+                    <div class="row">
                       {{-- <button type="button" class="btn btn-secondary" onclick="btnCancel()" style="width: 170px;"><i class="bx bx-back me-1"></i>Kembali</button> --}}
-                      <button type="button" class="btn btn-info" id="restore_all" style="width: 170px; display: none;"><i class="bx bx-loader-alt me-0"></i>Pulihkan</button>
+                      <div class="col-md-2">
+                          <button type="button" class="btn btn-info" id="restore_all" onclick="restoreAll()" style="width: 170px; display: none;"><i class="bx bx-loader-alt me-0"></i>Pulihkan</button>
+                      </div>
+                      <div class="col-md-2">
+                          <button type="button" class="btn btn-danger" id="delete_all" onclick="deleteAll()" style="width: 170px; display: none;"><i class="bx bx-trash-alt me-0"></i>Hapus Semua</button>
+                      </div>
                     </div>
                 <p></p>
 
@@ -41,61 +46,163 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/index.js"></script>
     <script type="text/javascript">
         let listCheked = [];
+        // var arrSuratId = new Array();
+        var arrSuratId = [];
         function checkedRow(ini) {
             var statusChecked = $(ini).is(":checked");
             // console.log($(ini).is(":checked"));
             if(statusChecked) {
-                listCheked.push(parseInt($(ini).val()));
+                arrSuratId.push(parseInt($(ini).val()));
             } else {
-                let index = listCheked.indexOf($(ini).val());
-                listCheked.splice(index, 1);
+                let index = arrSuratId.indexOf($(ini).val());
+                arrSuratId.splice(index, 1);
             }
+            showButtonRestore();
         }
-
-        // function checkedRows(ini) {
-        //     // console.log($(ini).is(":checked"));
-        //     var statusChecked = $(ini).is(":checked");
-        //     if(statusChecked) {
-        //         listCheked.push(parseInt($(ini).val()));
-        //     } else {
-        //         let index = listCheked.indexOf($(ini).val());
-        //         listCheked.splice(index, 1);
-        //     }
-        //     // showButtonRestore();
-        //     // console.log(listCheked);
-        // }
 
         function showButtonRestore() {
             // console.log(listCheked.length);
-            if (listCheked.length >= 1) {
+            if (arrSuratId.length >= 1) {
                 $('#restore_all').css('display', 'block');
+                $('#delete_all').css('display', 'block');
                 $('#span').removeClass('col-md-4').addClass('col-md-2');
             } else {
                 $('#restore_all').css('display', 'none');
+                $('#delete_all ').css('display', 'none');
                 $('#span').removeClass('col-md-2').addClass('col-md-4');
             }
         }
 
         function checkAll() {
-            if($('#check_').prop('checked')) {
-                $.post("{!! route('get-id-surat-masuk-deleted') !!}", {
-                    // id: id
-                }).done(function(data) {
-                    listCheked = [];
-                    listCheked = data;
-                    listCheked.forEach(element => {
-                        $('#check_' + element).prop('checked', true);
-                    });
-                    console.log(data);
-                })
-            } else {
-                listCheked.forEach(element => {
-                    $('#check_' + element).prop('checked', false);
+            if ($('#check_').prop('checked')) {
+                arrSuratId = [];
+                $('.row_surat').each(function(i, v) {
+                    arrSuratId.push($(v).data('id'));
                 });
+                $('.row_surat').prop('checked', true);
+                $.post("{!! route('get-id-surat-masuk-deleted') !!}", {
+                    arrSuratId: arrSuratId,
+                    _token: '{{ csrf_token() }}'
+                }).done(function(data) {
+                    listCheked = data;
+                    console.log(listCheked);
+                    showButtonRestore();
+                });
+            } else {
+                $('.row_surat').prop('checked', false);
+                arrSuratId = [];
                 listCheked = [];
-                // console.log('false');
+                showButtonRestore();
             }
+        }
 
+        function restoreAll() {
+            swal({
+                title: "Apakah Anda memulihkan data ini ?",
+                // text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+                type: "warning",
+                showCancelButton: true,
+                cancelButtonText: 'Batal',
+                confirmButtonText: 'Ya, Pulihkan Data!',
+            }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('restore-all-surat-masuk') !!}",{listId: arrSuratId}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                window.location.href = "{{ route('surat-masuk') }}";
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dipulihkan, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di pulihkan!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
+        }
+
+        function deleteAll() {
+          swal({
+            title: "Apakah Anda yakin akan menghapus data ini ?",
+            text: "Data akan di hapus dan tidak dapat diperbaharui kembali !",
+            type: "warning",
+            showCancelButton: true,
+            cancelButtonText: 'Batal',
+            confirmButtonText: 'Ya, Hapus Data!',
+          }).then((result) => {
+            if (result.value) {
+              $.post("{!! route('delete-all-from-trash') !!}",{listId: arrSuratId}).done(function(data){
+                Lobibox.notify('success', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-check-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: data.message
+                });
+                $('.preloader').show();
+                $('#datagrid').DataTable().ajax.reload();
+                }).fail(function() {
+                  Lobibox.notify('error', {
+                    pauseDelayOnHover: true,
+                    size: 'mini',
+                    rounded: true,
+                    delayIndicator: false,
+                    icon: 'bx bx-x-circle',
+                    continueDelayOnInactiveTab: false,
+                    position: 'top right',
+                    sound:false,
+                    msg: "Data Gagal Dihapus, Silahkan Hubungi IT Anda!"
+                  });
+                });
+              }else if (result.dismiss === Swal.DismissReason.cancel) {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-error',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data batal di hapus!"
+                });
+                $('#datagrid').DataTable().ajax.reload();
+              }
+            });
         }
 
 
@@ -169,7 +276,7 @@
                         render: function (data, type, row) {
                             if(listCheked.includes(row.id_surat_masuk)) {
                                 // console.log('asndas');
-                                return `<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
+                                return `<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="${row.id_surat_masuk}" id="check_${row.id_surat_masuk}" name="check" value="${row.id_surat_masuk}" type="checkbox" checked></a>`;
                             } else {
                                 return data;
                             }
@@ -360,6 +467,7 @@
                                 sound: false,
                                 msg: data.message
                             });
+                            window.location.href = "{{ route('surat-masuk') }}";
                         } else {
                             Lobibox.notify('error', {
                                 pauseDelayOnHover: true,

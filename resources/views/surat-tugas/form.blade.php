@@ -69,6 +69,27 @@
               </div>
             </div>
           </div>
+          <div id="pengikut" style="display: none">
+            <div class="col-md-12 mt-2">
+              <label for="pengikut" class="form-label">Detail Pengikut *</label>
+                <hr>
+                <table class="table mb-0" width="100%" id="table_pengikut">
+                  <thead>
+                    <th>Nama Pengikut</th>
+                    <th>Jabatan</th>
+                    <th>Aksi</th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+            </div>
+            <div class="col-md-12 mt-2">
+              <button type="button" class="btn btn-primary btn-sm form-control" data-bs-toggle="modal"
+              data-bs-target="#listPengikut">
+              <i class="bx plus-circle me-1"></i>
+              Tambah Pengikut</button>
+            </div>
+          </div>
           <div class="col-md-12 panelSuratTugas">
             <div class="row">
               <div class="col-md-6">
@@ -203,22 +224,51 @@
               <input type="date" class="form-control"  name="tanggal_akhir_tugas" id="tanggal_akhir_tugas" value="{{date('Y-m-d')}}">
             </div>
             <div class="col-md-6">
-              <label for="tempat_tujuan_bertugas" class="form-label">Tempat Tujuan Bertugas *</label>
-              <input type="text" style="#" class="form-control"  name="tempat_tujuan_bertugas" id="tempat_tujuan_bertugas" value=""  placeholder="Tempat tujuan bertugas">
+              <label for="tempat_tujuan_bertugas" class="form-label">Berangkat Dari *</label>
+              <input type="text" style="#" class="form-control"  name="tempat_tujuan_bertugas" id="tempat_tujuan_bertugas" value=""  placeholder="Berangkat Dari">
             </div>
             <div class="col-md-6">
               <label for="provinsi_tujuan_bertugas" class="form-label">Kota Tujuan Bertugas *</label>
               <input type="text" style="#" class="form-control"  name="provinsi_tujuan_bertugas" id="provinsi_tujuan_bertugas" value="" placeholder="Kota tujuan bertugas">
             </div>
-            <div class="col-md-12">
+            {{-- <div class="col-md-12">
               <label for="alamat_tujuan_bertugas" class="form-label">Alamat Tujuan Bertugas *</label>
                 <textarea rows="3" cols="80" style="#" class="form-control" name="alamat_tujuan_bertugas" id="alamat_tujuan_bertugas" placeholder="Alamat tujuan bertugas"></textarea>
-            </div>
+            </div> --}}
           </div>
         </div>
         <div class="modal-footer">
           <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
           <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="AddTujuan()">Tambah</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-page">
+  <div class="modal fade" id="listPengikut" tabindex="-1" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Pengikut</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <label for="tempat_tujuan_bertugas" class="form-label">Nama Pengikut *</label>
+              <input type="text" style="#" class="form-control"  name="nama_pengikut[]" id="nama_pengikut" value=""  placeholder="Nama Pengikut">
+            </div>
+            <div class="col-md-6">
+              <label for="provinsi_tujuan_bertugas" class="form-label">Jabatan *</label>
+              <input type="text" style="#" class="form-control"  name="jabatan_pengikut[]" id="jabatan_pengikut" value="" placeholder="Jabatan">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="AddPengikut()">Tambah</button>
         </div>
       </div>
     </div>
@@ -235,6 +285,15 @@ $(document).ready(function () {
         } else {
             $('#tambah_keterangan').hide();
         }
+    });
+    $('#alat_angkut').on('change', function() {
+        var selectedValue = $(this).val();
+        if (selectedValue == 'Kendaraan Dinas') {
+          $('#pengikut').show()
+        } else {
+          $('#pengikut').hide()
+        }
+        console.log(selectedValue);
     });
 })
 var onLoad = (function() {
@@ -525,7 +584,36 @@ function AddTujuan() {
    $('#StudentModal').modal('hide');
 });
 }
-$(document).on('click', '.btn_remove_tujuan', function(){
+
+let array_pengikut = [];
+function AddPengikut() {
+  ++noTujuan;
+  var nama_pengikut = $("input[id='nama_pengikut']").val();
+  var jabatan_pengikut = $("input[id='jabatan_pengikut']").val();
+
+  $('#table_pengikut tbody').before(
+    '<tr id="row' + noTujuan + '">' +
+        '<input type="hidden" name="nama_pengikut[]" value="' + nama_pengikut + '" id="nama_pengikut' + noTujuan + '" />' +
+        '<input type="hidden" name="jabatan_pengikut[]" value="' + jabatan_pengikut + '" id="jabatan_pengikut' + noTujuan + '" /></td>' +
+        '<td>' + nama_pengikut + '</td>' +
+        '<td>' + jabatan_pengikut + '</td>' +
+        '<td><button type="button" style="height: 36px; width: 36px; color: #e91e63!important;" class="btn btn_remove_pengikut" name="remove" id="' + noTujuan + '">' +
+        '<i class="bx bx-trash me-0"></i></button></td>' +
+    '</tr>'
+);
+  var pengikut = [nama_pengikut,jabatan_pengikut,];
+  array_pengikut.push(pengikut);
+  nama_pengikut = $("input[id='nama_pengikut']").val('');
+  jabatan_pengikut = $("input[id='jabatan_pengikut']").val('');
+}
+$(document).on('click', '.btn_remove_pengikut', function(){
+ // alert("yu");
+     var button_id = $(this).attr("id");
+     $('#row'+button_id+'').remove();
+     array_pengikut = array_pengikut.filter(x=>x[0]!=button_id);
+
+ });
+ $(document).on('click', '.btn_remove_tujuan', function(){
  // alert("yu");
      var button_id = $(this).attr("id");
      $('#row'+button_id+'').remove();

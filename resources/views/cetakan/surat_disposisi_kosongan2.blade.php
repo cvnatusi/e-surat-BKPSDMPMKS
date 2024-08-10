@@ -12,8 +12,9 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title></title>
   <style type="text/css" media="print">
+
   @page {
-      margin: 60px 35px;
+      margin: 25px 20px;
   }
   /* .page-break {
     page-break-after: always;
@@ -88,7 +89,7 @@
               </td>
               <td  style="vertical-align:top"colspan="3">
                 <table border="0" width="100%">
-                  <tr>
+                  <tr height="25px">
                     <td style="text-align: left !important;">Terima Tanggal :</td>
                     <td style="text-align: right !important;">{{Carbon\Carbon::parse($data->tanggal_terima_surat)->locale('id')->translatedFormat(' d F Y')}}</td>
                   </tr>
@@ -98,7 +99,7 @@
             <tr>
               <td style="vertical-align:top"colspan="3">
                 <table border="0" width="100%">
-                  <tr>
+                  <tr height="25px">
                     <td style="text-align: left !important;">Nomor Agenda / Berkas :</td>
                     <td style="text-align: right !important;">{{ $data->no_agenda }}</td>
                   </tr>
@@ -108,7 +109,7 @@
             <tr>
               <td width="65%"style="vertical-align:top"height="3%" colspan="2">
                 <table border="0" width="100%">
-                  <tr>
+                  <tr height="25px">
                     <td style="text-align: left !important;">Tanggal Surat :</td>
                     <td style="text-align: right !important;">{{ $data->tanggal_surat }}</td>
                   </tr>
@@ -116,7 +117,7 @@
               </td>
               <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
               <td width="28%">&nbsp; a. Rahasia</td>
-              <td width="10%">
+              <td width="10%" height="25px">
                 @if ($data->sifat->nama_sifat_surat == 'Rahasia')
                   <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
@@ -125,14 +126,14 @@
             <tr>
               <td width="65%" style="vertical-align:top"height="3%" colspan="2">
                 <table border="0" width="100%">
-                  <tr>
+                  <tr height="25px">
                     <td style="text-align: left !important;">Nomor Surat :</td>
                     <td style="text-align: right !important;">{{ $data->nomor_surat_masuk }}</td>
                   </tr>
                 </table>
               </td>
               <td width="28%">&nbsp; b. Biasa</td>
-              <td width="10%">
+              <td width="10%" height="25px">
                 @if ($data->sifat->nama_sifat_surat == 'Biasa')
                   <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
@@ -148,7 +149,7 @@
                 </table>
               </td>
               <td width="28%">&nbsp; c. Segera</td>
-              <td width="10%">
+              <td width="10%" height="25px">
                 @if ($data->sifat->nama_sifat_surat == 'Segera')
                   <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
@@ -156,7 +157,7 @@
             </tr>
             <tr>
               <td width="28%">&nbsp; d. Penting</td>
-              <td width="10%">
+              <td width="10%" height="25px">
                 @if ($data->sifat->nama_sifat_surat == 'Penting')
                   <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
                 @endif
@@ -164,7 +165,7 @@
             </tr>
           </tbody>
         </table>
-        <div class="">
+        <div class="" style="margin-top: 15px;">
           <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <thead>
               <tr>
@@ -174,11 +175,11 @@
             </thead>
           </table>
         </div>
-        <div class="">
+        <div class="" style="margin-top:;">
           <table  border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <tbody>
               <tr>
-                <td width="42%">&nbsp;<b>Sekretaris</b></td>
+                <td width="42%" height="30px">&nbsp;<b>Sekretaris</b></td>
                 <td width="5%">
                 </td>
                 <td width="53%" rowspan="6">
@@ -195,12 +196,12 @@
                         $count = count($dengan_harap);
                         @endphp
                         @if ($count>0)
-                          <td>
-                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
+                          <td style="gap: 10;">
+                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}" style="margin: 6px;" >
                               <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}}</label>
-                            </td>
+                          </td>
                             @if (($num%2)==0)
-                            </tr>
+                    </tr>
                             <tr>
                             @endif
                           @endif
@@ -211,41 +212,41 @@
                       </table>
                     </td>
                   </tr>
-              <tr>
+              <tr height="50px">
                 <td>&nbsp;&nbsp; &nbsp;&nbsp; a.) Kasubbag Perencanaan , Umum dan
                   <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Kepegawaian
                 </td>
                 <td>
                 </td>
               </tr>
-              <tr>
+              <tr height="30px">
                 <td>  &nbsp;&nbsp; &nbsp;&nbsp;b.) Kasubbag keuangan dan Aset</td>
                 <td>
               </td>
               </tr>
-              <tr>
+              <tr height="30px">
                 <td>&nbsp;<b>Kepala Bidang Mutasi dan Promosi</b></td>
                 <td>
                 </td>
               </tr>
-              <tr>
+              <tr height="30px">
                 <td>&nbsp;<b>Kepala Bidang Pengembangan Aparatur</b></td>
                 <td>
                 </td>
               </tr>
-              <tr>
+              <tr height="50px">
                 <td>&nbsp;<b>Kepala Bidang Pengadaan, Pembinaan dan &nbsp;Informasi Kepegawaian</b></td>
                 <td>
                 </td>
               </tr>
               <tr>
-                <td height="160" colspan="3" style="vertical-align:top">
+                <td height="250" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN PIMPINAN</b></p>
                   <p></p>
                 </td>
               </tr>
               <tr>
-                <td height="160" colspan="3" style="vertical-align:top">
+                <td height="250" colspan="3" style="vertical-align:top">
                   <p style="text-align:center"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
                   <p></p>
                 </td>

@@ -33,11 +33,13 @@ class SuratMasukController extends Controller
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 					->whereNull('status_disposisi')
 				->orderByDESC('tanggal_surat')
+				->orderByDESC('no_agenda')
 				->get();
 			}else {
 				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 				->orderByDESC('tanggal_surat')
+				->orderByDESC('no_agenda')
 				->get();
 			}
 
@@ -324,9 +326,10 @@ class SuratMasukController extends Controller
 		// $data = SuratMasuk::pluck('id_surat_masuk');
 		// return response()->json($data);
 	}
-	public function getIdSuratDeleted() {
-		$data = SuratMasuk::pluck('id_surat_masuk');
-		return response()->json($data);
+	public function getIdSuratDeleted(Request $request) {
+        return $request->arrSuratId;
+		// $data = SuratMasuk::pluck('id_surat_masuk');
+		// return response()->json($data);
 	}
 
 
@@ -379,8 +382,8 @@ class SuratMasukController extends Controller
 				   }
 
 				})
-				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+                ->addColumn('check', function($row){
+					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
 					return $btn;
 				})
 				->rawColumns(['action','check'])
@@ -400,16 +403,41 @@ class SuratMasukController extends Controller
 			return ['status'=>'error','message' => 'Data Gagal Direstore','title' => 'Whoops'];
 		}
 	}
+
 	public function restoreAllSurat(Request $request)
 	{
-		$data = SuratMasuk::onlyTrashed()->where('id_surat_masuk',$request->id);
-		if(!empty($data)){
-			$data->restore();
-			return ['status' => 'success','message' => 'Anda Berhasil Restore Data','title' => 'Success'];
-		}else{
-			return ['status'=>'error','message' => 'Data Gagal Direstore','title' => 'Whoops'];
-		}
+        $dataId = $request->listId;
+        // return $dataId;
+        if(is_array($dataId) && !empty($dataId)) {
+            foreach($dataId as $id) {
+                $data = SuratMasuk::onlyTrashed()->find($id);
+                if ($data) {
+                    $data->restore();
+                }
+            }
+            return response()->json(['status' => 'success','message' => 'Anda Berhasil Restore Data','title' => 'Success']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Invalid dataId array', 'title' => 'Error'], 400);
+        }
 	}
+
+    public function deleteAllFromTrash(Request $request)
+	{
+        $dataId = $request->listId;
+        // return $dataId;
+        if(is_array($dataId)) {
+            foreach($dataId as $id) {
+                $data = SuratMasuk::onlyTrashed()->find($id);
+                if ($data) {
+                    $data->forceDelete();
+                }
+            }
+            return response()->json(['status' => 'success','message' => 'Anda Berhasil Delete Data','title' => 'Success']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Invalid dataId array', 'title' => 'Error'], 400);
+        }
+	}
+
 	public function deleteSurat(Request $request)
 	{
 		$data = SuratMasuk::onlyTrashed()->where('id_surat_masuk',$request->id);

@@ -105,7 +105,7 @@ class SuratSPPDController extends Controller
 			// }
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
-		} catch (\Exception $e) {
+		} catch (\Exception $e) { 
 			throw($e);
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}

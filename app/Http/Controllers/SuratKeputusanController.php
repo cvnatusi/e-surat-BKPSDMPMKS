@@ -223,7 +223,7 @@ class SuratKeputusanController extends Controller
 	public function getId(Request $request) {
         return $request->arrSuratId;
 		// $data = SuratKeputusan::pluck('id_surat_keputusan');
-        // return response()->json($data);
+        // return response()->json($data);  
 	}
 
 	public function deleteAll(Request $request) {

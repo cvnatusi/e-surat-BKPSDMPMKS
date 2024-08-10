@@ -36,6 +36,7 @@
   input.largerCheckbox {
     transform: scale(1.5);
   }
+
   </style>
 </head>
 
@@ -125,7 +126,8 @@
               <td width="28%">&nbsp; a. Rahasia</td>
               <td width="10%">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Rahasia')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
+                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -141,7 +143,8 @@
               <td width="28%">&nbsp; b. Biasa</td>
               <td width="10%">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Biasa')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
+                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -150,7 +153,8 @@
               <td width="28%">&nbsp; c. Segera</td>
               <td width="10%">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Segera')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
+                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -158,7 +162,8 @@
               <td width="28%">&nbsp; d. Penting</td>
               <td width="10%">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Penting')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt="">
+                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
+                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
                 @endif
               </td>
             </tr>
@@ -203,8 +208,20 @@
                         @if ($count>0)
                           <td>
                             <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
-                              <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}}</label>
-                            </td>
+                            {{-- <div style="display: flex; flex-wrap: nowrap;">
+                              <div style="
+                                width: 5px;
+                                height: 5px;
+                                border: 1px solid black;
+                                padding: 3px;
+                              ">
+                                <div style="margin: 0;">
+                                  @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) V @endif @endforeach @endif
+                                </div>
+                              </div> --}}
+                              {{-- </div> --}}
+                              <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}} </label>
+                          </td>
                             @if (($num%2)==0)
                             </tr>
                             <tr>
