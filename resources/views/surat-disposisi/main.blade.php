@@ -243,7 +243,11 @@
         var table = $('#datagrid');
 
         function loadTable(dateStart, dateEnd) {
-            table.DataTable({
+            if ($.fn.DataTable.isDataTable('#datagrid')) {
+                $('#datagrid').DataTable().destroy();
+            }
+            $('#datagrid').DataTable({
+            // table.DataTable({
                 processing: true,
                 serverSide: true,
                 // stateSave: true,
@@ -384,9 +388,11 @@
             });
 
         }
-        table.on('click', 'tbody tr', function (e) {
-            e.currentTarget.classList.toggle('selected');
-        });
+
+        // table.on('click', 'tbody tr', function (e) {
+        //     e.currentTarget.classList.toggle('selected');
+        // });
+
         $('.btn-add').click(function() {
             // $('.preloader').show();
             $('.main-page').hide();

@@ -32,7 +32,7 @@ class SuratKeluarController extends Controller
 				$data = SuratKeluar::with(['sifat','jenis'])
 				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
 				->orderBy('tanggal_surat','DESC')
-				// ->orderBy('nomor_surat_keluar','DESC')
+				->orderBy('no_agenda','DESC')
 				->get();
 				// $data = SuratKeluar::with(['sifat','jenis'])->orderBy('id_surat_keluar','DESC')->get();
 			return Datatables::of($data)
@@ -220,11 +220,11 @@ class SuratKeluarController extends Controller
 		// awal data : ["3","farid ilham al qorni"]
 		// hasil data : ["3","4"]
 
-		$findAgendaTerakhir = SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keluar','DESC')->count();
-		if ($findAgendaTerakhir == 0) {
-			$findAgendaTerakhir = 0;
+		;
+		if ($findAgendaTerakhir = SuratKeluar::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keluar','DESC')->first()) {
+            $findAgendaTerakhir = $findAgendaTerakhir->no_agenda + 1;
 		}else {
-			$findAgendaTerakhir = $findAgendaTerakhir + 1;
+			$findAgendaTerakhir = 1;
         }
 
         // try {
@@ -548,7 +548,8 @@ class SuratKeluarController extends Controller
 			}else {
 				if ($suratKeluar->buatSuratElektronik == 'Y') {
 					// $noSurat = $kodeJenisSurat.'/E.XXX/432.403/'.$request->no_surat4;
-					$noSurat = $kodeJenisSurat.'/E.'.$noUrutSurat.'/432.403/'.date('Y');
+					// $noSurat = $kodeJenisSurat.'/E.'.$noUrutSurat.'/432.403/'.date('Y');
+					$noSurat = $kodeJenisSurat.'/'.$noUrutSurat.'/432.403/'.date('Y');
 					// $noSurat = $kodeJenisSurat.'/E.'.$noUrutSurat.'/432.403/'.$suratKeluar->no_surat4;
 				}else {
 					// $noSurat = $kodeJenisSurat.'/XXX/432.403/'.$request->no_surat4;
@@ -601,7 +602,34 @@ class SuratKeluarController extends Controller
 	// 				$suratKeluar->is_verif=true;
 	// 				$suratKeluar->save();
 	// 	// disini generate nomor tadi yang xxx
-	// }
+
+    // }
+
+    public function getSuratKeluarByDate(Request $request)
+	{
+		$data['data'] = SuratKeluar::where('tanggal_surat',$request->tanggal)
+                ->get();
+        $data['datas'] = SuratKeluar::where('tanggal_surat',$request->tanggal)->whereNull('no_surat1')->orderBy('id_surat_keluar', 'desc')->get();
+		if (count($data) > 0) {
+			return response()->json($data);
+		}else {
+			$dataa = SuratKeluar::whereDate('tanggal_surat','<',$request->tanggal)
+                    ->limit(10)->orderBy('tanggal_surat','DESC')
+                    ->get();
+			return response()->json($dataa);
+		}
+	}
+
+    public function checkSuratKeluarByDate(Request $request) {
+      // return SuratKeluar::where('tanggal_surat',$request->tanggal)->whereNull('no_surat1')->orderBy('id_surat_keluar', 'desc')->get();
+      // return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)->latest()->first();
+      return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)
+      ->whereRaw("LEFT(no_surat1,2) = '$request->nomor_surat'")
+      // ->whereRaw("no_surat1 = '24'")
+      ->orderBy('id_surat_keluar', 'desc')->first();
+      // return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)->whereNull('no_surat1')->orderBy('id_surat_keluar', 'desc')->get();
+    }
+
 	public function show(Request $request)
 	{
 		try {
@@ -614,11 +642,6 @@ class SuratKeluarController extends Controller
 		} catch (\Exception $e) {
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
-	}
-
-	public function checkSuratKeluarByDate(Request $request)
-	{
-	return	$data = SuratKeluar::where('tanggal_surat',$request->tanggal)->latest()->first();
 	}
 
 	public function getId(Request $request) {

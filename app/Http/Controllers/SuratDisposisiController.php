@@ -175,9 +175,14 @@ class SuratDisposisiController extends Controller
 	    	$data['dengan_harap'] = DenganHarap::get();
 			$changeSDisposisi = str_replace("/", "-", strtolower($data['data']->suratMasukId->nomor_surat_masuk));
 			$file_name_asli_surat_disposisi = str_replace(" ", "-", strtolower($data['asn']->nama_asn).'-'.$changeSDisposisi.'-'.date('Ymd His').'-surat_disposisi.pdf');
-			$pdf = PDF::loadView('cetakan.surat_disposisi', $data)
-				->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+			// $pdf = PDF::loadView('cetakan.surat_disposisi', $data)
+			// 	->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+            // return view('cetakan.surat_disposisi', $data);
+            $pdf = PDF::loadView('cetakan.surat_disposisi', $data)
+            ->setPaper([0, 0, 595.28, 935.43], 'portrait');
+
 			Storage::put('public/surat-disposisi/'.$file_name_asli_surat_disposisi, $pdf->output());
+            file_put_contents(public_path('storage/surat-disposisi/' . $file_name_asli_surat_disposisi), $pdf->output());
 
 			// $data['qr'] = base64_encode(QrCode::format('png')->size(200)->merge('/public/assets/images/logo-icon.png', .4)->errorCorrection('H')->generate($ttd));
 
@@ -221,6 +226,7 @@ class SuratDisposisiController extends Controller
 			// $data['jenis_surat'] = JenisSurat::get();
 			// $data['sifat_surat'] = SifatSurat::get();
 			// $data['instansi'] = Instansi::get();
+            // return $data;
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'show', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {

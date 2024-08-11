@@ -45,7 +45,7 @@ use App\Models\PenandaTanganSurat as ModelsPenandaTanganSurat;
 |
 */
 
-
+Route::get('nomor',[SuratKeluarController::class, 'checkSuratKeluarByDate']);
 Route::get('/', [AuthController::class, 'login'])->name('home');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/doLogin', [AuthController::class, 'doLogin'])->name('doLogin');
@@ -160,6 +160,8 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/get-id-surat-masuk', [SuratMasukController::class, 'getId'])->name('get-id-surat-masuk');
 			Route::post('/get-id-surat-masuk-deleted', [SuratMasukController::class, 'getIdSuratDeleted'])->name('get-id-surat-masuk-deleted');
 			Route::post('/delete-all-surat', [SuratMasukController::class, 'deleteAll'])->name('delete-all-surat-masuk');
+			Route::post('/restore-all-surat', [SuratMasukController::class, 'restoreAllSurat'])->name('restore-all-surat-masuk');
+			Route::post('/delete-all-from-trash', [SuratMasukController::class, 'deleteAllFromTrash'])->name('delete-all-from-trash');
 		});
 
 		Route::group(array('prefix' => 'surat-keluar'), function () {
@@ -175,6 +177,7 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/verifKABAN', [SuratKeluarController::class, 'verifKABAN'])->name('verifKABAN');
 			Route::post('/show', [SuratKeluarController::class, 'show'])->name('show-surat-keluar');
 			Route::post('/checkSuratKeluarByDate', [SuratKeluarController::class, 'checkSuratKeluarByDate'])->name('checkSuratKeluarByDate');
+			Route::post('/getkSuratKeluarByDate', [SuratKeluarController::class, 'getSuratKeluarByDate'])->name('getkSuratKeluarByDate');
 			Route::post('/get-id', [SuratKeluarController::class, 'getId'])->name('get-id-surat-keluar');
 			Route::post('/delete-all-surat-keluar', [SuratKeluarController::class, 'deleteAll'])->name('delete-all-surat-keluar');
 		});

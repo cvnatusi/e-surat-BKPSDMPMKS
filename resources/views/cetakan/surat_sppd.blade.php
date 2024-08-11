@@ -85,11 +85,18 @@
               <li>Tingkat Biaya Perjalanan Dinas</li>
             </ol>
           </td>
-          <td>
+          {{-- <td>
             <ol type="a">
               <li>{{$asn->pangkat_golongan}}</li>
               <li>{{$asn->jabatan_asn->nama_jabatan}}</li>
               <li>{{$asn->eselon ?? 'Staf'}}</li>
+            </ol>
+          </td> --}}
+          <td>
+            <ol type="a">
+              <li>{{$pegawai->pangkat_golongan}}</li>
+              <li>{{$pegawai->jabatan_asn->nama_jabatan}}</li>
+              <li>{{$pegawai->eselon ?? 'Staf'}}</li>
             </ol>
           </td>
         </tr>

@@ -48,7 +48,7 @@
       </div>
       <div class="col-md-4">
         <label for="jumlah" class="form-label">Jumlah</label>
-        <input type="text" @if(!empty($data)) value="{{$data->jumlah}}" @else value="" @endif class="form-control jumlah" name="jumlah" id="jumlah" placeholder="Rp">
+        <input type="text" @if(!empty($data)) value="{{number_format($data->jumlah, 0, ',', '.')}}" @else value="" @endif class="form-control jumlah" name="jumlah" id="jumlah" placeholder="Rp">
       </div>
       <div class="col-md-4">
         <label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
@@ -286,7 +286,13 @@ $('#jumlah').on('input', function () {
 
 
     $("#chkSisipkanSurat").change(function(){
+      var noAgenda = '';
       if (this.checked) {
+        $('.suratBAST').change(function() {
+          var selectedOption = $(this).find('option:selected');
+          noAgenda = selectedOption.data('nomor');
+          console.log(noAgenda);
+        });
         $('.panelSuratBAST').show();
           $("#tanggal_surat").change(function(){
             var tanggal = $('.tanggal_surat').val();
@@ -296,13 +302,14 @@ $('#jumlah').on('input', function () {
             var yyyy = today.getFullYear();
              today = yyyy + '-' + mm + '-' + dd;
               $.post("{!! route('getSuratBASTByDate') !!}", {
-                tanggal: tanggal
+                tanggal: tanggal,
+                no_agenda: noAgenda
               }).done(function(data) {
                 console.log(data);
                 if (data.length > 0) {
                   var ins = '<option>- Pilih Surat BAST -</option>';
                   $.each(data, function(k, v) {
-                    ins += '<option value="' + v.id_surat_bast + '">' + v.nomor_surat_bast +
+                    ins += '<option value="' + v.id_surat_bast + '" data-nomor="'+ v.no_agenda +'">' + v.nomor_surat_bast +
                     '</option>';
                   });
 
@@ -322,5 +329,6 @@ $('#jumlah').on('input', function () {
       }else {
         $('.panelSuratBAST').hide();
       }
+      console.log(noAgenda);
     });
 </script>

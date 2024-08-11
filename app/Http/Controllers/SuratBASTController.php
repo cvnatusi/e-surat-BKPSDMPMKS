@@ -34,7 +34,7 @@ class SuratBASTController extends Controller
 				->addIndexColumn()
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" o nclick="editForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 					$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_bast.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
@@ -89,8 +89,9 @@ class SuratBASTController extends Controller
 		$tanggal_surat = $request->tanggal_surat;
 		$tanggal_now =  date('Y-m-d');
 		if ($tanggal_surat < $tanggal_now) {
-			// $cekSurat = SuratBAST::find($request->surat_bast);
 			$cekSurat = SuratBAST::find($request->surat_bast);
+
+
 			if (!empty($cekSurat)) {
 				// buatkan nomor sisipan
 				$explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
@@ -110,6 +111,7 @@ class SuratBASTController extends Controller
 				$noSurat4 = $explodeSurat[3];
 				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
 			}
+            // return $noSurat;
 			// else {
 			// 	// cek tanggal kemaren dengan loop
 			// 	return 'datamu kosong';
@@ -217,7 +219,10 @@ class SuratBASTController extends Controller
 	}
 	public function getSuratBASTByDate(Request $request)
 	{
-		$data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
+		// $data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
+		$data = SuratBAST::where('tanggal_surat',$request->tanggal)
+                ->whereRaw("no_agenda !~ '[a-zA-Z.]'")
+                ->get();
 		if (count($data) > 0) {
 			return response()->json($data);
 		}else {

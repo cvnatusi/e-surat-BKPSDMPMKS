@@ -105,6 +105,7 @@
                 listCheked = [];
                 showButtonDelete();
             }
+            showButtonDelete();
         }
 
         // function checkAll() {
