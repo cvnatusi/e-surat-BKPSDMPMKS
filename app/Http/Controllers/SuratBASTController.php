@@ -28,6 +28,7 @@ class SuratBASTController extends Controller
 
 			$data = SuratBAST::orderBy('tanggal_surat','DESC')
 			->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+            ->orderBy('id_surat_bast', 'desc')
 			->get();
 
 			return Datatables::of($data)
@@ -88,29 +89,54 @@ class SuratBASTController extends Controller
 		DB::beginTransaction();
 		$tanggal_surat = $request->tanggal_surat;
 		$tanggal_now =  date('Y-m-d');
+
 		if ($tanggal_surat < $tanggal_now) {
 			$cekSurat = SuratBAST::find($request->surat_bast);
+            $explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
+            $datas = SuratBAST::where('tanggal_surat',$request->tanggal_surat)
+                ->whereRaw("LEFT(no_agenda,2) = '$explodeSurat[1]'")
+                ->orderBy('id_surat_bast', 'desc')->first();
+            $noAgenda = substr($datas->no_agenda, -1);
+            // return $noAgenda;
+			// if (!empty($cekSurat)) {
+			// 	// buatkan nomor sisipan
+			// 	// $explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
+			// 	if (strpos($explodeSurat[1], '.A') !== false) {
+			// 		$noSurat2 = str_replace("A","B",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'B') !== false) {
+			// 		$noSurat2 = str_replace("B","C",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'C') !== false) {
+			// 		$noSurat2 = str_replace("C","D",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'D') !== false) {
+			// 		$noSurat2 = str_replace("D","E",$explodeSurat[1]);
+			// 	}else{
+			// 		$noSurat2 = $explodeSurat[1].'.A';
+			// 	}
+			// 	$noSurat1 = $explodeSurat[0];
+			// 	$noSurat3 = $explodeSurat[2];
+			// 	$noSurat4 = $explodeSurat[3];
+			// 	$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
+			// }
 
-
-			if (!empty($cekSurat)) {
-				// buatkan nomor sisipan
-				$explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
-				if (strpos($explodeSurat[1], '.A') !== false) {
-					$noSurat2 = str_replace("A","B",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'B') !== false) {
-					$noSurat2 = str_replace("B","C",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'C') !== false) {
-					$noSurat2 = str_replace("C","D",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'D') !== false) {
-					$noSurat2 = str_replace("D","E",$explodeSurat[1]);
-				}else{
-					$noSurat2 = $explodeSurat[1].'.A';
-				}
-				$noSurat1 = $explodeSurat[0];
-				$noSurat3 = $explodeSurat[2];
-				$noSurat4 = $explodeSurat[3];
-				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-			}
+            if ($noAgenda === 'A') {
+                $noSurat2 = $explodeSurat[1].'.B';
+            }elseif ($noAgenda === 'B') {
+                $noSurat2 = $explodeSurat[1].'.C';
+            }elseif ($noAgenda === 'C') {
+                $noSurat2 = $explodeSurat[1].'.D';
+            }elseif ($noAgenda === 'D') {
+                $noSurat2 = $explodeSurat[1].'.E';
+            }elseif ($noAgenda === 'E'){
+                $noSurat2 = $explodeSurat[1].'.F';
+            }elseif ($noAgenda === 'F') {
+                $noSurat2 = $explodeSurat[1].'.G';
+            } else {
+                $noSurat2 = $explodeSurat[1].'.A';
+            }
+            $noSurat1 = $explodeSurat[0];
+            $noSurat3 = $explodeSurat[2];
+            $noSurat4 = $explodeSurat[3];
+            $noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
             // return $noSurat;
 			// else {
 			// 	// cek tanggal kemaren dengan loop
@@ -220,9 +246,11 @@ class SuratBASTController extends Controller
 	public function getSuratBASTByDate(Request $request)
 	{
 		// $data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
-		$data = SuratBAST::where('tanggal_surat',$request->tanggal)
+		$data = SuratBAST::where('tanggal_surat', $request->tanggal)
                 ->whereRaw("no_agenda !~ '[a-zA-Z.]'")
                 ->get();
+
+        // return $datas;
 		if (count($data) > 0) {
 			return response()->json($data);
 		}else {
