@@ -217,7 +217,7 @@
           {{-- <img src="{{asset('gambar/QR.png')}}" style="margin-top:10px; margin-bottom: -50rem; margin-left:28.5em" width="90" alt=""> --}}
           @if ($data->verifikasi_kaban == 'Y')
           <div class="square" style="width: 100px;height: 120px;">
-            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; margin-bottom: -60rem; margin-left:28.5em" width="72">
+            <img src="data:image/png;base64, {!! $qr !!}" style="margin-top:10px; padding-bottom: -70rem; margin-left:35.5em" width="72">
           </div>
             @else
               <div class="square" style="width: 100px;height: 100px;"></div>

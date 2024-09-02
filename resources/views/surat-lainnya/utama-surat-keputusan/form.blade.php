@@ -37,7 +37,7 @@
         <input class="form-control" type="file" id="file_scan" name="file_scan">
       </div>
       <div class="col-md-12 panelSuratKeluar" style="display:none">
-        <label for="jenis_pekerjaan" class="form-label">Pilih Surat Keluar *</label>
+        <label for="jenis_pekerjaan" class="form-label">Pilih Surat Keputusan *</label>
         <select class="form-select suratKeluar" name="surat_keputusan" id="surat_keputusan">
           {{-- <option value="">Pilih Instansi</option>
           @if (!empty($instansi))

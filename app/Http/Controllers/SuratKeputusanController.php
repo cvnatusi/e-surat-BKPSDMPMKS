@@ -27,6 +27,7 @@ class SuratKeputusanController extends Controller
 			$paramTglAkhir = $request->tglAkhir;
 			$data = SuratKeputusan::orderBy('tanggal_surat','DESC')
 			->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+            ->orderBy('id_surat_keputusan','DESC')
 			->get();
 			return Datatables::of($data)
 				->addIndexColumn()
@@ -84,38 +85,65 @@ class SuratKeputusanController extends Controller
 		$tanggal_now =  date('Y-m-d');
 		if ($tanggal_surat < $tanggal_now) {
 			$cekSurat = SuratKeputusan::find($request->surat_keputusan);
-			if (!empty($cekSurat)) {
-				// buatkan nomor sisipan
-				$explodeSurat = explode("/",$cekSurat->nomor_surat_keputusan);
-				if (strpos($explodeSurat[1], '.A') !== false) {
-					$noSurat2 = str_replace("A","B",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'B') !== false) {
-					$noSurat2 = str_replace("B","C",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'C') !== false) {
-					$noSurat2 = str_replace("C","D",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'D') !== false) {
-					$noSurat2 = str_replace("D","E",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'E') !== false) {
-					$noSurat2 = str_replace("E","F",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'F') !== false) {
-					$noSurat2 = str_replace("F","G",$explodeSurat[1]);
-				}elseif (strpos($explodeSurat[1], 'G') !== false) {
-					$noSurat2 = str_replace("G","H",$explodeSurat[1]);
-				}else{
-					$noSurat2 = $explodeSurat[1].'.A';
-				}
-				$noSurat1 = $explodeSurat[0];
-				$noSurat3 = $explodeSurat[2];
-				$noSurat4 = $explodeSurat[3];
-				$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-			}
+            $explodeSurat = explode("/",$cekSurat->nomor_surat_keputusan);
+            $datas = SuratKeputusan::where('tanggal_surat',$request->tanggal_surat)
+                    ->whereRaw("LEFT(no_agenda,1) = '$explodeSurat[1]'")
+                    ->orderBy('id_surat_keputusan', 'desc')
+                    ->first();
+            $noAgenda = substr($datas->no_agenda, -1);
+            // return $noAgenda;
+            if ($noAgenda === 'A') {
+                $noSurat2 = $explodeSurat[1].'.B';
+            }elseif ($noAgenda === 'B') {
+                $noSurat2 = $explodeSurat[1].'.C';
+            }elseif ($noAgenda === 'C') {
+                $noSurat2 = $explodeSurat[1].'.D';
+            }elseif ($noAgenda === 'D') {
+                $noSurat2 = $explodeSurat[1].'.E';
+            }elseif ($noAgenda === 'E'){
+                $noSurat2 = $explodeSurat[1].'.F';
+            }elseif ($noAgenda === 'F') {
+                $noSurat2 = $explodeSurat[1].'.G';
+            } else {
+                $noSurat2 = $explodeSurat[1].'.A';
+            }
+            $noSurat1 = $explodeSurat[0];
+            $noSurat3 = $explodeSurat[2];
+            $noSurat4 = $explodeSurat[3];
+            $noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
+            // return $noSurat;
+			// if (!empty($cekSurat)) {
+			// 	// buatkan nomor sisipan
+			// 	$explodeSurat = explode("/",$cekSurat->nomor_surat_keputusan);
+			// 	if (strpos($explodeSurat[1], '.A') !== false) {
+			// 		$noSurat2 = str_replace("A","B",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'B') !== false) {
+			// 		$noSurat2 = str_replace("B","C",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'C') !== false) {
+			// 		$noSurat2 = str_replace("C","D",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'D') !== false) {
+			// 		$noSurat2 = str_replace("D","E",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'E') !== false) {
+			// 		$noSurat2 = str_replace("E","F",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'F') !== false) {
+			// 		$noSurat2 = str_replace("F","G",$explodeSurat[1]);
+			// 	}elseif (strpos($explodeSurat[1], 'G') !== false) {
+			// 		$noSurat2 = str_replace("G","H",$explodeSurat[1]);
+			// 	}else{
+			// 		$noSurat2 = $explodeSurat[1].'.A';
+			// 	}
+			// 	$noSurat1 = $explodeSurat[0];
+			// 	$noSurat3 = $explodeSurat[2];
+			// 	$noSurat4 = $explodeSurat[3];
+			// 	$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
+			// }
 		}else {
 			// $findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->max('no_agenda');
 			$findAgendaTerakhir = SuratKeputusan::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
-																			->whereYear('tanggal_surat', '=', date('Y'))
-																			->whereNull('deleted_at')
-																			->first()
-																			->max_number;
+                                                ->whereYear('tanggal_surat', '=', date('Y'))
+                                                ->whereNull('deleted_at')
+                                                ->first()
+                                                ->max_number;
 			if ($findAgendaTerakhir == 0) {
 				$findAgendaTerakhir = 1;
 			}else {
@@ -211,7 +239,9 @@ class SuratKeputusanController extends Controller
 
 	public function getSuratSKByDate(Request $request)
 	{
-		$data = SuratKeputusan::where('tanggal_surat',$request->tanggal)->get();
+		$data = SuratKeputusan::where('tanggal_surat',$request->tanggal)
+                ->whereRaw("no_agenda !~ '[a-zA-Z.]'")
+                ->get();
 		if (count($data) > 0) {
 			return response()->json($data);
 		}else {
@@ -223,7 +253,7 @@ class SuratKeputusanController extends Controller
 	public function getId(Request $request) {
         return $request->arrSuratId;
 		// $data = SuratKeputusan::pluck('id_surat_keputusan');
-        // return response()->json($data);  
+        // return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {
