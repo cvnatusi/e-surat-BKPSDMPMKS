@@ -13,7 +13,7 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 60px 20px;
+      margin: 30px 20px;
   }
   .page-break {
     page-break-before: always;
@@ -45,12 +45,12 @@
         $check = public_path('assets/images/check.png');
         $barcode = public_path('gambar/QR.png');
     @endphp
-   @foreach ($listData as $data)
+   @foreach ($listData as $key => $data)
     <table width="100%" cellpadding="0" cellspacing="0">
       <thead>
           <tr>
               <td rowspan="5">
-                  <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.50cm !important; height: 2.56cm !important;">
+                  <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.50cm !important; height: 2.50cm !important;">
               </td>
               <td align="center">
                   <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -123,7 +123,7 @@
           </td>
           <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
           <td width="28%">&nbsp; a. Rahasia</td>
-          <td width="10%">
+          <td width="10%" height="30px">
             @if ($data->sifat->nama_sifat_surat == 'Rahasia')
               <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
@@ -139,7 +139,7 @@
             </table>
           </td>
           <td width="28%">&nbsp; b. Biasa</td>
-          <td width="10%">
+          <td width="10%" height="30px">
             @if ($data->sifat->nama_sifat_surat == 'Biasa')
               <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
@@ -154,16 +154,16 @@
               </tr>
             </table>
           </td>
-          <td width="28%">&nbsp; c. Segera</td>
-          <td width="10%">
-            @if ($data->sifat->nama_sifat_surat == 'Segera')
+          <td width="28%">&nbsp; c. Umum</td>
+          <td width="10%" height="30px">
+            @if ($data->sifat->nama_sifat_surat == 'Umum')
               <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
           </td>
         </tr>
         <tr>
           <td width="28%">&nbsp; d. Penting</td>
-          <td width="10%">
+          <td width="10%" height="30px">
             @if ($data->sifat->nama_sifat_surat == 'Penting')
               <img src="{{asset('assets/images/check.png')}}" style="margin-left:65px" width="20px" alt="">
             @endif
@@ -172,7 +172,7 @@
       </tbody>
     </table>
     <div class="">
-      <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
+      <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; margin-top: 15px; margin-bottom: -10px;">
         <thead>
           <tr>
             <td><h3>DITERUSKAN KEPADA :</h3></td>
@@ -189,7 +189,7 @@
             <td width="5%">
             </td>
             <td width="53%" rowspan="6">
-              {{-- <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;">
+              <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;line-height: 23px;"">
                 @php
                 $num = 1;
                 @endphp
@@ -215,45 +215,45 @@
                       $num++;
                       @endphp
                     @endforeach
-                  </table> --}}
+                  </table>
                 </td>
               </tr>
           <tr>
-            <td>&nbsp;&nbsp; &nbsp;&nbsp; a.) Kasubbag Perencanaan , Umum dan
+            <td style="height: 50px;">&nbsp;&nbsp; &nbsp;&nbsp; a.) Kasubbag Perencanaan , Umum dan
               <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Kepegawaian
             </td>
             <td>
             </td>
           </tr>
           <tr>
-            <td>  &nbsp;&nbsp; &nbsp;&nbsp;b.) Kasubbag keuangan dan Aset</td>
+            <td style="height: 30px;">  &nbsp;&nbsp; &nbsp;&nbsp;b.) Kasubbag keuangan dan Aset</td>
             <td>
           </td>
           </tr>
-          <tr>
+          <tr style="height: 30px;">
             <td>&nbsp;<b>Kepala Bidang Mutasi dan Promosi</b></td>
             <td>
             </td>
           </tr>
-          <tr>
+          <tr style="height: 30px;">
             <td>&nbsp;<b>Kepala Bidang Pengembangan Aparatur</b></td>
             <td>
             </td>
           </tr>
-          <tr>
+          <tr style="height: 50px;">
             <td>&nbsp;<b>Kepala Bidang Pengadaan, Pembinaan dan &nbsp;Informasi Kepegawaian</b></td>
             <td>
             </td>
           </tr>
           <tr>
-            <td height="160" colspan="3" style="vertical-align:top">
-              <p style="text-align:center"><b>CATATAN / ARAHAN PIMPINAN</b></p>
+            <td height="250" colspan="3" style="vertical-align:top">
+              <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN PIMPINAN</b></p>
               <p></p>
             </td>
           </tr>
           <tr>
-            <td height="160" colspan="3" style="vertical-align:top">
-              <p style="text-align:center"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
+            <td height="250" colspan="3" style="vertical-align:top">
+              <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
               <p></p>
             </td>
           </tr>
@@ -280,7 +280,7 @@
 </div>
 {{-- END CONTENT --}}
 {{-- FOOTER --}}
-<div class="" style="">
+<div class="">
   {{-- <footer> --}}
     {{-- <hr> --}}
     {{-- <table width="100%" cellpadding="0" cellspacing="0" style="vertical-align:middle; width:100% !important">
@@ -304,7 +304,9 @@
         </tr>
     </table> --}}
 </div>
-<div class="page-break"></div>
+    @if($loop->index+1 < count($listData))
+        <div class="page-break"></div>
+    @endif
 @endforeach
 </body>
 </html>

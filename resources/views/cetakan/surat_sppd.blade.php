@@ -308,14 +308,14 @@
         </tr>
         <tr>
           <td>
-            <p style="text-align:left; margin:0 !important;"><b> III.</b> Tiba di : {{$surat_tugas[2]->provinsi_tujuan_bertugas ?? ''}}</p>
-            <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Pada Tanggal : @if (!empty($surat_tugas[2])){{Carbon\Carbon::parse($surat_tugas[2]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
+            <p style="text-align:left; margin:0 !important;"><b> III.</b> Tiba di : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? ''}}</p>
+            <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Pada Tanggal : @if (!empty($surat_tugas[1])){{Carbon\Carbon::parse($surat_tugas[1]->tanggal_mulai_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1.8em !important">Kepala :</p>
             <br><br><br><br>
           </td>
           <td>
-            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari : {{$surat_tugas[2]->provinsi_tujuan_bertugas ?? ''}}</p>
-            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : @if (!empty($surat_tugas[2])){{Carbon\Carbon::parse($surat_tugas[2]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
+            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Berangkat Dari : {{$surat_tugas[1]->provinsi_tujuan_bertugas ?? ''}}</p>
+            <p style="text-align:left; margin:0 !important;margin-left:1em !important">Pada Tanggal : @if (!empty($surat_tugas[1])){{Carbon\Carbon::parse($surat_tugas[1]->tanggal_akhir_tugas ?? '')->locale('id')->translatedFormat(' d F Y') ?? ''}}@endif</p>
             <p style="text-align:left; margin:0 !important;margin-left:1em !important">Kepala :</p>
             <br><br><br><br>
           </td>

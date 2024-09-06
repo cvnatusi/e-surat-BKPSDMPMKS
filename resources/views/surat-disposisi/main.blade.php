@@ -21,6 +21,11 @@
                         <button type="button" class="btn btn-danger form-control" onclick="deleteAll()" ><i
                                 class="bx bx-trash me-1"></i>Hapus</button>
                     </div>
+                    <div class="col-md-2" style="display: none" id="print_all">
+                        <label class="form-label">Cetak Semua Surat</label>
+                        <button type="button" class="btn btn-success form-control" onclick="printAll()" ><i
+                                class="bx bx-printer me-1"></i>Cetak</button>
+                    </div>
                     <div class="col-md-6" id="span"></div>
                     <div class="col-md-2 mb-3 panelTanggal">
                         <label class="form-label">Tanggal Awal</label>
@@ -66,9 +71,11 @@
             // console.log(listCheked.length);
             if (arrSuratId.length >= 1) {
                 $('#delete_all').css('display', 'block');
-                $('#span').removeClass('col-md-6').addClass('col-md-4');
+                $('#print_all').css('display', 'block');
+                $('#span').removeClass('col-md-6').addClass('col-md-2');
             } else {
                 $('#delete_all').css('display', 'none');
+                $('#print_all').css('display', 'none');
                 $('#span').removeClass('col-md-4').addClass('col-md-6');
             }
         }
@@ -106,6 +113,29 @@
                 listCheked = [];
                 showButtonDelete();
             }
+        }
+
+        function printAll() {
+            $.ajax({
+                url: "{{ route('multi-download-disposisi') }}",
+                method: 'GET',
+                dataType: 'json',
+                data: {
+                    listId: arrSuratId
+                },
+                success: function (response) {
+                    var w = window.open();
+                    $(w.document.body).append(response.html + '<div style="page-break-after: always;"></div>');
+                    setTimeout(function () {
+                      w.focus();
+                      w.print();
+                      w.close();
+                    }, 500);
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
         }
 
         // function checkAll() {
@@ -184,6 +214,85 @@
             loadTable(start, end);
             // loadTable(today, today1);
         });
+
+        function editSurat(id) {
+            $('.main-page').hide();
+            $.post("{!! route('edit-surat-disposisi') !!}", {
+                id: id
+            }).done(function(data) {
+                if (data.status == 'success') {
+                    $('.other-page').html(data.content).fadeIn();
+                } else {
+                    $('.main-page').show();
+                }
+            });
+        }
+
+        function approveSurat(id) {
+          swal({
+              title: "Apakah Anda akan menyelesaikan surat ini ?",
+              type: "warning",
+              showCancelButton: true,
+              cancelButtonText: 'Batal',
+              confirmButtonText: 'Ya, Selesaikan Surat!',
+          }).then((result) => {
+          if (result.value) {
+            $.post("{!! route('selesaikan-surat-disposisi') !!}", {id: id}).done(function(data){
+              Lobibox.notify('success', {
+                pauseDelayOnHover: true,
+                size: 'mini',
+                rounded: true,
+                delayIndicator: false,
+                icon: 'bx bx-check-circle',
+                continueDelayOnInactiveTab: false,
+                position: 'top right',
+                sound:false,
+                msg: data.message
+              });
+              $('.preloader').show();
+              $('#datagrid').DataTable().ajax.reload();
+              }).fail(function() {
+                Lobibox.notify('error', {
+                  pauseDelayOnHover: true,
+                  size: 'mini',
+                  rounded: true,
+                  delayIndicator: false,
+                  icon: 'bx bx-x-circle',
+                  continueDelayOnInactiveTab: false,
+                  position: 'top right',
+                  sound:false,
+                  msg: "Data Gagal Dirubah, Silahkan Hubungi IT Anda!"
+                });
+              });
+            }else if (result.dismiss === Swal.DismissReason.cancel) {
+              Lobibox.notify('error', {
+                pauseDelayOnHover: true,
+                size: 'mini',
+                rounded: true,
+                delayIndicator: false,
+                icon: 'bx bx-error',
+                continueDelayOnInactiveTab: false,
+                position: 'top right',
+                sound:false,
+                msg: "Data batal di ubah!"
+              });
+              $('#datagrid').DataTable().ajax.reload();
+            } else if(result.status === 'warning') {
+              Lobibox.notify('warning', {
+                title: 'Maaf!',
+                pauseDelayOnHover: true,
+                size: 'mini',
+                rounded: true,
+                delayIndicator: false,
+                icon: 'bx bx-error',
+                continueDelayOnInactiveTab: false,
+                position: 'top right',
+                sound:false,
+                msg: result.message
+              });
+            }
+          });
+        }
 
         function deleteAll() {
           swal({
@@ -409,7 +518,7 @@
         function showForm(id) {
             // $('.main-page').hide();
             $.post("{!! route('show-surat-disposisi') !!}", {
-                id: id
+                id: id,
             }).done(function(data) {
                 if (data.status == 'success') {
                     $('.modal-page').html(data.content).fadeIn();
@@ -419,10 +528,11 @@
             });
         }
 
-        function editForm(id) {
+        function disposisikanSurat(id) {
             $('.main-page').hide();
             $.post("{!! route('form-surat-disposisi') !!}", {
-                id: id
+                id: id,
+                status: 'Disposisi'
             }).done(function(data) {
                 if (data.status == 'success') {
                     $('.other-page').html(data.content).fadeIn();

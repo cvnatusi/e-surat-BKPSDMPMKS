@@ -354,6 +354,7 @@
       });
   });
   function editForm(id) {
+    console.log('edit');
     $('.main-page').hide();
       $.post("{!! route('form-surat-tugas') !!}",{id:id}).done(function(data){
           if(data.status == 'success'){

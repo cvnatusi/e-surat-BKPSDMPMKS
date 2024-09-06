@@ -37,7 +37,7 @@
           <div class="col-md-12">
             <label for="tujuan_surat_id" id="label_tujuan_surat" class="form-label">Pilih Pegawai *</label>
             <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]" id="tujuan_surat_id">
-            <option value="" disabled>Pilih Pegawai</option>
+                <option value="" disabled>Pilih Pegawai</option>
                 @if (!empty($instansi))
                   @foreach ($instansi as $inst)
                     <option value="{{$inst->id_mst_asn}}" @if(!empty($data)) @php $ins = explode(",",$data->asn_id); @endphp @foreach ($ins as $key) @if ($inst->id_mst_asn == $key) selected @endif @endforeach @endif>{{$inst->nama_asn}}</option>
@@ -172,7 +172,7 @@
                 <button type="button" class="btn btn-secondary px-4 btn-cancel">Kembali</button>
               </div>
               <div class="col-md-4">
-                <button type="button" class="btn btn-info px-3">Preview</button>
+                {{-- <button type="button" class="btn btn-info px-3">Preview</button> --}}
               </div>
               <div class="col-md-4">
                 <button type="button"  class="btn btn-primary px-4 btn-submit">Simpan</button>
@@ -286,15 +286,15 @@ $(document).ready(function () {
             $('#tambah_keterangan').hide();
         }
     });
-    $('#alat_angkut').on('change', function() {
-        var selectedValue = $(this).val();
-        if (selectedValue == 'Kendaraan Dinas') {
-          $('#pengikut').show()
-        } else {
-          $('#pengikut').hide()
-        }
-        console.log(selectedValue);
-    });
+    // $('#alat_angkut').on('change', function() {
+    //     var selectedValue = $(this).val();
+    //     if (selectedValue == 'Kendaraan Dinas') {
+    //       $('#pengikut').show()
+    //     } else {
+    //       $('#pengikut').hide()
+    //     }
+    //     console.log(selectedValue);
+    // });
 })
 var onLoad = (function() {
   $('.panel-form').animateCss('bounceInUp');
@@ -357,6 +357,8 @@ $('#yang_bertanda_tangan').on('change', function() {
 $('.btn-submit').click(function(e){
  e.preventDefault();
     // $('.btn-submit').html('Please wait...').attr('disabled', true);
+    var btn = $(this);
+    btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...').attr('disabled', true);
     $('.btn-submit');
     var data  = new FormData($('.form-save')[0]);
     array_tujuan.forEach(element => {
@@ -390,6 +392,7 @@ $('.btn-submit').click(function(e){
         $('#datagrid').DataTable().ajax.reload();
       });
     } else if(data.status == 'error') {
+         btn.html('Simpan').attr('disabled', false);
         $('.btn-submit');
         Lobibox.notify('error', {
           pauseDelayOnHover: true,
@@ -404,6 +407,7 @@ $('.btn-submit').click(function(e){
         });
         swal('Error :'+data.errMsg.errorInfo[0], data.errMsg.errorInfo[2], 'warning');
     } else {
+        btn.html('Simpan').attr('disabled', false);
         var n = 0;
         for(key in data){
         if (n == 0) {var dt0 = key;}
@@ -423,6 +427,7 @@ $('.btn-submit').click(function(e){
         });
     }
     }).fail(function() {
+        btn.html('Simpan').attr('disabled', false);
       $('.btn-submit');
       Lobibox.notify('warning', {
         title: 'Maaf!',
@@ -585,27 +590,27 @@ function AddTujuan() {
 });
 }
 
-let array_pengikut = [];
-function AddPengikut() {
-  ++noTujuan;
-  var nama_pengikut = $("input[id='nama_pengikut']").val();
-  var jabatan_pengikut = $("input[id='jabatan_pengikut']").val();
+// let array_pengikut = [];
+// function AddPengikut() {
+//   ++noTujuan;
+//   var nama_pengikut = $("input[id='nama_pengikut']").val();
+//   var jabatan_pengikut = $("input[id='jabatan_pengikut']").val();
 
-  $('#table_pengikut tbody').before(
-    '<tr id="row' + noTujuan + '">' +
-        '<input type="hidden" name="nama_pengikut[]" value="' + nama_pengikut + '" id="nama_pengikut' + noTujuan + '" />' +
-        '<input type="hidden" name="jabatan_pengikut[]" value="' + jabatan_pengikut + '" id="jabatan_pengikut' + noTujuan + '" /></td>' +
-        '<td>' + nama_pengikut + '</td>' +
-        '<td>' + jabatan_pengikut + '</td>' +
-        '<td><button type="button" style="height: 36px; width: 36px; color: #e91e63!important;" class="btn btn_remove_pengikut" name="remove" id="' + noTujuan + '">' +
-        '<i class="bx bx-trash me-0"></i></button></td>' +
-    '</tr>'
-);
-  var pengikut = [nama_pengikut,jabatan_pengikut,];
-  array_pengikut.push(pengikut);
-  nama_pengikut = $("input[id='nama_pengikut']").val('');
-  jabatan_pengikut = $("input[id='jabatan_pengikut']").val('');
-}
+//   $('#table_pengikut tbody').before(
+//     '<tr id="row' + noTujuan + '">' +
+//         '<input type="hidden" name="nama_pengikut[]" value="' + nama_pengikut + '" id="nama_pengikut' + noTujuan + '" />' +
+//         '<input type="hidden" name="jabatan_pengikut[]" value="' + jabatan_pengikut + '" id="jabatan_pengikut' + noTujuan + '" /></td>' +
+//         '<td>' + nama_pengikut + '</td>' +
+//         '<td>' + jabatan_pengikut + '</td>' +
+//         '<td><button type="button" style="height: 36px; width: 36px; color: #e91e63!important;" class="btn btn_remove_pengikut" name="remove" id="' + noTujuan + '">' +
+//         '<i class="bx bx-trash me-0"></i></button></td>' +
+//     '</tr>'
+// );
+//   var pengikut = [nama_pengikut,jabatan_pengikut,];
+//   array_pengikut.push(pengikut);
+//   nama_pengikut = $("input[id='nama_pengikut']").val('');
+//   jabatan_pengikut = $("input[id='jabatan_pengikut']").val('');
+// }
 $(document).on('click', '.btn_remove_pengikut', function(){
  // alert("yu");
      var button_id = $(this).attr("id");
@@ -614,7 +619,6 @@ $(document).on('click', '.btn_remove_pengikut', function(){
 
  });
  $(document).on('click', '.btn_remove_tujuan', function(){
- // alert("yu");
      var button_id = $(this).attr("id");
      $('#row'+button_id+'').remove();
      array_tujuan = array_tujuan.filter(x=>x[0]!=button_id);

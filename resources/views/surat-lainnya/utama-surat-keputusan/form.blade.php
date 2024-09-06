@@ -10,7 +10,7 @@
       @if(!empty($data))
           <input type="hidden" class="form-control" name="id" value="{{$data->id_surat_keputusan}}">
       @endif
-
+        <input type="hidden" name="status_tanggal" value="{{ $is_date }}">
       <div class="col-md-6">
         <label for="perihal" class="form-label">Perihal</label>
         <input type="text" @if(!empty($data))  style="#"  value="{{$data->perihal}}" @else value="" @endif class="form-control perihal" name="perihal" id="perihal" placeholder="Perihal">
@@ -271,6 +271,42 @@ $('.btn-submit').click(function(e){
 //
 //   }
 // });
+
+$(document).ready(function () {
+    var isDate = `{!!$is_date!!}`;
+    // console.log(isDate);
+    if(isDate == "Besok") {
+        $('#chkSisipkanSurat').prop('checked', true).trigger('change');
+        var tanggal = $('.tanggal_surat').val();
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = today.getFullYear();
+         today = yyyy + '-' + mm + '-' + dd;
+         $.post("{!! route('getSuratSKByDate') !!}", {
+           tanggal: tanggal
+         }).done(function(data) {
+           if (data.length > 0) {
+             var ins = '<option>- Pilih Surat Keluar -</option>';
+             $.each(data, function(k, v) {
+               ins += '<option value="' + v.id_surat_keputusan + '">' + v.nomor_surat_keputusan + '</option>';
+             });
+
+             $('.suratKeluar').html(ins);
+             $('.suratKeluar').removeAttr('disabled');
+             $('.suratKeluar').select2({
+               theme: 'bootstrap4',
+               width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+               placeholder: $(this).data('placeholder'),
+               allowClear: Boolean($(this).data('allow-clear')),
+             });
+           }else {
+             var ins = '<option>- Surat Keluar Tidak Ditemukan! -</option>';
+           }
+         });
+    }
+})
+
 $("#chkSisipkanSurat").change(function(){
   if (this.checked) {
     $('.panelSuratKeluar').show();

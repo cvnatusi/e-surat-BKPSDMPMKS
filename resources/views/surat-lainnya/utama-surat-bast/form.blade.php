@@ -10,6 +10,7 @@
       @if(!empty($data))
           <input type="hidden" class="form-control" name="id" value="{{$data->id_surat_bast}}">
       @endif
+      <input type="hidden" name="status_tanggal" value="{{ $is_date }}">
       {{-- <div class="col-md-6">
         <label for="nomor_surat_bast" class="form-label">Nomor Surat (Ketik tanpa menggunakan spasi)</label>
         <input type="text" class="form-control" style="#" name="nomor_surat_bast" id="nomor_surat_bast" @if(!empty($data)) value="{{$data->nomor_surat_bast}}" @endif>
@@ -35,12 +36,18 @@
           <textarea rows="3" cols="80" class="form-control" name="kegiatan" id="kegiatan" placeholder="Tuliskan keterangan / kegiatan">@if(!empty($data)){{$data->kegiatan}}@endif</textarea>
       </div>
       <div class="col-md-12">
-          <div class="form-check">
+          {{-- <div class="form-check">
               <input class="form-check-input" type="checkbox" name="chkSisipkanSurat"
                   @if (!empty($data)) @if ($data->surat_manual == 'Y') checked @endif
-                  @endif value="Y" id="chkSisipkanSurat" >
+                  @endif value="Y" id="chkSisipkanSurat" {{ ($is_date == 'Besok') ? 'checked' : ''  }}>
               <label class="form-check-label" for="chkSisipkanSurat">Sisipkan Surat?</label>
-          </div>
+          </div> --}}
+          <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="chkSisipkanSurat"
+                    {{-- @if (!empty($data)) @if ($data->surat_manual == 'Y') checked @endif @endif --}}
+                    value="Y" id="chkSisipkanSurat">
+                <label class="form-check-label" for="chkSisipkanSurat">Sisipkan Surat?</label>
+            </div>
       </div>
       <div class="col-md-4">
         <label for="tanggal_surat" class="form-label">Tanggal Surat</label>
@@ -107,6 +114,73 @@ var onLoad = (function() {
     tags: true,
   });
 })();
+
+$(document).ready(function() {
+    var isDate = `{!!$is_date!!}`;
+    // console.log(isDate);
+
+    if(isDate == "Besok") {
+        setTimeout(() => {
+            $('#chkSisipkanSurat')
+            .prop('checked', true)
+            .trigger('change');
+
+            $('.suratBAST').change(function() {
+                var selectedOption = $(this).find('option:selected');
+                noAgenda = selectedOption.data('nomor');
+            });
+            var noAgenda = '';
+            var tanggal = $('.tanggal_surat').val();
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+            today = yyyy + '-' + mm + '-' + dd;
+            $.post("{!! route('getSuratBASTByDate') !!}", {
+                tanggal: tanggal,
+                no_agenda: noAgenda
+            }).done(function(data) {
+                // console.log(data);
+                if (data.length > 0) {
+                var ins = '<option>- Pilih Surat BAST -</option>';
+                $.each(data, function(k, v) {
+                    ins += '<option value="' + v.id_surat_bast + '" data-nomor="'+ v.no_agenda +'">' + v.nomor_surat_bast +
+                    '</option>';
+                });
+
+                $('.suratBAST').html(ins);
+                $('.suratBAST').removeAttr('disabled');
+                $('.suratBAST').select2({
+                    theme: 'bootstrap4',
+                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                    placeholder: $(this).data('placeholder'),
+                    allowClear: Boolean($(this).data('allow-clear')),
+                });
+                }else {
+                var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
+                }
+            });
+        }, 500);
+    }
+    // function checkDate() {
+    //     const tanggalInput = $('#tanggal_surat').val();
+    //     const selectedDate = new Date(tanggalInput);
+    //     const tomorrow = new Date();
+    //     tomorrow.setDate(tomorrow.getDate());
+
+    //     $('#chkSisipkanSurat').prop('checked', false);
+
+    //     if (selectedDate.toDateString() === tomorrow.toDateString()) {
+    //         $('#chkSisipkanSurat').prop('checked', true);
+    //     }
+    // }
+
+    // checkDate();
+
+    // $('#tanggal_surat').on('change', function() {
+    //     checkDate();
+    // });
+});
 
 $('.btn-cancel').click(function(e){
   e.preventDefault();
@@ -201,10 +275,118 @@ $('.btn-submit').click(function(e){
 });
 
 $(document).ready(function () {
+        $("#chkSisipkanSurat").change(function(){
+            var noAgenda = '';
+            if (this.checked) {
+                $('.suratBAST').change(function() {
+                var selectedOption = $(this).find('option:selected');
+                noAgenda = selectedOption.data('nomor');
+                console.log(noAgenda);
+                });
+                $('.panelSuratBAST').show();
+                $("#tanggal_surat").change(function(){
+                    var tanggal = $('.tanggal_surat').val();
+                    var today = new Date();
+                    var dd = String(today.getDate()).padStart(2, '0');
+                    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+                    var yyyy = today.getFullYear();
+                    today = yyyy + '-' + mm + '-' + dd;
+                    $.post("{!! route('getSuratBASTByDate') !!}", {
+                        tanggal: tanggal,
+                        no_agenda: noAgenda
+                    }).done(function(data) {
+                        console.log(data);
+                        if (data.length > 0) {
+                        var ins = '<option>- Pilih Surat BAST -</option>';
+                        $.each(data, function(k, v) {
+                            ins += '<option value="' + v.id_surat_bast + '" data-nomor="'+ v.no_agenda +'">' + v.nomor_surat_bast +
+                            '</option>';
+                        });
+
+                        $('.suratBAST').html(ins);
+                        $('.suratBAST').removeAttr('disabled');
+                        $('.suratBAST').select2({
+                            theme: 'bootstrap4',
+                            width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+                            placeholder: $(this).data('placeholder'),
+                            allowClear: Boolean($(this).data('allow-clear')),
+                        });
+                        }else {
+                        var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
+                        }
+                    });
+                });
+            }else {
+                $('.panelSuratBAST').hide();
+            }
+            console.log(noAgenda);
+        });
 });
+
 $('.jumlah').on('input', function () {
   this.value = this.value.replace(/[^0-9]/g, ''); // Hanya mengizinkan angka
 });
+
+// $(document).ready(function() {
+//     // Pastikan checkbox sudah tercentang jika kondisi tertentu terpenuhi
+//     if ($("#chkSisipkanSurat").prop('checked')) {
+//         var noAgenda = '';
+
+//         // Event listener untuk checkbox
+//         $("#chkSisipkanSurat").change(function() {
+//             if (this.checked) {
+//                 // Jika checkbox dicentang
+//                 $('.panelSuratBAST').show();
+
+//                 // Event listener untuk dropdown suratBAST
+//                 $('.suratBAST').change(function() {
+//                     var selectedOption = $(this).find('option:selected');
+//                     noAgenda = selectedOption.data('nomor');
+//                     console.log(noAgenda);
+//                 });
+
+//                 // Event listener untuk tanggal_surat
+//                 $("#tanggal_surat").change(function() {
+//                     var tanggal = $('.tanggal_surat').val();
+//                     var today = new Date();
+//                     var dd = String(today.getDate()).padStart(2, '0');
+//                     var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+//                     var yyyy = today.getFullYear();
+//                     today = yyyy + '-' + mm + '-' + dd;
+
+//                     // Lakukan POST request
+//                     $.post("{!! route('getSuratBASTByDate') !!}", {
+//                         tanggal: tanggal,
+//                         no_agenda: noAgenda
+//                     }).done(function(data) {
+//                         console.log(data);
+//                         if (data.length > 0) {
+//                             var ins = '<option>- Pilih Surat BAST -</option>';
+//                             $.each(data, function(k, v) {
+//                                 ins += '<option value="' + v.id_surat_bast + '" data-nomor="'+ v.no_agenda +'">' + v.nomor_surat_bast + '</option>';
+//                             });
+
+//                             $('.suratBAST').html(ins);
+//                             $('.suratBAST').removeAttr('disabled');
+//                             $('.suratBAST').select2({
+//                                 theme: 'bootstrap4',
+//                                 width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
+//                                 placeholder: $(this).data('placeholder'),
+//                                 allowClear: Boolean($(this).data('allow-clear')),
+//                             });
+//                         } else {
+//                             var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
+//                             $('.suratBAST').html(ins);
+//                         }
+//                     });
+//                 });
+//             } else {
+//                 // Jika checkbox tidak dicentang
+//                 $('.panelSuratBAST').hide();
+//             }
+//         }).change(); // Memicu event change pada saat pertama kali halaman dimuat
+//     }
+// });
 
 
 $('#jumlah').on('input', function () {
@@ -284,51 +466,4 @@ $('#jumlah').on('input', function () {
 //   }
 // });
 
-
-    $("#chkSisipkanSurat").change(function(){
-      var noAgenda = '';
-      if (this.checked) {
-        $('.suratBAST').change(function() {
-          var selectedOption = $(this).find('option:selected');
-          noAgenda = selectedOption.data('nomor');
-          console.log(noAgenda);
-        });
-        $('.panelSuratBAST').show();
-          $("#tanggal_surat").change(function(){
-            var tanggal = $('.tanggal_surat').val();
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
-             today = yyyy + '-' + mm + '-' + dd;
-              $.post("{!! route('getSuratBASTByDate') !!}", {
-                tanggal: tanggal,
-                no_agenda: noAgenda
-              }).done(function(data) {
-                console.log(data);
-                if (data.length > 0) {
-                  var ins = '<option>- Pilih Surat BAST -</option>';
-                  $.each(data, function(k, v) {
-                    ins += '<option value="' + v.id_surat_bast + '" data-nomor="'+ v.no_agenda +'">' + v.nomor_surat_bast +
-                    '</option>';
-                  });
-
-                  $('.suratBAST').html(ins);
-                  $('.suratBAST').removeAttr('disabled');
-                  $('.suratBAST').select2({
-                    theme: 'bootstrap4',
-                    width: $(this).data('width') ? $(this).data('width') : $(this).hasClass('w-100') ? '100%' : 'style',
-                    placeholder: $(this).data('placeholder'),
-                    allowClear: Boolean($(this).data('allow-clear')),
-                  });
-                }else {
-                  var ins = '<option>- Surat BAST Tidak Ditemukan! -</option>';
-                }
-              });
-          });
-      }else {
-        $('.panelSuratBAST').hide();
-      }
-      console.log(noAgenda);
-    });
 </script>

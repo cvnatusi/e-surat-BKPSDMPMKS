@@ -255,7 +255,6 @@
             // console.log('done');
             });
         };
-
         fileReader.readAsArrayBuffer(file);
     });
 
@@ -503,6 +502,7 @@
                   }).done(function(data){
                     submitButton.innerHTML = textButton;
                     submitButton.setAttribute('disabled',false);
+                    // submitButton.attr('disabled',false);
                       if(data.status == 'success'){
                           Lobibox.notify('success', {
                               pauseDelayOnHover: true,

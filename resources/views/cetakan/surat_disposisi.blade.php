@@ -1,3 +1,5 @@
+{{-- @foreach ($surat as $data) --}}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 @php
@@ -11,14 +13,12 @@
   <title></title>
   <style type="text/css" media="print">
   @page {
-      margin: 100px 25px;
+    margin: 10px 5px;
+    font-size: 5px;
   }
-  @media print {
-    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+  html {
+
   }
-  /* .page-break {
-    page-break-after: always;
-  } */
   .column {
     float: left;
     width: 50%;
@@ -32,11 +32,6 @@
     display: table;
     clear: both;
   }
-
-  input.largerCheckbox {
-    transform: scale(1.5);
-  }
-
   </style>
 </head>
 
@@ -45,13 +40,14 @@
         $logo = public_path('assets/images/logo-icon.png');
         $check = public_path('assets/images/check.png');
         $barcode = public_path('gambar/QR.png');
+        $qrCode = public_path('assets/images/qr-code.png');
     @endphp
     <table width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <td rowspan="5">
-                    {{-- <img src="{{ asset('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;"> --}}
-                    <img src="{{ public_path('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;">
+                    {{-- <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.56cm !important;"> --}}
+                    <img src="{{public_path('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.56cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -108,7 +104,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Nomor Agenda / Berkas :</td>
-                    <td style="text-align: right !important;">{{$data->no_agenda_disposisi}}</td>
+                    <td style="text-align: right !important;">{{ $data->suratMasukId->no_agenda }}</td>
                   </tr>
                 </table>
                 </td>
@@ -118,16 +114,15 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Tanggal Surat :</td>
-                    <td style="text-align: right !important;">{{Carbon\Carbon::parse($data->suratMasukId->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</td>
+                    <td style="text-align: right !important;">{{ $data->suratMasukId->tanggal_surat }}</td>
                   </tr>
                 </table>
               </td>
               <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
               <td width="28%">&nbsp; a. Rahasia</td>
-              <td width="10%">
+              <td width="10%" height="39px">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Rahasia')
-                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
-                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{$check}}" style="margin-left:25px" width="18px" alt="">
                 @endif
               </td>
             </tr>
@@ -136,34 +131,39 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Nomor Surat :</td>
-                    <td style="text-align: right !important;">{{$data->suratMasukId->nomor_surat_masuk}}</td>
+                    <td style="text-align: right !important;">{{ $data->suratMasukId->nomor_surat_masuk }}</td>
                   </tr>
                 </table>
               </td>
               <td width="28%">&nbsp; b. Biasa</td>
-              <td width="10%">
+              <td width="10%" height="39px">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Biasa')
-                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
-                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{$check}}" style="margin-left:25px" width="18px" alt="">
                 @endif
               </td>
             </tr>
-            <tr >
-              <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">&nbsp;Perihal :&nbsp;{{$data->suratMasukId->perihal_surat}}</td>
+            <tr>
+                <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">
+                    <table border="0" width="100%">
+                    <tr>
+                        <td style="text-align: left !important;">Perihal :</td>
+                        <td style="text-align: right !important;">{{ $data->suratMasukId->perihal_surat }}</td>
+                    </tr>
+                    </table>
+                </td>
+              {{-- <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">&nbsp;Perihal :&nbsp;</td> --}}
               <td width="28%">&nbsp; c. Segera</td>
-              <td width="10%">
+              <td width="10%" height="20px">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Segera')
-                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
-                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{$check}}" style="margin-left:25px" width="18px" alt="">
                 @endif
               </td>
             </tr>
             <tr>
               <td width="28%">&nbsp; d. Penting</td>
-              <td width="10%">
+              <td width="10%" height="20px">
                 @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Penting')
-                  {{-- <img src="{{asset('assets/images/check.png')}}" style="margin-left:25px" width="20px" alt=""> --}}
-                  <img src="{{$check}}" style="margin-left:25px" width="20px" alt="">
+                  <img src="{{$check}}" style="margin-left:25px" width="18px" alt="">
                 @endif
               </td>
             </tr>
@@ -183,14 +183,11 @@
           <table  border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <tbody>
               <tr>
-                <td width="42%">
-                  <label for="checklist">&nbsp;<b>Sekretaris</b></label>
-                </td>
+                <td width="42%">&nbsp;<b>Sekretaris</b></td>
                 <td width="5%">
-                  {{-- @if ($penerima->jabatan == 2) --}}
-                  @if ($penerima->jabatan == 1)
-                    <img src="{{$check}}" style="margin-left:10px" width="20px" alt="">
-                  @endif
+                    @if ($penerima->jabatan == 1)
+                        <img src="{{$check}}" style="margin-left:10px" width="20px" alt="">
+                    @endif
                 </td>
                 <td width="53%" rowspan="6">
                   <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;">
@@ -206,22 +203,22 @@
                         $count = count($dengan_harap);
                         @endphp
                         @if ($count>0)
-                          <td>
-                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}">
-                            {{-- <div style="display: flex; flex-wrap: nowrap;">
-                              <div style="
-                                width: 5px;
-                                height: 5px;
-                                border: 1px solid black;
-                                padding: 3px;
-                              ">
-                                <div style="margin: 0;">
-                                  @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) V @endif @endforeach @endif
+                            <td>
+                                <div style="margin-top: 7px;">
+                                    <div class="checkbox" style="width: 12px; height: 12px; border: 1px solid black; display: inline-block; vertical-align: middle;">
+                                        @if (!empty($data->dengan_hormat_harap))
+                                            @foreach ($dhh as $dt)
+                                                @if ($dt == $key->id_mst_dengan_harap)
+                                                    <img src="{{$check}}" style="margin-left: 3px; margin-bottom: 0;" width="10px" alt="">
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <label for="dengan_harap_{{$key->id_mst_dengan_harap}}" style="display: inline-block; vertical-align: middle; margin-left: 2px;">
+                                        {{$key->nama_dengan_harap}}
+                                    </label>
                                 </div>
-                              </div> --}}
-                              {{-- </div> --}}
-                              <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}} </label>
-                          </td>
+                            </td>
                             @if (($num%2)==0)
                             </tr>
                             <tr>
@@ -277,26 +274,26 @@
                 </td>
               </tr>
               <tr>
-                <td height="160" colspan="3" style="vertical-align:top">
-                  <p style="text-align:center"><b>CATATAN / ARAHAN PIMPINAN</b></p>
+                <td height="145" colspan="3" style="vertical-align:top">
+                  <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN PIMPINAN</b></p>
                   <p>{{$data->catatan_disposisi}}</p>
                 </td>
               </tr>
               <tr>
-                <td height="160" colspan="3" style="vertical-align:top">
-                  <p style="text-align:center"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
+                <td height="145" colspan="3" style="vertical-align:top">
+                  <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
                   <p>{{$data->catatan_disposisi_sekretaris}}</p>
                 </td>
               </tr>
             </tbody>
           </table>
-          <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
+          <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; amrgin-top: 7px;">
             <thead>
               <tr>
                 <td>
                     <img id='barcode'
                     {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
-                    src="{{$barcode}}"
+                    src="{{$qrCode}}"
                     alt=""
                     title=""
                     width="105"
@@ -310,12 +307,12 @@
         </div>
     </div>
     <script type="text/javascript">
-            function generateBarCode()
-            {
-                var nric = $('#text').val();
-                var url = 'https://api.qrserver.com/v1/create-qr-code/?		 data=' + nric + '&amp;size=50x50';
-                $('#barcode').attr('src', url);
-            }
+        function generateBarCode()
+        {
+            var nric = $('#text').val();
+            var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' + nric + '&amp;size=50x50';
+            $('#barcode').attr('src', url);
+        }
     </script>
     {{-- END CONTENT --}}
     {{-- FOOTER --}}
@@ -346,3 +343,4 @@
     <div class="pagebreak"> </div>
 </body>
 </html>
+{{-- @endforeach --}}

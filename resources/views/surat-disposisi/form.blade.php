@@ -3,7 +3,14 @@
     <div class="card-title d-flex align-items-center">
       <div><i class="bx bx-envelope me-1 font-22 text-primary"></i>
       </div>
-      <h5 class="mb-0 text-primary">Tambah Surat Disposisi</h5>
+      {{-- <h5 class="mb-0 text-primary">{{ $data ? 'Edit' : 'Tambah' }} Surat Disposisi</h5> --}}
+      <h5 class="mb-0 text-primary">@if (!empty($data))
+          Edit
+        @elseif($status == 'Disposisi')
+          Disposisikan
+        @else
+          Tambah
+        @endif Surat</h5>
     </div>
     <hr>
     <form class="row g-3 form-save">
@@ -82,7 +89,8 @@
         <option value="">-- Pilih Diteruskan Kepada --</option>
           @if (!empty($penerima))
             @foreach ($penerima as $terima)
-              <option value="{{$terima->id_mst_asn}}" @if(!empty($data)) @if ($data->penerima_disposisi_id == $terima->id_mst_asn) selected="selected" @endif @endif>{{$terima->nama_asn}}</option>
+              {{-- <option value="{{$terima->id_mst_asn}}" @if(!empty($data)) @if ($data->penerima_disposisi_id == $terima->id_mst_asn) selected="selected" @endif @endif>{{$terima->nama_asn}}</option> --}}
+              <option value="{{$terima->id_mst_asn}}"{{ ($data->penerima_disposisi_id == $terima->id_mst_asn) ? 'selected' : '' }}>{{$terima->nama_asn}}</option>
             @endforeach
           @endif
         </select>
@@ -254,6 +262,8 @@ $('.btn-cancel').click(function(e){
 $('.btn-submit').click(function(e){
  e.preventDefault();
     // $('.btn-submit').html('Please wait...').attr('disabled', true);
+    var btn = $(this);
+    btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...').attr('disabled', true);
     $('.btn-submit');
     var data  = new FormData($('.form-save')[0]);
     $.ajax({
@@ -284,6 +294,7 @@ $('.btn-submit').click(function(e){
         $('#datagrid').DataTable().ajax.reload();
         });
     } else if(data.status == 'error') {
+        btn.html('Simpan').attr('disabled', false);
         $('.btn-submit');
         Lobibox.notify('error', {
           pauseDelayOnHover: true,
@@ -298,6 +309,7 @@ $('.btn-submit').click(function(e){
         });
         swal('Error :'+data.errMsg.errorInfo[0], data.errMsg.errorInfo[2], 'warning');
     } else {
+        btn.html('Simpan').attr('disabled', false);
         var n = 0;
         for(key in data){
         if (n == 0) {var dt0 = key;}
@@ -317,6 +329,7 @@ $('.btn-submit').click(function(e){
         });
     }
     }).fail(function() {
+        btn.html('Simpan').attr('disabled', false);
       $('.btn-submit');
       Lobibox.notify('warning', {
         title: 'Maaf!',

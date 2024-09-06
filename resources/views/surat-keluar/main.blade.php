@@ -256,21 +256,21 @@
                             }
                         }
                     },
-                    //   {
-                    //   data: 'DT_RowIndex',
-                    //   name: 'DT_RowIndex',
-                    //   render: function(data, type, row) {
-                    //     return '<p style="color:black">' + data + '</p>';
-                    //   }
-                    // },
                     {
-                        data: 'no_agenda',
-                        name: 'no_agenda',
-                        render: function(data, type, row) {
-
-                            return '<p style="color:black">' + data + '</p>';
-                        }
+                      data: 'DT_RowIndex',
+                      name: 'DT_RowIndex',
+                      render: function(data, type, row) {
+                        return '<p style="color:black">' + data + '</p>';
+                      }
                     },
+                    // {
+                    //     data: 'no_agenda',
+                    //     name: 'no_agenda',
+                    //     render: function(data, type, row) {
+
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
                         data: 'nomor_surat_keluar',
                         name: 'nomor_surat_keluar',
@@ -286,9 +286,16 @@
                     //         return '<p style="color:black">' + data + '</p>';
                     //     }
                     // },
+                    // {
+                    //     data: 'tanggal_surat',
+                    //     name: 'tanggal_surat',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
-                        data: 'tanggal_surat',
-                        name: 'tanggal_surat',
+                        data: 'tanggalSurat',
+                        name: 'tanggalSurat',
                         render: function(data, type, row) {
                             return '<p style="color:black">' + data + '</p>';
                         }

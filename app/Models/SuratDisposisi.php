@@ -12,6 +12,7 @@ class SuratDisposisi extends Model
 
   protected $table = 'tr_surat_disposisi';
   protected $primaryKey = 'id_surat_disposisi';
+  protected $fillable = ['status'];
   public $timestamps = true;
   protected $dates = ['deleted_at'];
 

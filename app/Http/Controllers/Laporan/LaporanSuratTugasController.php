@@ -13,7 +13,7 @@ use App\Models\SuratTugas;
 use App\Models\TujuanSuratTugas;
 use App\Models\FileSuratTugas;
 use App\Exports\LaporanSuratTugas;
-use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel;
+use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel,PDF;
 
 class LaporanSuratTugasController extends Controller
 {
@@ -520,5 +520,20 @@ class LaporanSuratTugasController extends Controller
 
 			return Excel::download(new LaporanSuratTugas($data), "Laporan Surat Tugas " . $data['periode'] . '.xlsx');
 		}
+
+    public function pdf(Request $request) {
+        $responses = SuratTugas::orderBy('id_surat_perjalanan_dinas','desc');
+        if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+            $responses = $responses->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+        }
+        // return $responses->get();
+        $data['periode'] = date('d-m-Y', strtotime($request->rangeAwal)) . ' sampai ' . date('d-m-Y', strtotime($request->rangeAkhir));
+        $data['judul'] = 'LAPORAN SURAT TUGAS';
+        $data['lap'] = $responses->get();
+        // return view('laporan.surat-tugas.pdf', $data);
+        $pdf = PDF::loadView('laporan.surat-tugas.pdf', $data)
+              ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+        return $pdf->download('Laporan_Surat_Tugas_' . $data['periode'] . '.pdf');
+    }
 
 }

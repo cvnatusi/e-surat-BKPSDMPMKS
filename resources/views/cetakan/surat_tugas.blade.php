@@ -179,9 +179,9 @@
                         {{-- @foreach ($surat_tugas as $suratTugas)
                           {{$suratTugas->tempat_tujuan_bertugas}} ({{$suratTugas->alamat_tujuan_bertugas}}) <br>
                         @endforeach --}}
-                        @foreach ($surat_tugas as $suratTugas)
-                          {{$suratTugas->tempat_tujuan_bertugas}} ({{$suratTugas->provinsi_tujuan_bertugas}}) <br>
-                        @endforeach
+                        {{$surat_tugas[0]->tempat_tujuan_bertugas}} <br> {{-- ({{$surat_tugas[0]->provinsi_tujuan_bertugas}}) --}}
+                        {{-- @foreach ($surat_tugas as $key => $suratTugas)
+                        @endforeach --}}
                     </td>
                     {{-- <td>{{$surat_tugas->tempat_tujuan_bertugas}} <br>{{$surat_tugas->alamat_tujuan_bertugas}}</td> --}}
                 </tr>

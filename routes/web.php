@@ -164,6 +164,23 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/delete-all-from-trash', [SuratMasukController::class, 'deleteAllFromTrash'])->name('delete-all-from-trash');
 		});
 
+        Route::group(array('prefix' => 'surat-disposisi'), function () {
+			Route::get('/', [SuratDisposisiController::class, 'index'])->name('surat-disposisi');
+			Route::post('/form', [SuratDisposisiController::class, 'form'])->name('form-surat-disposisi');
+			Route::post('/edit', [SuratDisposisiController::class, 'edit'])->name('edit-surat-disposisi');
+			Route::post('/store', [SuratDisposisiController::class, 'store'])->name('store-surat-disposisi');
+			Route::post('/destroy', [SuratDisposisiController::class, 'destroy'])->name('destroy-surat-disposisi');
+			Route::post('/show', [SuratDisposisiController::class, 'show'])->name('show-surat-disposisi');
+			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
+			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
+			Route::post('/get-id', [SuratDisposisiController::class, 'getId'])->name('get-id');
+			Route::get('/get-no-agenda', [SuratDisposisiController::class, 'getNoAgenda'])->name('get-no-agenda');
+			Route::post('/delete-all-surat-disposisi', [SuratDisposisiController::class, 'deleteAll'])->name('delete-all-surat-disposisi');
+            Route::get('multi-download-disposisi', [SuratDisposisiController::class, 'multiDownload'])->name('multi-download-disposisi');
+			Route::post('/selesaikan-surat-disposisi', [SuratDisposisiController::class, 'selesaikanSurat'])->name('selesaikan-surat-disposisi');
+			// Route::get('/tampil-surat-disposisi', [SuratDisposisiController::class, 'showSuratDisposisi'])->name('tampil-surat-disposisi');
+		});
+
 		Route::group(array('prefix' => 'surat-keluar'), function () {
 			Route::get('/', [SuratKeluarController::class, 'index'])->name('surat-keluar');
 			Route::post('/form', [SuratKeluarController::class, 'form'])->name('form-surat-keluar');
@@ -208,18 +225,6 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::post('/destroy', [SuratSPPDController::class, 'destroy'])->name('destroy-surat-perjalanan-dinas');
             Route::post('/get-id', [SuratSPPDController::class, 'getId'])->name('get-id-sppd');
 			Route::post('/delete-all-surat-sppd', [SuratSPPDController::class, 'deleteAll'])->name('delete-all-surat-sppd');
-		});
-		Route::group(array('prefix' => 'surat-disposisi'), function () {
-			Route::get('/', [SuratDisposisiController::class, 'index'])->name('surat-disposisi');
-			Route::post('/form', [SuratDisposisiController::class, 'form'])->name('form-surat-disposisi');
-			Route::post('/store', [SuratDisposisiController::class, 'store'])->name('store-surat-disposisi');
-			Route::post('/destroy', [SuratDisposisiController::class, 'destroy'])->name('destroy-surat-disposisi');
-			Route::post('/show', [SuratDisposisiController::class, 'show'])->name('show-surat-disposisi');
-			Route::get('/cetakSD', [SuratDisposisiController::class, 'cetakSD'])->name('cetakSD');
-			Route::get('/get-surat-masuk', [SuratDisposisiController::class, 'getSuratMasuk'])->name('get-surat-masuk');
-			Route::post('/get-id', [SuratDisposisiController::class, 'getId'])->name('get-id');
-			Route::get('/get-no-agenda', [SuratDisposisiController::class, 'getNoAgenda'])->name('get-no-agenda');
-			Route::post('/delete-all-surat-disposisi', [SuratDisposisiController::class, 'deleteAll'])->name('delete-all-surat-disposisi');
 		});
 		Route::group(array('prefix' => 'surat-lainnya'), function () {
 			Route::group(array('prefix' => 'utama-surat-bast'), function () {
@@ -272,15 +277,21 @@ Route::group(['middleware'=>'XSS'], function() {
 			Route::group(array('prefix' => 'laporan-surat-masuk'), function () {
 				Route::get('/', [LaporanSuratMasukController::class, 'index'])->name('laporan-surat-masuk');
 				Route::get('/excel/{range}/{paramTanggal}', [LaporanSuratMasukController::class, 'excel'])->name('excelLapSurMas');
+                Route::get('/pdf/{range}/{paramTanggal}', [LaporanSuratMasukController::class, 'pdf'])->name('pdfLapSurMas');
+				Route::get('/pdf', [LaporanSuratMasukController::class, 'pdf'])->name('pdfLapSurMasuk');
 				Route::get('/excel', [LaporanSuratMasukController::class, 'excel'])->name('excelLapSurMasuk');
 			});
 			Route::group(array('prefix' => 'laporan-surat-keluar'), function () {
 				Route::get('/', [LaporanSuratKeluarController::class, 'index'])->name('laporan-surat-keluar');
 				Route::get('/excel/{range}/{paramTanggal}', [LaporanSuratKeluarController::class, 'excel'])->name('excelLapSurKel');
+				Route::get('/pdf/{range}/{paramTanggal}', [LaporanSuratKeluarController::class, 'pdf'])->name('pdfLapSurKel');
 				Route::get('/excel', [LaporanSuratKeluarController::class, 'excel'])->name('excelLapSurKeluar');
+				Route::get('/pdf', [LaporanSuratKeluarController::class, 'pdf'])->name('pdfLapSurKeluar');
 			});
 			Route::group(array('prefix' => 'laporan-surat-tugas'), function () {
 				Route::get('/', [LaporanSuratTugasController::class, 'index'])->name('laporan-surat-tugas');
+				Route::get('/pdf/{range}/{paramTanggal}', [LaporanSuratTugasController::class, 'pdf'])->name('pdfLapSurTug');
+				Route::get('/pdf', [LaporanSuratTugasController::class, 'pdf'])->name('pdfLapSurTugas');
 				Route::get('/excel/{range}/{paramTanggal}', [LaporanSuratTugasController::class, 'excel'])->name('excelLapSurTug');
 				Route::get('/excel', [LaporanSuratTugasController::class, 'excel'])->name('excelLapSurTugas');
 			});
@@ -288,9 +299,13 @@ Route::group(['middleware'=>'XSS'], function() {
 				Route::get('/', [LaporanSuratBASTController::class, 'index'])->name('laporan-surat-bast');
 				Route::get('/excel/{range}/{paramTanggal}', [LaporanSuratBASTController::class, 'excel'])->name('excelLapSurKel');
 				Route::get('/excel', [LaporanSuratBASTController::class, 'excel'])->name('excelLapSurBAST');
+				Route::get('/pdf/{range}/{paramTanggal}', [LaporanSuratBASTController::class, 'pdf'])->name('pdfLapSurKel');
+				Route::get('/pdf', [LaporanSuratBASTController::class, 'pdf'])->name('pdfLapSurBAST');
 			});
 			Route::group(array('prefix' => 'laporan-surat-keputusan'), function () {
 				Route::get('/', [LaporanSuratKeputusanController::class, 'index'])->name('laporan-surat-keputusan');
+				Route::get('/pdf/{range}/{paramTanggal}', [LaporanSuratKeputusanController::class, 'pdf'])->name('pdfLapSurKel');
+				Route::get('/pdf', [LaporanSuratKeputusanController::class, 'pdf'])->name('pdfLapSurKep');
 				Route::get('/excel/{range}/{paramTanggal}', [LaporanSuratKeputusanController::class, 'excel'])->name('excelLapSurKel');
 				Route::get('/excel', [LaporanSuratKeputusanController::class, 'excel'])->name('excelLapSurKep');
 			});

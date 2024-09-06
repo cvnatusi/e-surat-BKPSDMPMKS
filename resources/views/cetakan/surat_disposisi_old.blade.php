@@ -1,20 +1,20 @@
-{{-- @foreach ($surat as $data) --}}
-
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 @php
   date_default_timezone_set('Asia/Jakarta');
 @endphp
-{{-- {{ setlocale(LC_ALL, 'id_ID', 'id', 'ID') }} --}}
+{{ setlocale(LC_ALL, 'id_ID', 'id', 'ID') }}
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta charset="utf-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title></title>
   <style type="text/css" media="print">
-
   @page {
-      margin: 25px 20px;
+      margin: 100px 25px;
+  }
+  @media print {
+    .pagebreak { page-break-before: always; } /* page-break-after works, as well */
   }
   /* .page-break {
     page-break-after: always;
@@ -33,18 +33,25 @@
     clear: both;
   }
 
-  input.largerCheckbox {
+  .largerCheckbox {
     transform: scale(1.5);
   }
+
   </style>
 </head>
 
 <body>
+    @php
+        $logo = public_path('assets/images/logo-icon.png');
+        $check = public_path('assets/images/check.png');
+        $barcode = public_path('gambar/QR.png');
+    @endphp
     <table width="100%" cellpadding="0" cellspacing="0">
         <thead>
             <tr>
                 <td rowspan="5">
-                    <img src="{{asset('assets/images/logo-icon.png')}}" style="width: 2.56cm !important; height: 2.56cm !important;">
+                    {{-- <img src="{{ asset('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;"> --}}
+                    <img src="{{ public_path('assets/images/logo-icon.png') }}" style="width: 2.56cm !important; height: 2.56cm !important;">
                 </td>
                 <td align="center">
                     <p style=" margin:0 !important">PEMERINTAHAN KABUPATEN PAMEKASAN</p>
@@ -76,6 +83,88 @@
     {{-- END HEADER TULISAN SURAT TUGAS --}}
     {{-- START CONTENT --}}
     <div class="" style="margin-top:0.5em">
+        {{-- <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
+          <tbody>
+            <tr>
+              <td  style="vertical-align:top"height="3%" colspan="2" rowspan="2">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Surat Dari :</td>
+                    <td style="text-align: right !important;">{{$data->suratMasukId->pengirim->nama_instansi}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td  style="vertical-align:top"colspan="3">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Terima Tanggal :</td>
+                    <td style="text-align: right !important;">{{Carbon\Carbon::parse($data->suratMasukId->tanggal_terima_surat)->locale('id')->translatedFormat(' d F Y')}}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="vertical-align:top"colspan="3">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Nomor Agenda / Berkas :</td>
+                    <td style="text-align: right !important;">{{$data->no_agenda_disposisi}}</td>
+                  </tr>
+                </table>
+                </td>
+            </tr>
+            <tr>
+              <td width="65%"style="vertical-align:top"height="3%" colspan="2">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Tanggal Surat :</td>
+                    <td style="text-align: right !important;">{{Carbon\Carbon::parse($data->suratMasukId->tanggal_surat)->locale('id')->translatedFormat(' d F Y')}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
+              <td width="28%">&nbsp; a. Rahasia</td>
+              <td width="10%" height="30px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Rahasia')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
+                @endif
+              </td>
+            </tr>
+            <tr>
+              <td width="65%" style="vertical-align:top"height="3%" colspan="2">
+                <table border="0" width="100%">
+                  <tr>
+                    <td style="text-align: left !important;">Nomor Surat :</td>
+                    <td style="text-align: right !important;">{{$data->suratMasukId->nomor_surat_masuk}}</td>
+                  </tr>
+                </table>
+              </td>
+              <td width="28%">&nbsp; b. Biasa</td>
+              <td width="10%" height="30px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Biasa')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
+                @endif
+              </td>
+            </tr>
+            <tr >
+              <td width="65%" style="vertical-align:top"height="8%"colspan="2" rowspan="2">&nbsp;Perihal :&nbsp;{{$data->suratMasukId->perihal_surat}}</td>
+              <td width="28%">&nbsp; c. Segera</td>
+              <td width="10%" height="30px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Segera')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
+                @endif
+              </td>
+            </tr>
+            <tr>
+              <td width="28%">&nbsp; d. Penting</td>
+              <td width="10%" height="30px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Penting')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
+                @endif
+              </td>
+            </tr>
+          </tbody>
+        </table> --}}
         <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
           <tbody>
             <tr>
@@ -83,7 +172,7 @@
                 <table border="0" width="100%">
                   <tr>
                     <td style="text-align: left !important;">Surat Dari :</td>
-                    <td style="text-align: right !important;">{{$data->pengirim->nama_instansi}}</td>
+                    <td style="text-align: right !important;">{{$data->suratMasukId->pengirim->nama_instansi}}</td>
                   </tr>
                 </table>
               </td>
@@ -117,9 +206,9 @@
               </td>
               <td width="10%"style="vertical-align:top"rowspan="4">&nbsp;Sifat : </td>
               <td width="28%">&nbsp; a. Rahasia</td>
-              <td width="10%" height="30px">
-                @if ($data->sifat->nama_sifat_surat == 'Rahasia')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
+              <td width="10%" height="33px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Rahasia')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
                 @endif
               </td>
             </tr>
@@ -133,9 +222,9 @@
                 </table>
               </td>
               <td width="28%">&nbsp; b. Biasa</td>
-              <td width="10%" height="30px">
-                @if ($data->sifat->nama_sifat_surat == 'Biasa')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
+              <td width="10%" height="33px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Biasa')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
                 @endif
               </td>
             </tr>
@@ -149,23 +238,23 @@
                 </table>
               </td>
               <td width="28%">&nbsp; c. Segera</td>
-              <td width="10%" height="30px">
-                @if ($data->sifat->nama_sifat_surat == 'Segera')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
+              <td width="10%" height="28px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Segera')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
                 @endif
               </td>
             </tr>
             <tr>
               <td width="28%">&nbsp; d. Penting</td>
-              <td width="10%" height="30px">
-                @if ($data->sifat->nama_sifat_surat == 'Penting')
-                  <img src="{{asset('assets/images/check.png')}}" style="margin-left: 65px" width="20px" alt="">
+              <td width="10%" height="28px">
+                @if ($data->suratMasukId->sifat->nama_sifat_surat == 'Penting')
+                  <img src="{{$check}}" style="margin-left:25px" width="17px" alt="">
                 @endif
               </td>
             </tr>
           </tbody>
         </table>
-        <div class="" style="margin-top: 15px;">
+        <div class="">
           <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <thead>
               <tr>
@@ -175,12 +264,18 @@
             </thead>
           </table>
         </div>
-        <div class="" style="margin-top:;">
+        <div class="">
           <table  border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <tbody>
               <tr>
-                <td width="42%" height="30px">&nbsp;<b>Sekretaris</b></td>
+                <td width="42%">
+                  <label for="checklist">&nbsp;<b>Sekretaris</b></label>
+                </td>
                 <td width="5%">
+                  {{-- @if ($penerima->jabatan == 2) --}}
+                  @if ($penerima->jabatan == 1)
+                    <img src="{{$check}}" style="margin-left:10px" width="20px" alt="">
+                  @endif
                 </td>
                 <td width="53%" rowspan="6">
                   <table border="0" cellpadding="0" cellspacing="0"  style="border-collapse: collapse;margin-left: 10px;width: 100%;border: none !important;">
@@ -196,12 +291,24 @@
                         $count = count($dengan_harap);
                         @endphp
                         @if ($count>0)
-                          <td style="gap: 10;">
-                            <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}" style="margin: 6px;" >
-                              <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}}</label>
+                          <td>
+                            {{-- <input type="checkbox" class="largerCheckbox" name="dengan_harap[]" @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) checked @endif @endforeach @endif value="{{$key->id_mst_dengan_harap}}" id="dengan_harap_{{$key->id_mst_dengan_harap}}"> --}}
+                            {{-- <div style="display: flex; flex-wrap: nowrap;">
+                              <div style="
+                                width: 5px;
+                                height: 5px;
+                                border: 1px solid black;
+                                padding: 3px;
+                              ">
+                                <div style="margin: 0;">
+                                  @if (!empty($data->dengan_hormat_harap)) @foreach ($dhh as $dt) @if ($dt == $key->id_mst_dengan_harap) V @endif @endforeach @endif
+                                </div>
+                              </div> --}}
+                              {{-- </div> --}}
+                              <label for="dengan_harap_{{$key->id_mst_dengan_harap}}">{{$key->nama_dengan_harap}} </label>
                           </td>
                             @if (($num%2)==0)
-                    </tr>
+                            </tr>
                             <tr>
                             @endif
                           @endif
@@ -212,59 +319,73 @@
                       </table>
                     </td>
                   </tr>
-              <tr height="50px">
+              <tr>
                 <td>&nbsp;&nbsp; &nbsp;&nbsp; a.) Kasubbag Perencanaan , Umum dan
                   <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;Kepegawaian
                 </td>
                 <td>
+                  @if ($penerima->jabatan == 3)
+                    <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                  @endif
                 </td>
               </tr>
-              <tr height="30px">
+              <tr>
                 <td>  &nbsp;&nbsp; &nbsp;&nbsp;b.) Kasubbag keuangan dan Aset</td>
                 <td>
+                  @if ($penerima->jabatan == 4)
+                  <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                @endif
               </td>
               </tr>
-              <tr height="30px">
+              <tr>
                 <td>&nbsp;<b>Kepala Bidang Mutasi dan Promosi</b></td>
                 <td>
+                  @if ($penerima->jabatan == 5)
+                    <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                  @endif
                 </td>
               </tr>
-              <tr height="30px">
+              <tr>
                 <td>&nbsp;<b>Kepala Bidang Pengembangan Aparatur</b></td>
                 <td>
+                  @if ($penerima->jabatan == 6)
+                    <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                  @endif
                 </td>
               </tr>
-              <tr height="50px">
+              <tr>
                 <td>&nbsp;<b>Kepala Bidang Pengadaan, Pembinaan dan &nbsp;Informasi Kepegawaian</b></td>
                 <td>
+                  @if ($penerima->jabatan == 7)
+                    <img src="{{asset('assets/images/check.png')}}" style="margin-left:10px" width="20px" alt="">
+                  @endif
                 </td>
               </tr>
               <tr>
-                <td height="250" colspan="3" style="vertical-align:top">
+                <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN PIMPINAN</b></p>
-                  <p></p>
+                  <p>{{$data->catatan_disposisi}}</p>
                 </td>
               </tr>
               <tr>
-                <td height="250" colspan="3" style="vertical-align:top">
+                <td height="160" colspan="3" style="vertical-align:top">
                   <p style="text-align:center; margin-top: 15px;"><b>CATATAN / ARAHAN SEKRETARIS</b></p>
-                  <p></p>
+                  <p>{{$data->catatan_disposisi_sekretaris}}</p>
                 </td>
               </tr>
             </tbody>
           </table>
-          <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%; margin-top: 2px;">
+          <table cellpadding="0" cellspacing="0" style="border-collapse: collapse;table-layout: fixed; width: 100%;">
             <thead>
               <tr>
                 <td>
                     <img id='barcode'
-                    style="margin-top: 10px"
                     {{-- src="https://api.qrserver.com/v1/create-qr-code/?data=&amp;size=100x100"  --}}
-                    src="{{asset('assets/images/qr-code.png')}}"
+                    src="{{$barcode}}"
                     alt=""
                     title=""
-                    width="100"
-                    height="100" onblur='generateBarCode();' />
+                    width="105"
+                    height="105" onblur='generateBarCode();' />
                     {{-- <label>CREATED BY : BKPSDM PAMEKASAN</label> --}}
                 </td>
               </tr>
@@ -273,6 +394,14 @@
           </table>
         </div>
     </div>
+    <script type="text/javascript">
+            function generateBarCode()
+            {
+                var nric = $('#text').val();
+                var url = 'https://api.qrserver.com/v1/create-qr-code/?data=' + nric + '&amp;size=50x50';
+                $('#barcode').attr('src', url);
+            }
+    </script>
     {{-- END CONTENT --}}
     {{-- FOOTER --}}
     <div class="" style="">
@@ -299,6 +428,6 @@
             </tr>
         </table> --}}
     </div>
+    <div class="pagebreak"> </div>
 </body>
 </html>
-{{-- @endforeach --}}

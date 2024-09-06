@@ -37,21 +37,57 @@
           <input type="text" class="form-control datepickertahun" onchange="change(this)" readonly="readonly">
         </div> --}}
 
-        <div class="col-md-2 mb-3" >
-          <label class="form-label">Export</label>
-          <button type="button" onclick="CetakExcel()" class="btn form-control" style="background-color: #1E6E42; color: white">
-            <i class="bx bx-spreadsheet mr-1"></i>to Excel
-          </button>
+        <div class="col-md-12" style="margin-bottom: 20px;">
+            <div class="row">
+                <div class="col-2">
+                    <label class="form-label">Export Excel</label>
+                    <button type="button" onclick="CetakExcel()" class="btn form-control" style="background-color: #1E6E42; color: white">
+                    <i class="bx bx-spreadsheet mr-1"></i>to Excel
+                    </button>
+                </div>
+                <div class="col-2">
+                    <label class="form-label">Export PDF</label>
+                    <button type="button" onclick="CetakPdf()" class="btn form-control" style="background-color: #41B3A2; color: white">
+                        <i class="bx bx-file mr-1"></i>to PDF
+                    </button>
+                </div>
+                <div class="col-md-4" id="span"></div>
+                <div class="col-md-2 mb-3 panelTanggal">
+                    <label class="form-label">Tanggal Awal</label>
+                    <input type="date" id="min" class="form-control datepickertanggal">
+                </div>
+                <div class="col-md-2 mb-3 panelTanggal">
+                    <label class="form-label">Tanggal Akhir</label>
+                     <input type="date" id="max" class="form-control datepickertanggal">
+                </div>
+            </div>
+            <hr>
         </div>
-        <div class="col-md-4"></div>
-          <div class="col-md-3 mb-3 panelTanggal">
-            <label class="form-label">Tanggal Awal</label>
-            <input type="date" id="min" class="form-control datepickertanggal">
+
+        {{-- <div class="col-md-12 mb-3">
+            <div class="row">
+                <label class="form-label">Export</label>
+            <div class="col-2">
+                <button type="button" onclick="CetakExcel()" class="btn form-control" style="background-color: #1E6E42; color: white">
+                  <i class="bx bx-spreadsheet mr-1"></i>to Excel
+                </button>
+            </div>
+            <div class="col-2">
+                <button type="button" onclick="CetakPdf()" class="btn form-control" style="background-color: #1E6E42; color: white">
+                  <i class="bx bx-spreadsheet mr-1"></i>to PDF
+                </button>
+            </div>
+            <div class="col-md-3 mb-3 panelTanggal">
+              <label class="form-label">Tanggal Awal</label>
+              <input type="date" id="min" class="form-control datepickertanggal">
+            </div>
+            <div class="col-md-3 mb-3 panelTanggal">
+              <label class="form-label">Tanggal Akhir</label>
+              <input type="date" id="max" class="form-control datepickertanggal">
+            </div>
           </div>
-          <div class="col-md-3 mb-3 panelTanggal">
-            <label class="form-label">Tanggal Akhir</label>
-            <input type="date" id="max" class="form-control datepickertanggal">
-          </div>
+        </div> --}}
+        {{-- <div class="col-md-4"></div> --}}
       </div>
     </div>
   </div>
@@ -315,6 +351,20 @@
           paramTanggal = $('#max').val();
         }
         window.open("{{ url('laporan/laporan-surat-masuk/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
+      }
+
+      function CetakPdf() {
+        var rangeAwal = $('#min').val();
+        var rangeAkhir = $('#max').val();
+        var range = rangeAwal + ' - ' + rangeAkhir;
+        var paramTanggal = '';
+
+        if (rangeAwal == 'tanggal') {
+          paramTanggal = $('#min').val();
+        } else if (rangeAkhir == 'bulan') {
+          paramTanggal = $('#max').val();
+        }
+        window.open("{{ url('laporan/laporan-surat-masuk/pdf') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
       }
   </script>
 @endsection

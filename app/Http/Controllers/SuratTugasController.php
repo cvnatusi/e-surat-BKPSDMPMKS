@@ -20,8 +20,7 @@ class SuratTugasController extends Controller
 	private $menuActive = "surat-tugas";
 	private $submnActive = "";
 
-	public function index(Request $request)
-	{
+	public function index(Request $request) {
 		$this->data['title'] = $this->title;
 		$this->data['menuActive'] = $this->menuActive;
 		$this->data['submnActive'] = $this->submnActive;
@@ -39,15 +38,18 @@ class SuratTugasController extends Controller
 				->addColumn('action', function($row){
 					$btn = '<a href="javascript:void(0)" onclick="showSuratTugas('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					if ($row->verifikasi_kaban == 'N') {
-						$btn .= '<button disabled onclick"sudahVerif()" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></button>';
-                    }else {
+						// $btn .= '<a href="javascript:void(0)" onclick"deleteForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
 						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
-					}
-                    if($row->verifikasi_kaban == 'N') {
                         $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
-                    } else {
+                    }else {
+						$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning disabled"><i class="bx bx-pencil me-0"></i></a>';
                         $btn .= '<button disabled onclick="sudafVerif()" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></button>';
-                    }
+					}
+                    // if($row->verifikasi_kaban == 'N') {
+                    //     $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></a>';
+                    // } else {
+                    //     $btn .= '<button disabled onclick="sudafVerif()" style="margin-right: 5px;" class="btn btn-danger "><i class="bx bx-trash me-0"></i></button>';
+                    // }
 					$btn .='</div></div>';
 					return $btn;
 				})
@@ -111,13 +113,13 @@ class SuratTugasController extends Controller
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
-	public function form(Request $request)
-	{
+
+	public function form(Request $request) {
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratTugas::with('penandatangan')->find($request->id) : "";
 			$data['jenis_surat'] = JenisSurat::get();
 			$data['sifat_surat'] = SifatSurat::orderBy('id_sifat_surat','ASC')->get();
-			$data['instansi'] = MasterASN::get();
+			$data['instansi'] = MasterASN::whereNotIn('id_mst_asn', [5,52])->get();
 			$data['tanda_tangan'] = MasterASN::whereIn('jabatan', [0,1])->get(); # 0=Sekda, 1=Kepala badan
 			if (!empty($request->id)) {
 				$data['tujuan_tugas'] = TujuanSuratTugas::where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
@@ -131,8 +133,7 @@ class SuratTugasController extends Controller
 		}
 	}
 
-	public function store(Request $request)
-	{
+	public function store(Request $request) {
 		// return $request->all();
         // return $request->tujuan_surat_id;
 		// $vr=implode($request->tujuan_surat_id,",");
@@ -249,6 +250,7 @@ class SuratTugasController extends Controller
 							// $data['data'] = SuratTugas::with('pegawai')->find($newdata->id_surat_perjalanan_dinas);
 							// $data['value'] = SuratTugas::find($newdata['file']->surat_tugas_id);
 							$data['data'] = SuratTugas::find($newdata->id_surat_perjalanan_dinas);
+
 							$asnId = explode(',', $data['data']->asn_id);
 							// return $request->tujuan_surat_id;
 							$data['pegawai'] = MasterASN::with('jabatan_asn')->whereIn('id_mst_asn',$request->tujuan_surat_id)->get();
@@ -256,7 +258,7 @@ class SuratTugasController extends Controller
 							$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->yang_bertanda_tangan_asn_id)->first();
 							$data['surat_tugas'] = TujuanSuratTugas::with(['suratTugas'])->where('surat_tugas_id',$data['data']->id_surat_perjalanan_dinas)->get();
 							$ttd = '1. TTD Pada Tanggal :'.$data['data']->tanggal_surat.' 2. Oleh :'.$data['asn']->nama_asn.'  3. NIP: '.$data['asn']->nip;
-
+                            // return $data;
 							$data['qr'] = base64_encode(QrCode::format('png')->size(200)->merge('/public/assets/images/logo-icon.png', .4)->errorCorrection('H')->generate($ttd));
 
 							// DELETE DULU FILE YANG LAMA KALAU ADA

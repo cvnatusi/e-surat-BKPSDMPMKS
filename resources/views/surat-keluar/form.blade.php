@@ -87,7 +87,7 @@
 									 </div>
 									 <div class="col-md-3">
 										  <input type="text" class="form-control col-md-1" name="no_surat1" id="no_surat1"
-												@if (!empty($data)) value="{{ $data->no_surat1 + 1}}" @endif>
+												@if (!empty($data)) value="{{ $data->no_surat1}}" @endif>
 									 </div>
 									 <div class="col-md-3">
 										  <input type="text" value="432.403" class="form-control col-md-1" name="no_surat3"
@@ -118,9 +118,8 @@
 
 						  {{-- tujuan surat --}}
 						  <div class="col-md-12">
-								<label for="tujuan_surat_id" id="label_tujuan_surat" class="form-label">Tujuan Surat Kepada
-									 *</label>
-								<select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]"
+								<label for="tujuan_surat_id" id="label_tujuan_surat" class="form-label">Tujuan Surat Kepada *</label>
+								{{-- <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]"
 									 id="tujuan_surat_id">
 									 <option value="">-- Pilih Tujuan --</option>
 									 @if (!empty($instansi))
@@ -131,7 +130,15 @@
 										  @endif>{{ $inst->nama_instansi }}</option>
 									 @endforeach
 									 @endif
-								</select>
+								</select> --}}
+                                <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]" id="tujuan_surat_id">
+                                    <option value="" disabled>-- Pilih Tujuan --</option>
+                                    @if (!empty($instansi))
+                                        @foreach ($instansi as $inst)
+                                            <option value="{{$inst->id_instansi}}" @if(!empty($data)) @php $ins = explode(",",$data->tujuan_surat_id); @endphp @foreach ($ins as $key) @if ($inst->id_instansi == $key) selected @endif @endforeach @endif>{{$inst->nama_instansi}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
 
 								<!-- <select class="form-select tujuan_surat" multiple="multiple" name="tujuan_surat_id[]" id="tujuan_surat_id">
 				  {{-- @if (!empty($data))
@@ -178,7 +185,8 @@
 
 						  <div class="col-md-12">
 								<label for="file_scan" class="form-label">Upload Scan / Foto Surat</label>
-								<input class="form-control" type="file" id="file_scan" name="file_scan">
+                                <input type="file" class="form-control" name="file_scan" id="file_scan" accept="application/pdf,application/vnd.ms-excel,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+								{{-- <input class="form-control" type="file" id="file_scan" name="file_scan"> --}}
 						  </div>
 						  <hr>
 						  <div class="col-md-12">
@@ -241,17 +249,18 @@
 						  <h5 class="mb-0 text-primary">Preview Surat Keluar</h5>
 					 </div>
 					 <hr>
-					 <form class="row g-3 form-save" style="height: 750px">
-						  <div class="col-md-12">
-								@if (!empty($data->file_scan))
+					 <form class="row g-3 form-save" style="height: 100%">
+						  <div class="col-md-12" style="display: flex; justify-content: center;">
+                            <canvas id="prev_file" style="height: 730px; width: 500px;"></canvas>
+								{{-- @if (!empty($data->file_scan))
 									 <iframe width="100%" height="100%"
 										  src="{{ asset('storage/surat-tugas/' . $data->file_scan) }}"></iframe>
 								@else
 									 <img style="display: block;margin-left: auto;margin-right: auto;width: 50%;"
 										  src="https://media.istockphoto.com/id/924949200/vector/404-error-page-or-file-not-found-icon.jpg?s=170667a&w=0&k=20&c=gsR5TEhp1tfg-qj1DAYdghj9NfM0ldfNEMJUfAzHGtU="
 										  alt="">
-								@endif
-								{{-- <iframe width="100%"height="550px" src="{{asset('storage/surat-masuk/0003-20230206113144.jpeg')}}"></iframe> --}}
+								@endif --}}
+								{{-- <iframe width="100%"height="700px" src="{{asset('storage/surat-masuk/0003-20230206113144.jpeg')}}"></iframe> --}}
 						  </div>
 					 </form>
 				</div>
@@ -259,7 +268,51 @@
 	 </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" type="text/javascript" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
+    const canvas = document.getElementById('prev_file');
+    const ctx = canvas.getContext('2d');
+    const uploadPdf = document.getElementById('file_scan');
+
+    let pdfDoc = null;
+    let pageNum = 1;
+    let scale = 1.5;
+
+    function renderPage(num) {
+        pdfDoc.getPage(num).then(page => {
+            viewport = page.getViewport({ scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderContext = {
+                canvasContext: ctx,
+                viewport: viewport
+            };
+
+            page.render(renderContext);
+        });
+    }
+
+    uploadPdf.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        const fileReader = new FileReader();
+
+        fileReader.onload = function () {
+            const typedArray = new Uint8Array(this.result);
+            pdfjsLib.getDocument(typedArray).promise.then(pdf => {
+                pdfDoc = pdf;
+                pageNum = pdf.numPages;
+                renderPage(pageNum);
+            // console.log('done');
+            });
+        };
+        fileReader.readAsArrayBuffer(file);
+    });
+
 	 var onLoad = (function() {
 		  $('.panel-form').animateCss('bounceInUp');
 		  // $('.panelSuratManual').hide();

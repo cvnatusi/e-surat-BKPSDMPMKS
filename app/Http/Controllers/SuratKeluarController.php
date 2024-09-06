@@ -29,11 +29,23 @@ class SuratKeluarController extends Controller
 		if ($request->ajax()) {
 			$paramTglAwal = $request->tglAwal;
 			$paramTglAkhir = $request->tglAkhir;
-				$data = SuratKeluar::with(['sifat','jenis'])
-				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-				->orderBy('tanggal_surat','DESC')
-				->orderBy('no_agenda','DESC')
-				->get();
+            $data = SuratKeluar::with(['sifat','jenis'])
+                ->orderBy('tanggal_surat','DESC')
+                ->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+                ->orderBy('id_surat_keluar', 'DESC')
+                // ->orderBy('no_agenda','DESC')
+                ->get();
+				// $data = SuratKeluar::with(['sifat','jenis'])
+                //     ->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+                //     ->orderBy('tanggal_surat','DESC')
+                //     ->orderBy('no_agenda','DESC')
+                //     // ->orderByRaw('
+                //     //     COALESCE(NULLIF(REGEXP_REPLACE(SPLIT_PART(nomor_surat_keluar, \'.\', 1), \'[^0-9]\', \'\', \'g\'), \'\'), \'0\')::INTEGER DESC,
+                //     //     SPLIT_PART(nomor_surat_keluar, \'.\', 2) DESC,
+                //     //     tanggal_surat DESC,
+                //     //     no_agenda DESC
+                //     // ')
+                //     ->get();
 				// $data = SuratKeluar::with(['sifat','jenis'])->orderBy('id_surat_keluar','DESC')->get();
 			return Datatables::of($data)
 				->addIndexColumn()
@@ -64,10 +76,6 @@ class SuratKeluarController extends Controller
 					$btn .='</div></div>';
 					return $btn;
 				}
-
-
-
-
 					// $btn = '<a href="javascript:void(0)" onclick="showSuratTugas('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
 					// if ($row->verifikasi_kaban == 'N') {
 					// 	$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_perjalanan_dinas.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
@@ -121,6 +129,9 @@ class SuratKeluarController extends Controller
 					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_keluar.'" id="check_'.$row->id_surat_keluar.'" name="check" value="'.$row->id_surat_keluar.'" type="checkbox"></a>';
 					return $btn;
 				})
+                ->addColumn('tanggalSurat', function($row){
+                    return date('d-m-Y', strtotime($row->tanggal_surat));
+                })
 				// ->addColumn('verifKABAN', function($row){
 				// 	if ($row->is_verif == false) {
 				// 		if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti

@@ -306,7 +306,9 @@ class SuratMasukController extends Controller
 
 	// TEMPLATE DISPOSISI KOSONGAN (MULTI FILE)
 	public function multiDownload(Request $request) {
+        // return $request->listId;
 		$data['listData'] = SuratMasuk::whereIn('id_surat_masuk', $request->listId)->with('pengirim', 'sifat', 'jenis')->get();
+        $data['dengan_harap'] = DenganHarap::get();
 		$html = View::make('cetakan.surat_disposisi_kosongan_multi', $data)->render();
 
     	return response()->json(['html' => $html]);
@@ -314,7 +316,7 @@ class SuratMasukController extends Controller
 
 	// TEMPLATE DISPOSISI KOSONGAN (SINGLE FILE)
     public function templateDisposisi(Request $request) {
-			$data['dengan_harap'] = DenganHarap::get();
+		$data['dengan_harap'] = DenganHarap::get();
 		$data['data'] = SuratMasuk::where('id_surat_masuk', $request->id)->with('pengirim', 'sifat', 'jenis')->first();
 		$html = View::make('cetakan.surat_disposisi_kosongan2', $data)->render();
 

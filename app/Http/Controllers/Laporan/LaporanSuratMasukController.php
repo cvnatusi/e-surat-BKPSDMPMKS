@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\SuratMasuk;
 use App\Exports\LaporanSuratMasuk;
-use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel;
+use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel, PDF;
 
 
 class LaporanSuratMasukController extends Controller
@@ -121,4 +121,20 @@ class LaporanSuratMasukController extends Controller
 			//     ->get();
 			return Excel::download(new LaporanSuratMasuk($data), "Laporan Surat Masuk " . $data['periode'] . '.xlsx');
 	}
+
+    public function pdf(Request $request) {
+        $query = SuratMasuk::orderBy('id_surat_masuk','desc');
+        if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+            $query = $query->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+        }
+        $data['periode'] = date('d-m-Y', strtotime($request->rangeAwal)) . ' sampai  ' . date('d-m-Y', strtotime($request->rangeAkhir));
+        // $date = date('Y-m-d');
+        $data['judul'] = 'LAPORAN SURAT MASUK';
+        $data['lap'] = $query->get();
+        // return Excel::download(new LaporanSuratMasuk($data), "Laporan Surat Masuk " . $data['periode'] . '.xlsx');
+        // return view('laporan.surat-masuk.pdf', $data);
+        $pdf = PDF::loadView('laporan.surat-masuk.pdf', $data)
+              ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+        return $pdf->download('Laporan_Surat_Masuk_' . $data['periode'] . '.pdf');
+    }
 }

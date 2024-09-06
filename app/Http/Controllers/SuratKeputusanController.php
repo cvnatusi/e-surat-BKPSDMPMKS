@@ -50,18 +50,19 @@ class SuratKeputusanController extends Controller
 		}
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
-	public function form(Request $request)
-	{
+	public function form(Request $request) {
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratKeputusan::find($request->id) : "";
+            $data['tanggal_terakhir'] = SuratKeputusan::orderBy('tanggal_surat', 'DESC')->pluck('tanggal_surat')->first();
+            $data['is_date'] = ($data['tanggal_terakhir'] == \Carbon\Carbon::now()->addDay()->format('Y-m-d')) ? 'Besok' : 'Sekarang';
+            // return $data['is_date'];
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
-	public function store(Request $request)
-	{
+	public function store(Request $request) {
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -83,8 +84,9 @@ class SuratKeputusanController extends Controller
 		DB::beginTransaction();
 		$tanggal_surat = $request->tanggal_surat;
 		$tanggal_now =  date('Y-m-d');
-		if ($tanggal_surat < $tanggal_now) {
+		if ($tanggal_surat < $tanggal_now || $request->status_tanggal == 'Besok') {
 			$cekSurat = SuratKeputusan::find($request->surat_keputusan);
+            // return $cekSurat;
             $explodeSurat = explode("/",$cekSurat->nomor_surat_keputusan);
             $datas = SuratKeputusan::where('tanggal_surat',$request->tanggal_surat)
                     ->whereRaw("LEFT(no_agenda,1) = '$explodeSurat[1]'")
@@ -137,7 +139,8 @@ class SuratKeputusanController extends Controller
 			// 	$noSurat4 = $explodeSurat[3];
 			// 	$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
 			// }
-		}else {
+		// }else{
+		}elseif ($request->status_tanggal == 'Sekarang') {
 			// $findAgendaTerakhir = SuratKeputusan::whereYear('tanggal_surat', '=', date('Y'))->whereNull('deleted_at')->orderBy('id_surat_keputusan','DESC')->max('no_agenda');
 			$findAgendaTerakhir = SuratKeputusan::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
                                                 ->whereYear('tanggal_surat', '=', date('Y'))
@@ -157,14 +160,16 @@ class SuratKeputusanController extends Controller
 				$newdata->no_agenda = $newdata->no_agenda;
 				$noSurat = $newdata->nomor_surat_keputusan;
 			}else {
-				if ($tanggal_surat < $tanggal_now) {
+				if ($tanggal_surat < $tanggal_now || $request->status_tanggal == 'Besok') {
 					$newdata->no_agenda = $noSurat2;
 					$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-				}else {
+				// }elseif($tanggal_now) {
+				}elseif($request->status_tanggal == 'Sekarang') {
 					$newdata->no_agenda = $findAgendaTerakhir;
 					$noSurat = '188/'.$findAgendaTerakhir.'/432.403/'.date('Y');
 				}
 			}
+            // return $request->status_tanggal;
 
 			$newdata->nomor_surat_keputusan = $noSurat;
 			$newdata->perihal = $request->perihal;
@@ -203,7 +208,7 @@ class SuratKeputusanController extends Controller
 		}catch(\Exception $e){
 			DB::rollback();
 			report($e);
-			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e->getMessage(), 'line'=>$e->getLine()];
 			return response()->json($return);
 		}
 	}

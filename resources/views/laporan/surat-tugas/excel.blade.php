@@ -15,13 +15,13 @@
   <table id="body_excel" style="table-layout:fixed; width: 100%;border:1px solid black;" >
     <thead>
        <tr>
-        <th style="font-weight:bold;text-align:center;"><b>NO</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>NO SURAT</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>NAMA ASN</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>TANGGAL MULAI</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>TANGGAL AKHIR</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>KOTA TUJUAN</b></th>
-        <th style="font-weight:bold;text-align:center;"><b>PERIHAL</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>NO</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>NO SURAT</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>NAMA ASN</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>TANGGAL MULAI</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>TANGGAL AKHIR</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>KOTA TUJUAN</b></th>
+        <th style="font-weight:bold;text-align:center;border: 1px solid black;"><b>PERIHAL</b></th>
       </tr>
     </thead>
      @php
@@ -46,13 +46,15 @@
             @endphp
           @endforeach
           <tr>
-            <td style="padding: 5px;" align="center" valign="middle">{{$key+1}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->nomor_surat_perjalanan_dinas)}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords(implode(",",$resNamaPetugas))}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->tanggal_mulai)}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->tanggal_akhir)}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{$dataTempat}}</td>
-            <td style="padding: 5px;" align="center" valign="middle">{{ucwords($item->perihal_surat)}}</td>
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{$key+1}}</td>
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{ucwords($item->nomor_surat_perjalanan_dinas)}}</td>
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{ucwords(implode(",",$resNamaPetugas))}}</td>
+            <td style="padding: 5px; border: 1px solid black;" align="center" class="cap" valign="middle">{{ date('d-m-Y', strtotime($item->tanggal_mulai)) }}</td>
+            <td style="padding: 5px; border: 1px solid black;" align="center" class="cap" valign="middle">{{ date('d-m-Y', strtotime($item->tanggal_akhir)) }}</td>
+            {{-- <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{ucwords($item->tanggal_mulai)}}</td>
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{ucwords($item->tanggal_akhir)}}</td> --}}
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{$dataTempat}}</td>
+            <td style="padding: 5px;border: 1px solid black;" align="center" valign="middle">{{ucwords($item->perihal_surat)}}</td>
           </tr>
         @endforeach
 

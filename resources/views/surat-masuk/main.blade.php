@@ -53,7 +53,7 @@
 
                     <thead>
                         <td><input type="checkbox" id="check_" onchange="checkAll()" class="form-check-input"></td>
-                        <td>NO AGENDA</td>
+                        <td>NO</td>
                         <td>NO SURAT</td>
                         <td>TANGGAL TERIMA</td>
                         <td>PERIHAL SURAT</td>
@@ -303,6 +303,13 @@
                             }
                         }
                     },
+                    // {
+                    //     data: 'DT_RowIndex',
+                    //     name: 'DT_RowIndex',
+                    //     render: function(data, type, row) {
+                    //         return '<p style="color:black">' + data + '</p>';
+                    //     }
+                    // },
                     {
                         data: 'no_agenda',
                         name: 'no_agenda',
@@ -427,7 +434,7 @@
                 method: 'GET',
                 dataType: 'json',
                 data: {
-                    listId: listCheked
+                    listId: arrSuratId
                 },
                 success: function (response) {
                     var w = window.open();

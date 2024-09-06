@@ -9,8 +9,33 @@
   <div class="card main-page">
     <div class="card-body">
       <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-2">
+                    <label class="form-label">Export Excel</label>
+                    <button type="button" onclick="CetakExcel()" class="btn btn-info cetakExcel form-control" style="background-color: #1E6E42; color: white">
+                        <i class="bx bx-spreadsheet mr-1"></i>to Excel
+                    </button>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Export PDF</label>
+                    <button type="button" onclick="CetakPdf()" class="btn form-control" style="background-color: #41B3A2; color: white">
+                        <i class="bx bx-file mr-1"></i>to PDF
+                    </button>
+                </div>
+                <div class="col-md-2" id="span"></div>
+                <div class="col-md-3 mb-3 panelTanggal">
+                    <label class="form-label">Tanggal Awal</label>
+                    <input type="date" id="min" onchange="change(this)" class="form-control datepickertanggalawal">
+                </div>
+                <div class="col-md-3 mb-3 panelTanggal">
+                    <label class="form-label">Tanggal Akhir</label>
+                    <input type="date" id="max" onchange="change(this)" class="form-control datepickertanggalakhir">
+                </div>
+            </div>
+        </div>
         {{-- <div class="col-md-4"></div> --}}
-        <div class="col-md-2 mb-3" >
+        {{-- <div class="col-md-2 mb-3" >
           <label class="form-label">Export</label>
           <button type="button" onclick="CetakExcel()" class="btn form-control" style="background-color: #1E6E42; color: white">
             <i class="bx bx-spreadsheet mr-1"></i>to Excel
@@ -24,7 +49,7 @@
           <div class="col-md-3 mb-3 panelTanggal">
             <label class="form-label">Tanggal Akhir</label>
             <input type="date" id="max" class="form-control datepickertanggal">
-          </div>
+          </div> --}}
         {{-- <div class="col-md-3 mb-3">
           <label class="form-label">Pilih Opsi</label>
           <select class="form-control select2" id="rangeBy"  onchange="change(this)" selected name="rangeBy">
@@ -411,6 +436,19 @@
         }
         window.open("{{ url('laporan/laporan-surat-bast/excel') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
 
+      }
+      function CetakPdf() {
+        var rangeAwal = $('#min').val();
+        var rangeAkhir = $('#max').val();
+        // var range = rangeAwal + ' - ' + rangeAkhir;
+        var paramTanggal = '';
+
+        if (rangeAwal == 'tanggal') {
+          paramTanggal = $('#min').val();
+        } else if (rangeAkhir == 'bulan') {
+          paramTanggal = $('#max').val();
+        }
+        window.open("{{ url('laporan/laporan-surat-bast/pdf') }}?rangeAwal=" + rangeAwal + "&rangeAkhir=" + rangeAkhir);
       }
   </script>
 @endsection

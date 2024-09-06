@@ -11,6 +11,7 @@ use App\Models\Instansi;
 use App\Models\DenganHarap;
 use App\Models\MasterASN;
 use Log;
+use Illuminate\Support\Facades\View;
 use DataTables,Validator,DB,Hash,Auth,File,Storage,PDF,QrCode;
 
 class SuratDisposisiController extends Controller
@@ -40,13 +41,21 @@ class SuratDisposisiController extends Controller
 			return Datatables::of($data)
 				->addIndexColumn()
 				->addColumn('action', function($row){
-					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-secondary " title="Lihat file"><i class="bx bx-show me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-warning "data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
-					if(Auth::user()->level_user == 2) {
-					} else {
-						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;" class="btn btn-danger " title="Hapus"><i class="bx bx-trash me-0"></i></a>';
+					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_disposisi.')" style="margin-right: 5px; margin-bottom: 5px;" class="btn btn-secondary " title="Lihat file"><i class="bx bx-show me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="disposisikanSurat('.$row->id_surat_disposisi.')" style="margin-right: 5px; margin-bottom: 5px;" class="btn btn-warning "data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
+					if(Auth::user()->level_user == 1) {
+                        if($row->status != 'Ambil') {
+                            $btn .= '<a href="javascript:void(0)" onclick="editSurat('.$row->id_surat_disposisi.')" style="margin-right: 5px;  margin-bottom: 5px;" class="btn btn-success "data-toggle="popover" data-trigger="hover" title="Edit Surat"><i class="bx bx-pencil me-0"></i></a><br>';
+                        }
+						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_disposisi.')" style="margin-right: 5px;  margin-bottom: 5px;" class="btn btn-danger " title="Hapus"><i class="bx bx-trash me-0"></i></a>';
+                    } else {
+                        if($row->status == 'Ambil') {
+						    $btn .= '<a href="javascript:void(0)" onclick="approveSurat('.$row->id_surat_disposisi.')" style="margin-right: 5px;  margin-bottom: 5px;" class="btn btn-success disabled" title="Selesaikan"><i class="bx bx-check-double me-0"></i></a>';
+                        } else {
+						    $btn .= '<a href="javascript:void(0)" onclick="approveSurat('.$row->id_surat_disposisi.')" style="margin-right: 5px;  margin-bottom: 5px;" class="btn btn-success " title="Selesaikan"><i class="bx bx-check-double me-0"></i></a>';
+                        }
 					}
-					$btn .= '<a href="javascript:void(0)" onclick="previewSuratMasuk('.$row->surat_masuk_id.')" style="margin-right: 5px;" class="btn btn-info" title="Download"><i class="bx bx-download me-0"></i></a>';
+					$btn .= '<a href="javascript:void(0)" onclick="previewSuratMasuk('.$row->surat_masuk_id.')" style="margin-right: 5px;  margin-bottom: 5px;" class="btn btn-info" title="Download"><i class="bx bx-download me-0"></i></a>';
 					$btn .='</div></div>';
 					return $btn;
 				})
@@ -69,6 +78,8 @@ class SuratDisposisiController extends Controller
 			$data['dengan_harap'] = DenganHarap::get();
             $data['suratMasuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
 			$data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
+            $data['status'] = $request->status;
+            // return $data['status'];
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
@@ -76,8 +87,41 @@ class SuratDisposisiController extends Controller
 			return ['status' => 'success', 'content' => '','errMsg'=>$e];
 		}
 	}
+
+    public function edit(Request $request)  {
+        try {
+			$data['data'] = (!empty($request->id)) ? SuratDisposisi::with('suratMasukId.pengirim')->find($request->id) : "";
+			$data['jenis_surat'] = JenisSurat::get();
+			$data['sifat_surat'] = SifatSurat::get();
+			$data['instansi'] = Instansi::get();
+			$data['dengan_harap'] = DenganHarap::get();
+            $data['suratMasuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
+			$data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
+            // return $data;
+			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
+			return ['status' => 'success', 'content' => $content, 'data' => $data];
+		} catch (\Exception $e) {
+			throw($e);
+			return ['status' => 'success', 'content' => '','errMsg'=>$e];
+		}
+    }
+
+    public function showSuratDisposisi() {
+        $data['data'] = (!empty(199)) ? SuratDisposisi::with('suratMasukId.pengirim')->find(199) : "";
+        $data['jenis_surat'] = JenisSurat::get();
+        $data['sifat_surat'] = SifatSurat::get();
+        $data['instansi'] = Instansi::get();
+        $data['dengan_harap'] = DenganHarap::get();
+        $data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
+		$data['penerima'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->penerima_disposisi_id)->first();
+		$data['dengan_harap'] = DenganHarap::get();
+        $data['suratMasuk'] = SuratMasuk::whereNotNull('deleted_at')->get();
+        $data['user_login'] = MasterASN::where('users_id',Auth::user()->id)->first();
+        return view('cetakan.surat_disposisi', $data);
+    }
 	public function store(Request $request)
 	{
+        // return $request->all();
 		$validator = Validator::make(
 			$request->all(),
 			[
@@ -169,17 +213,19 @@ class SuratDisposisiController extends Controller
 			// 	$newdata->sampai_bkpsdm = 'N';
 			// }
 			$newdata->save();
-			$data['data'] = SuratDisposisi::with(['suratMasukId'])->find($newdata->id_surat_disposisi);
+			$data['data'] = SuratDisposisi::with('suratMasukId')->find($newdata->id_surat_disposisi);
 	    	$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
 	    	$data['penerima'] = MasterASN::where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
 	    	$data['dengan_harap'] = DenganHarap::get();
+            // return $data;
 			$changeSDisposisi = str_replace("/", "-", strtolower($data['data']->suratMasukId->nomor_surat_masuk));
 			$file_name_asli_surat_disposisi = str_replace(" ", "-", strtolower($data['asn']->nama_asn).'-'.$changeSDisposisi.'-'.date('Ymd His').'-surat_disposisi.pdf');
 			// $pdf = PDF::loadView('cetakan.surat_disposisi', $data)
 			// 	->setPaper([0, 0, 609.4488, 935.433], 'portrait');
             // return view('cetakan.surat_disposisi', $data);
             $pdf = PDF::loadView('cetakan.surat_disposisi', $data)
-            ->setPaper([0, 0, 595.28, 935.43], 'portrait');
+            // ->setPaper([0, 0, 595.28, 935.43], 'portrait');
+            ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
 
 			Storage::put('public/surat-disposisi/'.$file_name_asli_surat_disposisi, $pdf->output());
             file_put_contents(public_path('storage/surat-disposisi/' . $file_name_asli_surat_disposisi), $pdf->output());
@@ -248,8 +294,7 @@ class SuratDisposisiController extends Controller
         ]);
 	}
 
-	public function cetakSD(Request $request)
-	{
+	public function cetakSD(Request $request) {
 		$data['data'] = SuratDisposisi::with(['suratMasukId'])->find(81);
 		$data['asn'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->pemberi_disposisi_id)->first();
 		$data['penerima'] = MasterASN::with('jabatan_asn')->where('id_mst_asn',$data['data']->penerima_disposisi_id)->first();
@@ -275,6 +320,16 @@ class SuratDisposisiController extends Controller
 		// $data = ['1','2','3'];
 		// return response()->json($data);
 	}
+
+    public function multiDownload(Request $request) {
+        $data['listData'] = SuratDisposisi::whereIn('id_surat_disposisi', $request->listId)->with('penerima','suratMasukId')->get();
+        $data['dengan_harap'] = DenganHarap::get();
+        // return $data;
+        // return view('cetakan.surat_disposisi_multi', $data);
+		$html = View::make('cetakan.surat_disposisi_multi', $data)->render();
+
+    	return response()->json(['html' => $html]);
+    }
 
 	public function deleteAll(Request $request) {
 		$dataId = $request->listId;
@@ -303,5 +358,27 @@ class SuratDisposisiController extends Controller
       //         ->get();
 
       return response()->json($data);
+    }
+
+    public function selesaikanSurat(Request $request) {
+        try {
+            DB::beginTransaction();
+            $data = SuratDisposisi::where('id_surat_disposisi',$request->id)->first();
+            if($data->status == 'Ambil') {
+                return response()->json(['status' => 'warning', 'code' => 201, 'message' => 'Surat sudah diselesaikan']);
+            } else {
+                $data->status = 'Ambil';
+            }
+            $data->save();
+            DB::commit();
+            return response()->json(['status' => 'success', 'code' => 200, 'message' => 'Surat berhasil diselesaikan']);
+        } catch(\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'error',
+                'code' => 500,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\SuratKeluar;
 use App\Exports\LaporanSuratKeluar;
-use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel;
+use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel,PDF;
 
 
 class LaporanSuratKeluarController extends Controller
@@ -99,7 +99,7 @@ class LaporanSuratKeluarController extends Controller
 	public function excel(Request $request)
 	{
 		// return $request->all();
-		$datas = SuratKeluar::orderBy('id_surat_keluar','desc');
+		$datas = SuratKeluar::with('penerima')->orderBy('id_surat_keluar','desc');
         // return $datas;
 		if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
 			$datas = $datas->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
@@ -186,5 +186,22 @@ class LaporanSuratKeluarController extends Controller
 					return Excel::download(new LaporanSuratKeluar($data), "Laporan Surat Keluar " . $data['periode'] . '.xlsx');
 
 
-}
+    }
+
+    public function pdf(Request $request) {
+      // return $request->all();
+        $datas = SuratKeluar::with('penerima')->orderBy('id_surat_keluar','desc');
+        // return $datas;
+        if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+          $datas = $datas->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+        }
+        $data['periode'] = date('d-m-Y', strtotime($request->rangeAwal)) . '_sampai_' . date('d-m-Y', strtotime($request->rangeAkhir));
+        $data['judul'] = 'LAPORAN SURAT KELUAR';
+        $data['lap'] = $datas->get();
+        // return $data;
+        // return view('laporan.surat-keluar.pdf', $data);
+        $pdf = PDF::loadView('laporan.surat-keluar.pdf', $data)
+            ->setPaper([0, 0, 609.4488, 935.433], 'landscape');
+        return $pdf->download('Laporan_Surat_Keluar_' . $data['periode'] . '.pdf');
+    }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\SuratBAST;
 use App\Exports\LaporanSuratBAST;
-use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel;
+use DataTables,Validator,DB,Hash,Auth,File,Storage,Excel,PDF;
 
 
 class LaporanSuratBASTController extends Controller
@@ -112,5 +112,18 @@ class LaporanSuratBASTController extends Controller
 
 					// return $data['lap'];
 			return Excel::download(new LaporanSuratBAST($data), "Laporan Surat BAST " . $data['periode'] . '.xlsx');
+	}
+    public function pdf(Request $request) {
+		$querys = SuratBAST::orderBy('id_surat_bast','desc');
+        if(isset($request->rangeAwal) && isset($request->rangeAkhir)) {
+            $querys = $querys->whereDate('tanggal_surat',  '>=', $request->rangeAwal)->whereDate('tanggal_surat', '<=', $request->rangeAkhir);
+        }
+        $data['periode'] = date('d-m-Y', strtotime($request->rangeAwal)) . ' sampai ' . date('d-m-Y', strtotime($request->rangeAkhir));
+        $data['judul'] = 'LAPORAN SURAT BAST';
+        $data['lap'] = $querys->get();
+        // return view('laporan.surat-bast.pdf', $data);
+        $pdf = PDF::loadView('laporan.surat-bast.pdf', $data)
+              ->setPaper([0, 0, 609.4488, 935.433], 'portrait');
+        return $pdf->download('Laporan_Surat_BAST_' . $data['periode'] . '.pdf');
 	}
 }

@@ -56,6 +56,9 @@ class SuratBASTController extends Controller
 	{
 		try {
 			$data['data'] = (!empty($request->id)) ? SuratBAST::find($request->id) : "";
+            $data['tanggal_terakhir'] = SuratBAST::orderBy('tanggal_surat', 'DESC')->pluck('tanggal_surat')->first();
+            $data['is_date'] = ($data['tanggal_terakhir'] == \Carbon\Carbon::now()->addDay()->format('Y-m-d')) ? 'Besok' : 'Sekarang';
+            // return $data;
 			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
 			return ['status' => 'success', 'content' => $content, 'data' => $data];
 		} catch (\Exception $e) {
@@ -65,16 +68,21 @@ class SuratBASTController extends Controller
 	public function store(Request $request)
 	{
 		// return $request->all();
+        $rules = [
+            'tanggal_surat' => 'required',
+            'penyedia_jasa' => 'required',
+            'jenis_pekerjaan' => 'required',
+            'kegiatan' => 'required',
+            'jumlah' => 'required',
+        ];
+        // if ($request->status_tanggal == 'Besok') {
+        //     $rules = [
+        //         'nomor_surat_bast' => 'required'
+        //     ];
+        // }
 		$validator = Validator::make(
 			$request->all(),
-			[
-				// 'nomor_surat_bast' => 'required',
-				'tanggal_surat' => 'required',
-				'penyedia_jasa' => 'required',
-				'jenis_pekerjaan' => 'required',
-				'kegiatan' => 'required',
-				'jumlah' => 'required',
-			],
+            $rules,
 			[
 				'required' => ':attribute Wajib diisi',
 			]
@@ -86,19 +94,21 @@ class SuratBASTController extends Controller
 			return response()->json($return);
 		}
 
-		DB::beginTransaction();
-		$tanggal_surat = $request->tanggal_surat;
-		$tanggal_now =  date('Y-m-d');
 
-		if ($tanggal_surat < $tanggal_now) {
-			$cekSurat = SuratBAST::find($request->surat_bast);
+        DB::beginTransaction();
+        $tanggal_surat = $request->tanggal_surat;
+        $tanggal_now =  date('Y-m-d');
+
+        if ($tanggal_surat < $tanggal_now || $request->status_tanggal == 'Besok') {
+            $cekSurat = SuratBAST::find($request->surat_bast);
             $explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
             $datas = SuratBAST::where('tanggal_surat',$request->tanggal_surat)
                 ->whereRaw("LEFT(no_agenda,2) = '$explodeSurat[1]'")
                 ->orderBy('id_surat_bast', 'desc')->first();
-                return $datas;
-                $noAgenda = substr($datas->no_agenda, -1);
-			// if (!empty($cekSurat)) {
+                // return $datas;
+                $noAgenda = substr($datas->no_agenda, -2);
+                // return $noAgenda;
+            // if (!empty($cekSurat)) {
                 // 	// buatkan nomor sisipan
                 // 	// $explodeSurat = explode("/",$cekSurat->nomor_surat_bast);
                 // 	if (strpos($explodeSurat[1], '.A') !== false) {
@@ -116,19 +126,19 @@ class SuratBASTController extends Controller
                 // 	$noSurat3 = $explodeSurat[2];
                 // 	$noSurat4 = $explodeSurat[3];
                 // 	$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-			// }
+            // }
 
-            if ($noAgenda === 'A') {
+            if ($noAgenda === '.A') {
                 $noSurat2 = $explodeSurat[1].'.B';
-            }elseif ($noAgenda === 'B') {
+            }elseif ($noAgenda === '.B') {
                 $noSurat2 = $explodeSurat[1].'.C';
-            }elseif ($noAgenda === 'C') {
+            }elseif ($noAgenda === '.C') {
                 $noSurat2 = $explodeSurat[1].'.D';
-            }elseif ($noAgenda === 'D') {
+            }elseif ($noAgenda === '.D') {
                 $noSurat2 = $explodeSurat[1].'.E';
-            }elseif ($noAgenda === 'E'){
+            }elseif ($noAgenda === '.E'){
                 $noSurat2 = $explodeSurat[1].'.F';
-            }elseif ($noAgenda === 'F') {
+            }elseif ($noAgenda === '.F') {
                 $noSurat2 = $explodeSurat[1].'.G';
             } else {
                 $noSurat2 = $explodeSurat[1].'.A';
@@ -138,37 +148,41 @@ class SuratBASTController extends Controller
             $noSurat4 = $explodeSurat[3];
             $noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
             // return $noSurat;
-			// else {
-			// 	// cek tanggal kemaren dengan loop
-			// 	return 'datamu kosong';
-			// }
-		}else {
-		$findAgendaTerakhir = SuratBAST::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
+            // else {
+            // 	// cek tanggal kemaren dengan loop
+            // 	return 'datamu kosong';
+            // }
+        // }else {
+        }elseif ($request->status_tanggal == 'Sekarang') {
+            $findAgendaTerakhir = SuratBAST::selectRaw("MAX(CAST(regexp_replace(no_agenda, '[^0-9]', '', 'g') AS INTEGER)) AS max_number")
                                         ->whereYear('tanggal_surat', '=', date('Y'))
                                         ->whereNull('deleted_at')
                                         ->first()
                                         ->max_number;
-			if ($findAgendaTerakhir == 0) {
-				$findAgendaTerakhir = 1;
-			}else {
-				$findAgendaTerakhir = $findAgendaTerakhir+1;
-			}
-		}
+            if ($findAgendaTerakhir == 0) {
+                $findAgendaTerakhir = 1;
+            }else {
+                $findAgendaTerakhir = $findAgendaTerakhir+1;
+            }
+        }
 
 		try{
+
 			$newdata = (!empty($request->id)) ? SuratBAST::find($request->id) : new SuratBAST;
 			if (!empty($request->id)) {
 				$newdata->no_agenda = $newdata->no_agenda;
 				$noSurat = $newdata->nomor_surat_bast;
 			}else {
-				if ($tanggal_surat < $tanggal_now) {
+				if ($tanggal_surat < $tanggal_now || $request->status_tanggal == 'Besok') {
 					$newdata->no_agenda = $noSurat2;
 					$noSurat = $noSurat1.'/'.$noSurat2.'/'.$noSurat3.'/'.$noSurat4;
-				}else {
+				// }else {
+				}elseif($request->status_tanggal == 'Sekarang') {
 					$newdata->no_agenda = $findAgendaTerakhir;
 					$noSurat = '027/'.$findAgendaTerakhir.'/432.403/'.date('Y');
 				}
 			}
+            // return $noSurat;
 
 			$newdata->nomor_surat_bast = $noSurat;
 			$newdata->penyedia_jasa = $request->penyedia_jasa;
@@ -210,7 +224,7 @@ class SuratBASTController extends Controller
 		}catch(\Exception $e){
 			DB::rollback();
 			report($e);
-			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e];
+			$return = ['status'=>'error', 'code'=>'201', 'message'=>'Terjadi Kesalahan di Sistem, Silahkan Hubungi Tim IT Anda!!','errMsg'=>$e->getMessage(), 'line' => $e->getLine()];
 			return response()->json($return);
 		}
 	}
@@ -238,21 +252,17 @@ class SuratBASTController extends Controller
 		}
 	}
 
-	public function getSuratBASTByAgenda(Request $request)
-	{
+	public function getSuratBASTByAgenda(Request $request) {
 		$data = SuratBAST::where('no_agenda', $request->id)
                 // ->whereRaw("no_agenda !~ '[a-zA-Z.]'")
                 ->get();
 		return response()->json($data);
 	}
-	public function getSuratBASTByDate(Request $request)
-	{
+	public function getSuratBASTByDate(Request $request) {
 		// $data = SuratBAST::where('tanggal_surat',$request->tanggal)->get();
 		$data = SuratBAST::where('tanggal_surat', $request->tanggal)
                 ->whereRaw("no_agenda !~ '[a-zA-Z.]'")
                 ->get();
-
-        // return $data;
 		if (count($data) > 0) {
 			return response()->json($data);
 		}else {
@@ -264,8 +274,6 @@ class SuratBASTController extends Controller
 
 	public function getId(Request $request) {
         return $request->arrSuratId;
-		// $data = SuratBAST::pluck('id_surat_bast');
-		// return response()->json($data);
 	}
 
 	public function deleteAll(Request $request) {
