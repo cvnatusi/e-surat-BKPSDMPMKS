@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\DataMaster;
 
 use App\Http\Controllers\Controller;
+use App\Models\LevelPengguna;
 use Illuminate\Http\Request;
 use App\Models\Users;
 use App\Models\MasterASN;
@@ -18,7 +19,8 @@ class PenandaTanganSuratController extends Controller
 	public function index(Request $request)
 	{
 		if ($request->ajax()) {
-            $data = PenandaTanganSurat::with('pengguna')->get();
+            $data['data'] = PenandaTanganSurat::with('pengguna')->get();
+            // return $data;
             return Datatables::of($data)
                 ->addIndexColumn()
                 // ->addColumn('nama', function($row){
@@ -46,6 +48,8 @@ class PenandaTanganSuratController extends Controller
 		$this->data['submnActive'] = $this->submnActive;
 		$this->data['smallTitle'] = "";
         $this->data['user'] = Users::whereIn('level_user', ['0', '2'])->get();
+        $this->data['level_pengguna'] = LevelPengguna::get();
+        // return $this->data;
 		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
 	}
 
@@ -112,7 +116,7 @@ class PenandaTanganSuratController extends Controller
     	}
     }
 
-	
+
 	public function getPengguna(Request $request)
 	{
 		// return $request->all();

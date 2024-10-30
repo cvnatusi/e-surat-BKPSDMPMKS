@@ -18,115 +18,113 @@ class SuratMasukController extends Controller
 	private $menuActive = "surat-masuk";
 	private $submnActive = "";
 
-	public function index(Request $request)
-	{
-		$this->data['title'] = $this->title;
-		$this->data['menuActive'] = $this->menuActive;
-		$this->data['submnActive'] = $this->submnActive;
-		// $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
-		$this->data['smallTitle'] = "";
-		if ($request->ajax()) {
-			$paramTglAwal = $request->tglAwal;
-			$paramTglAkhir = $request->tglAkhir;
-			if (Auth::user()->level_user != 1) {
-				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
-				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-					->whereNull('status_disposisi')
-				->orderByDESC('tanggal_surat')
-				->orderByDESC('no_agenda')
-				->get();
-			}else {
-				$data = SuratMasuk::with(['sifat','jenis','pengirim'])
-				->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
-				->orderByDESC('tanggal_surat')
-				->orderByDESC('no_agenda')
-				->get();
-			}
+  public function index(Request $request) {
+    $this->data['title'] = $this->title;
+    $this->data['menuActive'] = $this->menuActive;
+    $this->data['submnActive'] = $this->submnActive;
+    // $this->data['levelName'] = 'Halaman '.$this->level_name(Auth::user()->level_user);
+    $this->data['smallTitle'] = "";
+    if ($request->ajax()) {
+      $paramTglAwal = $request->tglAwal;
+      $paramTglAkhir = $request->tglAkhir;
+      if (Auth::user()->level_user != 1) {
+        $data = SuratMasuk::with(['sifat','jenis','pengirim'])
+        ->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+            ->whereNull('status_disposisi')
+        ->orderByDESC('tanggal_surat')
+        ->orderByDESC('no_agenda')
+        ->get();
+      }else {
+        $data = SuratMasuk::with(['sifat','jenis','pengirim'])
+        ->whereBetween('tanggal_surat',[$paramTglAwal,$paramTglAkhir])
+        ->orderByDESC('tanggal_surat')
+        ->orderByDESC('no_agenda')
+        ->get();
+      }
 
-				// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->orderBy('id_surat_masuk','desc')->get();
-			// return $data;
-			// $data = SuratMasuk::with(['sifat','jenis','pengirim'])->where('tanggal_terima_surat','like',date('Y-m-d').'%')->orderBy('id_surat_masuk','desc')->get();
-			// $data = SuratMasuk::onlyTrashed()->get();
-			return Datatables::of($data)
-				->addIndexColumn()
-				->addColumn('singkatan', function($row){
-					if (!empty($row->pengirim->no_fax)) {
-						$singkatan = $row->pengirim->no_fax;
-					} else {
-						$singkatan = '-';
-					}
-					return $singkatan;
-				})
-				->addColumn('pengirim', function($row){
-					if (!empty($row->pengirim)) {
-						$pengirim_surat = $row->pengirim->nama_instansi;
-					} else {
-						$pengirim_surat = '-';
-					}
-					return $pengirim_surat;
-				})
-				->addColumn('action', function($row){
-					if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti || Jika login Admin dan Kaban
-						$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info " data-toggle="popover" data-trigger="hover" title="Lihat File Surat" ><i class="bx bx-show me-0"></i></a>';
-						if (Auth::user()->level_user == 1) {
-							$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
-						}else {
-							$btn .= '<a href="surat-disposisi?redirect=buat-baru&idsurat='.$row->id_surat_masuk.'&nosurat='.$row->no_agenda.'&nosuratmasuk='.$row->nomor_surat_masuk.'&namapengirim='.$row->pengirim->nama_instansi.'&tanggalSurat='.$row->tanggal_surat.'&tanggalTerimaSurat='.$row->tanggal_terima_surat.'&isiringkas='.$row->isi_ringkas_surat.'" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
-						}
-						$btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a><br><br>';
-						$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success " data-toggle="popover" data-trigger="hover" title="Timeline"><i class="bx bx-video-recording me-0"></i></a>';
-						$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
-						return $btn;
-				   }else {
-					$btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
-					$btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
-					return $btn;
-				}
+            // $data = SuratMasuk::with(['sifat','jenis','pengirim'])->orderBy('id_surat_masuk','desc')->get();
+        // return $data;
+        // $data = SuratMasuk::with(['sifat','jenis','pengirim'])->where('tanggal_terima_surat','like',date('Y-m-d').'%')->orderBy('id_surat_masuk','desc')->get();
+        // $data = SuratMasuk::onlyTrashed()->get();
+      return Datatables::of($data)
+        ->addIndexColumn()
+        ->addColumn('singkatan', function($row){
+            if (!empty($row->pengirim->no_fax)) {
+              $singkatan = $row->pengirim->no_fax;
+            } else {
+              $singkatan = '-';
+            }
+            return $singkatan;
+        })
+        ->addColumn('pengirim', function($row){
+          if (!empty($row->pengirim)) {
+            $pengirim_surat = $row->pengirim->nama_instansi;
+          } else {
+            $pengirim_surat = '-';
+          }
+          return $pengirim_surat;
+        })
+        ->addColumn('action', function($row){
+          if (Auth::user()->level_user == 2 || Auth::user()->level_user == 1) { // matikan level user 1 nanti || Jika login Admin dan Kaban
+            $btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info " data-toggle="popover" data-trigger="hover" title="Lihat File Surat" ><i class="bx bx-show me-0"></i></a>';
+            if (Auth::user()->level_user == 1) {
+              $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Edit"><i class="bx bx-pencil me-0"></i></a>';
+            }else {
+              $btn .= '<a href="surat-disposisi?redirect=buat-baru&idsurat='.$row->id_surat_masuk.'&nosurat='.$row->no_agenda.'&nosuratmasuk='.$row->nomor_surat_masuk.'&namapengirim='.$row->pengirim->nama_instansi.'&tanggalSurat='.$row->tanggal_surat.'&tanggalTerimaSurat='.$row->tanggal_terima_surat.'&isiringkas='.$row->isi_ringkas_surat.'" style="margin-right: 5px;" class="btn btn-warning" data-toggle="popover" data-trigger="hover" title="Disposisi"><i class="bx bx-task-x me-0"></i></a>';
+            }
+            $btn .= '<a href="javascript:void(0)" onclick="deleteForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-danger " data-toggle="popover" data-trigger="hover" title="Hapus"><i class="bx bx-trash me-0"></i></a><br><br>';
+            $btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success " data-toggle="popover" data-trigger="hover" title="Timeline"><i class="bx bx-video-recording me-0"></i></a>';
+            $btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
+            return $btn;
+          }else {
+            $btn = '<a href="javascript:void(0)" onclick="showForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-info "><i class="bx bx-show me-0"></i></a>';
+            $btn .= '<a href="javascript:void(0)" onclick="editForm('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-warning "><i class="bx bx-pencil me-0"></i></a>';
+            $btn .= '<a href="javascript:void(0)" onclick="timeLine('.$row->id_surat_masuk.')" style="margin-right: 5px;" class="btn btn-success "><i class="bx bx-video-recording me-0"></i></a>';
+            $btn .= '<a href="javascript:void(0)" onclick="downloadTemplate('.$row->id_surat_masuk.')" style="margin-right: 5px; background-color: #17a2b8;" class="btn btn-secondary " data-toggle="popover" data-trigger="hover" title="Download"><i class="bx bx-download me-0"></i></a>';
+            return $btn;
+          }
 
-				})
-				->addColumn('check', function($row){
-					$btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
-					return $btn;
-				})
-				->rawColumns(['action','check'])
-				->make(true);;
+        })
+        ->addColumn('check', function($row){
+          $btn = '<input class="form-check-input select-checkbox row_surat" onchange="checkedRow(this)" data-id="'.$row->id_surat_masuk.'" id="check_'.$row->id_surat_masuk.'" name="check" value="'.$row->id_surat_masuk.'" type="checkbox"></a>';
+          return $btn;
+        })
+        ->rawColumns(['action','check'])
+        ->make(true);
 
-		}
-		return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
+    }
+    return view($this->menuActive.'.'.$this->submnActive.'.'.'main')->with('data',$this->data);
+  }
+
+	public function form(Request $request) {
+      try {
+        $data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
+        $data['jenis_surat'] = JenisSurat::get();
+        $data['sifat_surat'] = SifatSurat::get();
+        $data['instansi'] = Instansi::get();
+        $content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
+        return ['status' => 'success', 'content' => $content, 'data' => $data];
+      } catch (\Exception $e) {
+        return ['status' => 'success', 'content' => '','errMsg'=>$e];
+      }
 	}
-	public function form(Request $request)
-	{
-		try {
-			$data['data'] = (!empty($request->id)) ? SuratMasuk::find($request->id) : "";
-			$data['jenis_surat'] = JenisSurat::get();
-			$data['sifat_surat'] = SifatSurat::get();
-			$data['instansi'] = Instansi::get();
-			$content = view($this->menuActive.'.'.$this->submnActive.'.'.'form', $data)->render();
-			return ['status' => 'success', 'content' => $content, 'data' => $data];
-		} catch (\Exception $e) {
-			return ['status' => 'success', 'content' => '','errMsg'=>$e];
-		}
-	}
-	public function store(Request $request)
-	{
+	public function store(Request $request) {
 		// return $request->all();
 		$validator = Validator::make(
 			$request->all(),
 			[
-				'nomor_surat_masuk' => 'required',
-				'pengirim_surat_id' => 'required',
-				'sifat_surat_id' => 'required',
-				'jenis_surat_id' => 'required',
-				'tanggal_surat' => 'required',
-				'tanggal_terima_surat' => 'required',
-				'perihal_surat' => 'required',
-				'isi_ringkas_surat' => 'required',
-				'pengirim_surat_id' => 'required',
+              'nomor_surat_masuk' => 'required',
+              'pengirim_surat_id' => 'required',
+              'sifat_surat_id' => 'required',
+              'jenis_surat_id' => 'required',
+              'tanggal_surat' => 'required',
+              'tanggal_terima_surat' => 'required',
+              'perihal_surat' => 'required',
+              'isi_ringkas_surat' => 'required',
+              'pengirim_surat_id' => 'required',
 			],
 			[
-				'required' => ':attribute Wajib diisi',
+              'required' => ':attribute Wajib diisi',
 			]
 		);
 		if ($validator->fails()) {
@@ -162,9 +160,9 @@ class SuratMasukController extends Controller
 			$newdata = (!empty($request->id)) ? SuratMasuk::find($request->id) : new SuratMasuk;
 			$newtimeline = New TimelineSuratMasuk;
 			if (!empty($request->id)) {
-				$newdata->no_agenda = $newdata->no_agenda;
+              $newdata->no_agenda = $newdata->no_agenda;
 			}else {
-				$newdata->no_agenda = $findAgendaTerakhir;
+              $newdata->no_agenda = $findAgendaTerakhir;
 			}
 			$newdata->nomor_surat_masuk = $request->nomor_surat_masuk;
 			$instansi = $request->pengirim_surat_id;

@@ -1,4 +1,3 @@
-
 @extends('component.app')
 @section('css')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr@latest/dist/plugins/monthSelect/style.css">
@@ -17,8 +16,11 @@
                             <label>Pilih Level Penanda Tangan <small>*)</small></label>
                             <select name="level_pengguna" id="level_pengguna" class="form-control level_pengguna" onchange="getPengguna(this.value)">
                               <option value="">-- Pilih Level Penanda Tangan --</option>
-                              <option value="0">SEKRETARIS DAERAH (SEKDA)</option>
-                              <option value="1">KABAN</option>
+                              @foreach ($level_pengguna as $peng)
+                                <option value="{{ $peng->id_level_user }}">{{ $peng->nama_asn }}</option>
+                              @endforeach
+                              {{-- <option value="0">SEKRETARIS DAERAH (SEKDA)</option>
+                              <option value="1">KABAN</option> --}}
                             </select>
                         </div>
                         <div class="col-md-4" >
